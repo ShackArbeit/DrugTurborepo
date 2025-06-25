@@ -1,0 +1,60 @@
+# 1. 全域 node_modules
+node_modules/
+**/node_modules/
+
+# 2. pnpm、Yarn Plug’n’Play
+.pnp
+.pnp.js
+
+# 3. 環境變數檔
+.env
+.env.*.local
+
+# 4. TypeScript 輔助檔
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# 5. 編譯 & 打包輸出
+.next/
+**/.next/
+out/
+**/out/
+dist/
+**/dist/
+build/
+**/build/
+
+# 6. Turborepo 快取
+.turbo/
+
+# 7. 測試覆蓋率
+coverage/
+**/coverage/
+
+# 8. Vercel 部署輸出
+.vercel/
+
+# 9. 日誌 & 偵錯檔
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 10. OS & 編輯器設定檔
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 11. SSL / 金鑰
+*.pem
+
+# —————————————————————
+# 12. 強制追蹤：需求文件 & 圖片
+# 如果你有一般性規則會忽略所有副檔名，請用下面反轉規則強制保留
+!*.docx
+!*.pdf
+!*.png
+!*.jpg
+!*.jpeg
+!*.svg

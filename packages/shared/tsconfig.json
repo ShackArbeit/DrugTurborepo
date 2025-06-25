@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "target": "ES2021",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@drug-forensics-system/shared": ["src/index.ts"],
+      "@drug-forensics-system/shared/*": ["src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": []
+}

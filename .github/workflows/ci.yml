@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # 1. 取出程式碼
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # 僅拉最新兩次提交，加速檢出 :contentReference[oaicite:0]{index=0}
+
+      # 2. 安裝 pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8     # 可指定與本地一致的 pnpm 版本 :contentReference[oaicite:1]{index=1}
+
+      # 3. 設定 Node.js 並開啟 pnpm 快取
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'  # 內建支援 pnpm store 快取 :contentReference[oaicite:2]{index=2}
+
+      # 4. 快取 pnpm store 與 Turborepo 本地快取
+      - name: Cache pnpm store and Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store       # pnpm store cache 位置 :contentReference[oaicite:3]{index=3}
+            .turbo              # Turborepo 本地快取目錄 :contentReference[oaicite:4]{index=4}
+          key: ${{ runner.os }}-ci-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys:
+            - ${{ runner.os }}-ci-  # 若鎖檔變更，仍可嘗試舊快取
+
+      # 5. 安裝所有依賴
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile  # 鎖定版本安裝 :contentReference[oaicite:5]{index=5}
+
+      # 6. 執行編譯
+      - name: Build
+        run: pnpm turbo run build  # 呼叫 Turborepo 處理所有子專案編譯 :contentReference[oaicite:6]{index=6}
+
+      # 7. 執行測試
+      - name: Test
+        run: pnpm turbo run test   # 呼叫 Turborepo 處理所有子專案測試 :contentReference[oaicite:7]{index=7}

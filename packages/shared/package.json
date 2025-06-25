@@ -1,0 +1,35 @@
+{
+    "name": "@drug-forensics-system/shared",
+    "version": "0.1.0",
+    "description": "Drug Forensics System 共用函式庫",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.js"
+      },
+      "./*": {
+        "import": "./dist/*.js",
+        "require": "./dist/*.js"
+      }
+    },
+    "files": [
+      "dist",
+      "README.md"
+    ],
+    "scripts": {
+      "build": "tsc -b",
+      "clean": "rimraf dist",
+      "lint": "eslint src --ext .ts",
+      "lint:fix": "eslint src --ext .ts --fix"
+    },
+    "dependencies": {
+      "tslib": "^2.5.0"
+    },
+    "devDependencies": {
+      "typescript": "^5.7.3",
+      "eslint": "^8.0.0",
+      "rimraf": "^5.0.0"
+    }
+}
