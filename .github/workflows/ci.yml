@@ -13,38 +13,44 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      # 1. 取出程式碼
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
+      # 2. 安裝 pnpm
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 8
 
+      # 3. 設定 Node.js 並開啟 pnpm 快取
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
+      # 4. 本地快取 pnpm store 與 Turborepo 快取
       - name: Cache pnpm store and Turborepo cache
         uses: actions/cache@v4
         with:
-          # 這裡改用 YAML 陣列
           path:
-            - ~/.pnpm-store
-            - .turbo
+            - ~/.pnpm-store       # pnpm store 快取位置 :contentReference[oaicite:1]{index=1}
+            - .turbo              # Turborepo 本地 cache 目錄 :contentReference[oaicite:2]{index=2}
           key: ${{ runner.os }}-ci-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys:
-            - ${{ runner.os }}-ci-
+            - ${{ runner.os }}-ci-  # 部分比對用的 fallback key :contentReference[oaicite:3]{index=3}
 
+      # 5. 安裝所有依賴
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile  # 鎖定版本安裝 :contentReference[oaicite:4]{index=4}
 
+      # 6. 執行編譯
       - name: Build
-        run: pnpm turbo run build
+        run: pnpm turbo run build            # Turborepo 高效編譯 :contentReference[oaicite:5]{index=5}
 
+      # 7. 執行測試
       - name: Test
-        run: pnpm turbo run test
+        run: pnpm turbo run test             # Turborepo 高效測試 :contentReference[oaicite:6]{index=6}
