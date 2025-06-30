@@ -1,11 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,OneToOne} from 'typeorm';
 import { ObjectType,Field,Int } from '@nestjs/graphql';
 import { Case } from 'src/Case/case.entity';
+import { ExaminResult } from 'src/ExaminResult/examin_result.entity';
 
 @Entity({name:'evidence'})
 @ObjectType()
 export class  Evidence{
-
+      // 主鍵
       @Field(()=>Int)
       @PrimaryGeneratedColumn()
       id:number
@@ -73,4 +74,13 @@ export class  Evidence{
       @JoinColumn({ name: 'case_id' })      // 明確指定外鍵欄位名稱為 case_id
       @Field(() => Case)
       case: Case;
+
+      // 關聯欄位:一個證物對應一個證物檢測結果
+      @Field(()=>ExaminResult,{nullable:true})
+      @OneToOne(()=>ExaminResult,examinResult=>examinResult.evidences,{
+              cascade:true,
+              eager:false
+      })
+      examinResult?:ExaminResult
+
 }
