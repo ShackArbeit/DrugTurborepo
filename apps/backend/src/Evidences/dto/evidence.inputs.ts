@@ -1,0 +1,51 @@
+import { InputType,PartialType,Field,Int } from "@nestjs/graphql";
+
+// 第一部分是讓使用者輸入並變成 GraphQL API 的項目
+@InputType()
+export class CreateEvidenceInput{
+
+      // 證物編號 
+      @Field(()=>String,{description:'證物編號',nullable:false})
+      evidenceNumber:string
+
+      // 證物類型
+      @Field(()=>String,{description:'證物類型',nullable:false})
+      evidenceType:string
+
+      // 證物廠牌
+     @Field(()=>String,{description:'證物廠牌',nullable:false})
+     evidenceBrand:string
+
+     // 證物序號 (廠牌序號，可選)
+     @Field(()=>String,{description:'廠牌序號',nullable:true})
+     evidenceSerialNo:string
+
+     // 原始標籤編號
+     @Field(()=>String,{description:'原始標籤編號',nullable:true})
+     evidenceOriginalNo:string
+
+     //證物正面照片
+     @Field(()=>String,{description:'正面照片',nullable:false})
+     photoFront:string
+
+     //證物反面照片
+     @Field(()=>String,{description:'反面照片',nullable:false})
+     photoBack:string
+
+     // 收件時間
+     @Field(()=>String,{description:'收件時間',nullable:false})
+     receiveTime:string
+
+    // 交付人簽章 (圖檔/base64)
+    @Field(()=>String,{description:'交付人簽章',nullable:false})
+    deliverySignature:string
+
+    // 收件人簽章(圖檔/base64)
+    @Field(()=>String,{description:'收件人簽章',nullable:false})
+    receiverSignature:string
+}
+
+// 第二部分是讓輸入後的欄位可以更新的部分
+@InputType()
+export class UpdateEvidenceInput extends PartialType(CreateEvidenceInput)
+{}

@@ -43,14 +43,6 @@ export class  Evidence{
       @Column({type:"text",name:"photo_back",nullable:true})
       photoBack?: string; // 證物反面照片   
       
-      @Field({nullable:true})
-      @Column({type:"text",name:"time_stamp",nullable:true})
-      timestamp?: string;   // 時間戳記
-
-      @Field({nullable:true})
-      @Column({ type: 'text', name: 'delivery_time', nullable: true })
-      deliveryTime?: string;     // 送件時間
-
 
       @Field({nullable:true})
       @Column({ type: 'text', name: 'receive_time', nullable: true })
