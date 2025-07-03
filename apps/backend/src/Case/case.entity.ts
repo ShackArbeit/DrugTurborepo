@@ -55,13 +55,13 @@ export class Case{
       @Column({type:"text",name:"submitter_phone"})
       submitterPhone: string;
 
-      // 送件人市話 (可選)
-      @Field({nullable:true})
+      // 送件人市話 
+      @Field({nullable:false})
       @Column({type:"text",name:"submitter_tel",nullable:true})
       submitterTel?:string
   
       // 送件人簽章 (圖檔路徑或 base64)
-      @Field({nullable:true})
+      @Field({nullable:false})
       @Column({ type: 'text', name: 'submitter_signature', nullable: true })
       submitterSignature?: string; 
 
