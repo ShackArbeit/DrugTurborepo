@@ -42,14 +42,5 @@ export class CaseService{
             const response=await this.caseRepository.delete(id)
             return (response.affected ?? 0) > 0;
       }
-      // 檢查案件編號是否已存在
-      async findByCaseNumber(caseNumber: string): Promise<Case | null> {
-        return this.caseRepository.findOne({ where: { caseNumber } });
-    }
-    //  表示案件編號是否已存在
-    async isCaseNumberExists(caseNumber: string): Promise<boolean> {
-        const count = await this.caseRepository.count({ where: { caseNumber } });
-        return count > 0;
-    }
 
 }

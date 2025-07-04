@@ -15,19 +15,6 @@ export class CaseResolver{
       findOne(@Args('id',{type:()=>Int}) id:number):Promise<Case>{
             return this.caseService.findOne(id)
       }
-
-     @Query(() => Case, { name: 'findByCaseNumber', description: '依案件編號查案件' })
-      findByCaseNumber(
-            @Args('caseNumber', { type: () => String, description: '案件編號' })
-            caseNumber: string
-            ): Promise<Case | null> {
-            return this.caseService.findByCaseNumber(caseNumber);
-      }
-
-      @Query(() => Boolean, { name: 'isCaseNumberExists' })
-      isCaseNumberExists(@Args('caseNumber', { type: () => String }) caseNumber: string): Promise<boolean> {
-            return this.caseService.isCaseNumberExists(caseNumber);
-      }
       @Mutation(()=>Case)
       createCase(@Args('input') input:CreateCaseInput):Promise<Case>{
            return this.caseService.createCase(input)
