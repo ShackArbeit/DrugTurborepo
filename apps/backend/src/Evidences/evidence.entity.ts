@@ -44,16 +44,16 @@ export class  Evidence{
       photoBack?: string; // 證物反面照片   
       
 
-      @Field({nullable:true})
+      @Field({nullable:false})
       @Column({ type: 'text', name: 'receive_time', nullable: true })
       receiveTime?: string;      // 收件時間
 
-      @Field({nullable:true})
+      @Field({nullable:false})
       @Column({ type: 'text', name: 'delivery_signature', nullable: true })
       deliverySignature?: string; // 交付人簽章 (圖檔/base64)
 
       
-      @Field({nullable:true})
+      @Field({nullable:false})
       @Column({ type: 'text', name: 'receiver_signature', nullable: true })
       receiverSignature?: string; // 收件人簽章
 

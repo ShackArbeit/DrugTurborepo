@@ -1,4 +1,4 @@
-import { InputType,PartialType,Field,Int } from "@nestjs/graphql";
+import { InputType,PartialType,Field} from "@nestjs/graphql";
 
 // 第一部分是讓使用者輸入並變成 GraphQL API 的項目
 @InputType()

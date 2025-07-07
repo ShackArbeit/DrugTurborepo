@@ -1,6 +1,7 @@
 import { Entity,PrimaryGeneratedColumn,Column,OneToMany } from "typeorm";
 import { ObjectType,Field,Int} from "@nestjs/graphql";
 import { Evidence } from "src/Evidences/evidence.entity";
+import { PickUp } from "src/Pickup/pickup.entity";
 
 @Entity({name:'case'})
 @ObjectType()
@@ -74,4 +75,9 @@ export class Case{
       @Field(()=>[Evidence],{nullable:"items"})
       @OneToMany(()=>Evidence,EvidenceEntity=>EvidenceEntity.case,{cascade:true})
       evidences?:Evidence[]
+
+     // 關聯欄位 : 一個案件可以有多個領回紀錄
+     @Field(() => [PickUp], { nullable: true })
+     @OneToMany(()=>PickUp,pickupInstance=>pickupInstance.case,{cascade:true})
+     pickups?:PickUp[]
 }

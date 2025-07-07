@@ -36,7 +36,7 @@ export class ExaminResult{
      is_info_complete:boolean
 
      // 鑑識人員姓名
-     @Field({nullable:true})
+     @Field({nullable:false})
      @Column({type:'text',name:'examiner_name',nullable:true})
      examiner_name:string
 
