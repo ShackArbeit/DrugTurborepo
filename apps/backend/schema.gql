@@ -1,0 +1,353 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Case {
+  caseName: String!
+  caseNumber: String!
+  caseType: String!
+  createdAt: String!
+  evidences: [Evidence]!
+  id: Int!
+  pickups: [PickUp!]
+  prefixLetter: String!
+  section: String!
+  submitUnit: String!
+  submitterName: String!
+  submitterPhone: String!
+  submitterSignature: String!
+  submitterTel: String!
+  year: Int!
+}
+
+input CreateCaseInput {
+  """案件摘要"""
+  caseName: String!
+
+  """案件編號"""
+  caseNumber: String!
+
+  """案件類型"""
+  caseType: String!
+
+  """冠字"""
+  prefixLetter: String!
+
+  """股別"""
+  section: String!
+
+  """送件單位"""
+  submitUnit: String!
+
+  """送件人姓名"""
+  submitterName: String!
+
+  """送件人手機"""
+  submitterPhone: String!
+
+  """送件人簽名"""
+  submitterSignature: String!
+
+  """送件人電話"""
+  submitterTel: String!
+
+  """年度"""
+  year: Int!
+}
+
+input CreateEvidenceInput {
+  """交付人簽章"""
+  deliverySignature: String!
+
+  """證物廠牌"""
+  evidenceBrand: String!
+
+  """證物編號"""
+  evidenceNumber: String!
+
+  """原始標籤編號"""
+  evidenceOriginalNo: String
+
+  """廠牌序號"""
+  evidenceSerialNo: String
+
+  """證物類型"""
+  evidenceType: String!
+
+  """反面照片"""
+  photoBack: String!
+
+  """正面照片"""
+  photoFront: String!
+
+  """收件時間"""
+  receiveTime: String!
+
+  """收件人簽章"""
+  receiverSignature: String!
+}
+
+input CreateExaminResultsInput {
+  """建立時間"""
+  created_at: String!
+
+  """鑑識人員姓名"""
+  examiner_name: String!
+
+  """是否超出鑑識能力範圍"""
+  is_beyond_scope: Boolean!
+
+  """案件資訊是否完整"""
+  is_info_complete: Boolean!
+
+  """是否屬於實驗室鑑識項目"""
+  is_lab_related: Boolean!
+
+  """是否應退件"""
+  is_rejected: Boolean!
+
+  """備註欄"""
+  remarks: String
+
+  """最後更新時間"""
+  updated_at: String!
+}
+
+input CreatePickupInput {
+  caseId: Float!
+  delivery_signature: String!
+  photo_path: String!
+  pickup_time: String!
+  receiver_name: String!
+  receiver_signature: String!
+  remarks: String!
+  satisfaction_levelFour: String!
+  satisfaction_levelOne: String!
+  satisfaction_levelThree: String!
+  satisfaction_levelTwo: String!
+}
+
+type Evidence {
+  case: Case!
+  caseId: Int!
+  createdAt: String!
+  deliverySignature: String!
+  evidenceBrand: String
+  evidenceNumber: String!
+  evidenceOriginalNo: String
+  evidenceSerialNo: String
+  evidenceType: String!
+  examinResult: ExaminResult
+  id: Int!
+  photoBack: String
+  photoFront: String
+  receiveTime: String!
+  receiverSignature: String!
+}
+
+type ExaminResult {
+  created_at: String!
+  evidence_id: Int!
+  evidences: Evidence!
+  examiner_name: String!
+  id: Int!
+  is_beyond_scope: Boolean!
+  is_info_complete: Boolean!
+  is_lab_related: Boolean!
+  is_rejected: Boolean!
+  remarks: String
+  updated_at: String!
+}
+
+type Mutation {
+  createCase(input: CreateCaseInput!): Case!
+
+  """建立新證物"""
+  createEvidence(input: CreateEvidenceInput!): Evidence!
+
+  """建立新檢測結果"""
+  createExaminResult(input: CreateExaminResultsInput!): ExaminResult!
+  createPickup(input: CreatePickupInput!): PickUp!
+  removeCase(id: Int!): Boolean!
+
+  """刪除指定證物"""
+  removeEvidence(
+    """證物 ID"""
+    id: Int!
+  ): Boolean!
+
+  """刪除指定檢測結果"""
+  removeExaminResult(
+    """檢測結果 ID"""
+    id: Int!
+  ): Boolean!
+  removePickup(id: Int!): Boolean!
+  updateCase(id: Int!, input: UpdateCaseInput!): Case!
+
+  """更新指定證物"""
+  updateEvidence(
+    """證物 ID"""
+    id: Int!
+    input: UpdateEvidenceInput!
+  ): Evidence!
+
+  """更新指定檢測結果"""
+  updateExaminResult(
+    """檢測結果 ID"""
+    id: Int!
+    input: UpdateExaminResultsInput!
+  ): ExaminResult!
+  updatePickup(id: Int!, input: UpdatePickupInput!): PickUp!
+}
+
+type PickUp {
+  case: Case!
+  created_at: String!
+  delivery_signature: String!
+  id: Int!
+  photo_path: String!
+  pickup_time: String!
+  receiver_name: String!
+  receiver_signature: String!
+  remarks: String
+  satisfaction_levelFour: String!
+  satisfaction_levelOne: String!
+  satisfaction_levelThree: String!
+  satisfaction_levelTwo: String!
+}
+
+type Query {
+  case(id: Int!): Case!
+  cases: [Case!]!
+
+  """依 ID 取得單一證物"""
+  evidence(
+    """證物 ID"""
+    id: Int!
+  ): Evidence!
+
+  """取得所有證物"""
+  evidences: [Evidence!]!
+
+  """依 ID 取得單一檢測結果"""
+  examinResult(
+    """檢測結果 ID"""
+    id: Int!
+  ): ExaminResult!
+
+  """取得所有檢測結果"""
+  examinResults: [ExaminResult!]!
+
+  """依 ID 取得單一領回紀錄"""
+  pickup(id: Int!): PickUp!
+
+  """取得所有領回紀錄"""
+  pickups: [PickUp!]!
+}
+
+input UpdateCaseInput {
+  """案件摘要"""
+  caseName: String
+
+  """案件編號"""
+  caseNumber: String
+
+  """案件類型"""
+  caseType: String
+
+  """冠字"""
+  prefixLetter: String
+
+  """股別"""
+  section: String
+
+  """送件單位"""
+  submitUnit: String
+
+  """送件人姓名"""
+  submitterName: String
+
+  """送件人手機"""
+  submitterPhone: String
+
+  """送件人簽名"""
+  submitterSignature: String
+
+  """送件人電話"""
+  submitterTel: String
+
+  """年度"""
+  year: Int
+}
+
+input UpdateEvidenceInput {
+  """交付人簽章"""
+  deliverySignature: String
+
+  """證物廠牌"""
+  evidenceBrand: String
+
+  """證物編號"""
+  evidenceNumber: String
+
+  """原始標籤編號"""
+  evidenceOriginalNo: String
+
+  """廠牌序號"""
+  evidenceSerialNo: String
+
+  """證物類型"""
+  evidenceType: String
+
+  """反面照片"""
+  photoBack: String
+
+  """正面照片"""
+  photoFront: String
+
+  """收件時間"""
+  receiveTime: String
+
+  """收件人簽章"""
+  receiverSignature: String
+}
+
+input UpdateExaminResultsInput {
+  """建立時間"""
+  created_at: String
+
+  """鑑識人員姓名"""
+  examiner_name: String
+
+  """是否超出鑑識能力範圍"""
+  is_beyond_scope: Boolean
+
+  """案件資訊是否完整"""
+  is_info_complete: Boolean
+
+  """是否屬於實驗室鑑識項目"""
+  is_lab_related: Boolean
+
+  """是否應退件"""
+  is_rejected: Boolean
+
+  """備註欄"""
+  remarks: String
+
+  """最後更新時間"""
+  updated_at: String
+}
+
+input UpdatePickupInput {
+  caseId: Float
+  delivery_signature: String
+  photo_path: String
+  pickup_time: String
+  receiver_name: String
+  receiver_signature: String
+  remarks: String
+  satisfaction_levelFour: String
+  satisfaction_levelOne: String
+  satisfaction_levelThree: String
+  satisfaction_levelTwo: String
+}

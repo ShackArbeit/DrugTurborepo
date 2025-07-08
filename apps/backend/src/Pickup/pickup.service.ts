@@ -1,7 +1,6 @@
 import {  Injectable,NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Case } from "src/Case/case.entity";
 import { PickUp } from "./pickup.entity";
 import { CreatePickupInput,UpdatePickupInput} from "./dto/pickup.input";
 
@@ -9,9 +8,7 @@ import { CreatePickupInput,UpdatePickupInput} from "./dto/pickup.input";
 export class PickupService{
       constructor(
             @InjectRepository(PickUp)
-            private readonly pickupRepository:Repository<PickUp>,
-            @InjectRepository(Case)
-            private readonly caseRepository:Repository<Case>
+            private readonly pickupRepository:Repository<PickUp>,      
       ){}
       // 查詢所有領回資料
       async findAllPickup():Promise<PickUp[]>{

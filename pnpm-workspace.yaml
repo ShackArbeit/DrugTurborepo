@@ -1,3 +1,13 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
+
+ignoredBuiltDependencies:
+  - '@apollo/protobufjs'
+  - '@nestjs/core'
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - sharp
+
+onlyBuiltDependencies:
+  - sqlite3

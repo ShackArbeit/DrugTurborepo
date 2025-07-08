@@ -1,12 +1,12 @@
 {
   "name": "drug-forensics-system",
-  "private":true,
+  "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev":"turbo run dev",
-    "start":"turbon run start",
+    "dev": "turbo run dev",
+    "start": "turbon run start",
     "lint": "turbo run lint",
-    "test":"turbo test",
+    "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
