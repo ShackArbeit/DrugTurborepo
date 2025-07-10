@@ -5,19 +5,19 @@ import { InputType,PartialType,Field,Int } from "@nestjs/graphql";
 export class CreateCaseInput{
 
       // 案件編號
-      @Field(()=>String,{description:'案件編號',nullable:false})
+      @Field(()=>String,{description:'案件編號',nullable:true})
       caseNumber:string
 
       // 股別
-      @Field(()=>String,{description:'股別',nullable:false})
+      @Field(()=>String,{description:'股別',nullable:true})
       section:string
 
       // 年度
-      @Field(()=>Int,{description:'年度',nullable:false})
+      @Field(()=>Int,{description:'年度',nullable:true})
       year:number
 
       // 冠字
-      @Field(()=>String,{description:'冠字',nullable:false})
+      @Field(()=>String,{description:'冠字',nullable:true})
       prefixLetter:string
 
       // 案件類型
@@ -47,6 +47,10 @@ export class CreateCaseInput{
       // 送件人簽名
       @Field(()=>String,{description:'送件人簽名',nullable:false})
       submitterSignature:string
+
+      // 建立時間
+      @Field(()=>String,{description:'建立時間',nullable:false})
+      createdAt:string
 }
 
 

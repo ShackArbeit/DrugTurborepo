@@ -25,16 +25,19 @@ input CreateCaseInput {
   caseName: String!
 
   """案件編號"""
-  caseNumber: String!
+  caseNumber: String
 
   """案件類型"""
   caseType: String!
 
+  """建立時間"""
+  createdAt: String!
+
   """冠字"""
-  prefixLetter: String!
+  prefixLetter: String
 
   """股別"""
-  section: String!
+  section: String
 
   """送件單位"""
   submitUnit: String!
@@ -52,7 +55,7 @@ input CreateCaseInput {
   submitterTel: String!
 
   """年度"""
-  year: Int!
+  year: Int
 }
 
 input CreateEvidenceInput {
@@ -254,6 +257,9 @@ input UpdateCaseInput {
 
   """案件類型"""
   caseType: String
+
+  """建立時間"""
+  createdAt: String
 
   """冠字"""
   prefixLetter: String
