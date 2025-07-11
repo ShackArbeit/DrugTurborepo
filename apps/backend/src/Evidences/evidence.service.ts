@@ -66,8 +66,17 @@ export class EvidenceService{
            if(!existingEvidence){
                 throw new NotFoundException(`ID 為 ${id} 的證物不存在，無法更新。`)
            }
-           const updateEvidence=this.evidenceRepository.merge(existingEvidence,updateEvidenceInput)
-           return this.evidenceRepository.save(updateEvidence)
+           const updatedEvidence=this.evidenceRepository.merge(existingEvidence,updateEvidenceInput)
+           await this.evidenceRepository.save(updatedEvidence)
+          // 🔥 一定要再查 relations
+          const foundEvidence=await this.evidenceRepository.findOne({
+               where:{id},
+               relations:['case']
+          })
+           if (!foundEvidence) {
+             throw new NotFoundException(`更新後查無 ID 為 ${id} 的證物。`);
+           }
+           return foundEvidence
      }
      // 移除某證物
      async removeEvidence(id:number):Promise<boolean>{
