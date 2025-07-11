@@ -59,6 +59,9 @@ input CreateCaseInput {
 }
 
 input CreateEvidenceInput {
+  """對應案件的 caseNumber"""
+  caseNumber: String!
+
   """交付人簽章"""
   deliverySignature: String!
 
@@ -140,7 +143,7 @@ type Evidence {
   evidenceOriginalNo: String
   evidenceSerialNo: String
   evidenceType: String!
-  examinResult: ExaminResult
+  examinResult: ExaminResult!
   id: Int!
   photoBack: String
   photoFront: String
@@ -287,6 +290,9 @@ input UpdateCaseInput {
 }
 
 input UpdateEvidenceInput {
+  """對應案件的 caseNumber"""
+  caseNumber: String
+
   """交付人簽章"""
   deliverySignature: String
 

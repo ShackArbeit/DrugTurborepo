@@ -16,7 +16,7 @@ export class  Evidence{
       caseId:number // 外鍵欄位：對應 Case 的 ID
 
       @Field()
-      @Column({type:"text",name:"evidence_number"})
+      @Column({type:"text",name:"evidence_number",unique:true})
       evidenceNumber: string;   // 證物編號
 
       @Field()
@@ -62,13 +62,13 @@ export class  Evidence{
       createdAt: string;         // 建立時間
 
       // 關聯欄位：多個證物屬於一個案件
+      @Field(() => Case)
       @ManyToOne(() => Case, caseEntity => caseEntity.evidences, { onDelete: 'CASCADE' })
       @JoinColumn({ name: 'case_id' })      // 明確指定外鍵欄位名稱為 case_id
-      @Field(() => Case)
       case: Case;
 
       // 關聯欄位:一個證物對應一個證物檢測結果
-      @Field(()=>ExaminResult,{nullable:true})
+      @Field(()=>ExaminResult)
       @OneToOne(()=>ExaminResult,examinResult=>examinResult.evidences,{
               cascade:true,
               eager:false
