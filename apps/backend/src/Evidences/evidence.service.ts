@@ -26,15 +26,14 @@ export class EvidenceService{
       const newEvidence = this.evidenceRepository.create({
       ...input,
       caseId: foundCase.id,
-      createdAt: new Date().toISOString(),
       });
 
       const savedEvidence = await this.evidenceRepository.save(newEvidence);
 
       // 查 relations
       const foundEvidence = await this.evidenceRepository.findOne({
-      where: { id: savedEvidence.id },
-      relations: ['case'],
+          where: { id: savedEvidence.id},
+          relations: ['case'],
       });
 
       if (!foundEvidence) {

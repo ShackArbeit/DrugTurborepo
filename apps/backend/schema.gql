@@ -97,6 +97,9 @@ input CreateExaminResultsInput {
   """建立時間"""
   created_at: String!
 
+  """對應證物的 evidenceNumber"""
+  evidenceNumber: String!
+
   """鑑識人員姓名"""
   examiner_name: String!
 
@@ -327,6 +330,9 @@ input UpdateEvidenceInput {
 input UpdateExaminResultsInput {
   """建立時間"""
   created_at: String
+
+  """對應證物的 evidenceNumber"""
+  evidenceNumber: String
 
   """鑑識人員姓名"""
   examiner_name: String

@@ -57,7 +57,7 @@ export class ExaminResult{
 
      // 關聯欄位：一個證物對應一個檢測結果
      @Field(()=>Evidence,{nullable:false})
-     @OneToOne(() => Evidence,EvidenceEntity=>EvidenceEntity.examinResult,{onDelete:'CASCADE'})
+     @OneToOne(() => Evidence,EvidenceEntity=>EvidenceEntity.examinResult,{onDelete:'NO ACTION'})
      @JoinColumn({ name: 'evidence_id' })
      evidences?:Evidence
 }

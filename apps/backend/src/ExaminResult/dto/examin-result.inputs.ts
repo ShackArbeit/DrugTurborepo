@@ -4,6 +4,12 @@ import { InputType,PartialType,Field,Int } from "@nestjs/graphql";
 @InputType()
 export class CreateExaminResultsInput{
 
+      //  這是為了配合前端邏輯而更改的，因為一個鑑識結果對應一個證物，所以建立鑑識結果時
+      // 要先在前端輸入相對應的"證物編號"(evidenceNumber 以利之後資料庫內的查找關係
+      // 對應的案件編號
+      @Field(()=>String,{description:'對應證物的 evidenceNumber',nullable:false})
+      evidenceNumber:string
+      
       // 是否應退件
       @Field(()=>Boolean,{description:'是否應退件',nullable:false})
       is_rejected:boolean

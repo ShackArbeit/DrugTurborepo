@@ -3,6 +3,7 @@ import { ExaminResult } from './examin_result.entity';
 import { ExaminResultService } from './examin_result.service';
 import { CreateExaminResultsInput,UpdateExaminResultsInput } from './dto/examin-result.inputs';
 
+@Resolver(()=>ExaminResult)
 export class ExaminResultResolver {
     constructor(private readonly resultService:ExaminResultService){}
 
