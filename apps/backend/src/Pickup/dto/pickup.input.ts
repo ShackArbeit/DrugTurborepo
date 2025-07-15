@@ -34,7 +34,7 @@ export class CreatePickupInput{
       remarks?: string;
 
       @Field()
-      caseId: number;
+      evidence_number:string
 }
 
 // 第二部分是讓輸入後的欄位可以更新的部分

@@ -1,6 +1,7 @@
-import { Entity,PrimaryGeneratedColumn,Column,ManyToOne,JoinColumn } from "typeorm";
+import { Entity,PrimaryGeneratedColumn,Column,ManyToOne,JoinColumn,OneToOne} from "typeorm";
 import { ObjectType,Field,Int } from "@nestjs/graphql";
 import { Case } from "src/Case/case.entity";
+import { Evidence } from "src/Evidences/evidence.entity";
 
 @Entity({name:'pickup'})
 @ObjectType()
@@ -10,11 +11,10 @@ export class PickUp{
       @PrimaryGeneratedColumn()
       id:number
 
-      // 外鍵，對應案件表 case.id
-      @Field(()=>Case)
-      @ManyToOne(()=>Case,caseInstance=>caseInstance.pickups,{onDelete:'CASCADE'})
-      @JoinColumn({name:'case_id'})
-      case:Case
+      // 因為要知道領回的證物是哪一個證物，所以要加上證物編號的外鍵
+      @OneToOne(() => Evidence, evidence => evidence.pickup, {onDelete: 'CASCADE',})
+      @JoinColumn({ name: 'evidence_id' })
+      evidence: Evidence;
 
       // 領回時間
       @Field()
@@ -70,6 +70,7 @@ export class PickUp{
       @Field()
       @Column({ type: 'text', name: 'create_at' })
       created_at: string;
+
 
 
 }

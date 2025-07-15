@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,OneToOne}
 import { ObjectType,Field,Int } from '@nestjs/graphql';
 import { Case } from 'src/Case/case.entity';
 import { ExaminResult } from 'src/ExaminResult/examin_result.entity';
+import { PickUp } from 'src/Pickup/pickup.entity';
 
 @Entity({name:'evidence'})
 @ObjectType()
@@ -14,6 +15,10 @@ export class  Evidence{
       @Field(()=>Int)
       @Column({type:"integer",name:"case_id"})
       caseId:number // 外鍵欄位：對應 Case 的 ID
+
+      @Field()
+      @OneToOne(() => PickUp, pickup => pickup.evidence, {cascade: true,onDelete: 'CASCADE',})
+      pickup: PickUp;
 
       @Field()
       @Column({type:"text",name:"evidence_number",unique:true})

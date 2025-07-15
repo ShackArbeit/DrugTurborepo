@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PickupService } from './pickup.service';
 import { PickupResolver } from './pickup.resolver';
 import { PickUp } from './pickup.entity';
+import { Evidence } from 'src/Evidences/evidence.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PickUp])],
+  imports: [TypeOrmModule.forFeature([PickUp,Evidence])],
   providers: [PickupResolver, PickupService],
 })
 export class PickupModule {}

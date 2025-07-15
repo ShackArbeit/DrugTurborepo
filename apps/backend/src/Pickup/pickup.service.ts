@@ -2,14 +2,22 @@ import {  Injectable,NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PickUp } from "./pickup.entity";
+import { Evidence } from "src/Evidences/evidence.entity";
 import { CreatePickupInput,UpdatePickupInput} from "./dto/pickup.input";
 
 @Injectable()
 export class PickupService{
       constructor(
             @InjectRepository(PickUp)
-            private readonly pickupRepository:Repository<PickUp>,      
+            private readonly pickupRepository:Repository<PickUp>,    
+            @InjectRepository(Evidence)  
+            private readonly evidenceRepository:Repository<Evidence>
       ){}
+      // 建立領回資料
+      async createPick(input:CreatePickupInput){
+            const newPick=this.pickupRepository.create(input)
+            return this.pickupRepository.save(newPick)
+      }
       // 查詢所有領回資料
       async findAllPickup():Promise<PickUp[]>{
             return this.pickupRepository.find({relations:['case']})
@@ -27,11 +35,6 @@ export class PickupService{
            return pickupItem
       }
 
-      // 建立領回資料
-      async createPick(input:CreatePickupInput){
-            const newPick=this.pickupRepository.create(input)
-            return this.pickupRepository.save(newPick)
-      }
 
       // 更新領回資料
       async updatePick(id:number,updatePickUpInput:UpdatePickupInput):Promise<PickUp>{
