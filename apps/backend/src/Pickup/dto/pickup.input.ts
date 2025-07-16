@@ -35,6 +35,9 @@ export class CreatePickupInput{
 
       @Field()
       evidence_number:string
+
+      @Field()
+      created_at: string
 }
 
 // 第二部分是讓輸入後的欄位可以更新的部分

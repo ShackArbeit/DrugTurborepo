@@ -11,10 +11,16 @@ export class PickUp{
       @PrimaryGeneratedColumn()
       id:number
 
+     // 所對應的證物的 ID
+     @Field(()=>Int)
+     @Column({type:'integer',name:'evidence_id'})
+     evidence_id:number
+
       // 因為要知道領回的證物是哪一個證物，所以要加上證物編號的外鍵
+      @Field(()=>Evidence,{nullable:false})
       @OneToOne(() => Evidence, evidence => evidence.pickup, {onDelete: 'CASCADE',})
       @JoinColumn({ name: 'evidence_id' })
-      evidence: Evidence;
+      evidences?: Evidence;
 
       // 領回時間
       @Field()
@@ -70,7 +76,5 @@ export class PickUp{
       @Field()
       @Column({ type: 'text', name: 'create_at' })
       created_at: string;
-
-
 
 }

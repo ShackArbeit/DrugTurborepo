@@ -40,7 +40,7 @@ export class ExaminResultService{
                   relations:['evidences']
             })
              if (!foundResult) {
-               throw new NotFoundException(`找不到 ID 為 ${savedResult.id} 的證物。`);
+               throw new NotFoundException(`找不到 ID 為 ${savedResult.id} 的鑑識結果。`);
               }
              return foundResult
          }

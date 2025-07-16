@@ -75,9 +75,4 @@ export class Case{
       @Field(()=>[Evidence],{nullable:"items"})
       @OneToMany(()=>Evidence,EvidenceEntity=>EvidenceEntity.case,{cascade:true})
       evidences?:Evidence[]
-
-     // 關聯欄位 : 一個案件可以有多個領回紀錄
-     @Field(() => [PickUp], { nullable: true })
-     @OneToMany(()=>PickUp,pickupInstance=>pickupInstance.case,{cascade:true})
-     pickups?:PickUp[]
 }

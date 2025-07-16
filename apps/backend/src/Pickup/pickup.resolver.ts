@@ -8,12 +8,12 @@ export class PickupResolver{
        constructor(private readonly pickupService: PickupService) {}
 
        @Query(() => [PickUp],{ name: 'pickups', description: '取得所有領回紀錄' })
-       async findAll():Promise<PickUp[]>{
+       async findAllPickupResult():Promise<PickUp[]>{
             return this.pickupService.findAllPickup()
        }
 
        @Query(() => PickUp,{ name: 'pickup', description: '依 ID 取得單一領回紀錄' })
-       async findOne(@Args('id', { type: () => Int }) id: number):Promise<PickUp>{
+       async findOnePickupResult(@Args('id', { type: () => Int }) id: number):Promise<PickUp>{
             return this.pickupService.findOnePickup(id)
        }
 

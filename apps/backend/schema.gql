@@ -9,7 +9,6 @@ type Case {
   createdAt: String!
   evidences: [Evidence]!
   id: Int!
-  pickups: [PickUp!]
   prefixLetter: String!
   section: String!
   submitUnit: String!
@@ -123,8 +122,9 @@ input CreateExaminResultsInput {
 }
 
 input CreatePickupInput {
-  caseId: Float!
+  created_at: String!
   delivery_signature: String!
+  evidence_number: String!
   photo_path: String!
   pickup_time: String!
   receiver_name: String!
@@ -150,6 +150,7 @@ type Evidence {
   id: Int!
   photoBack: String
   photoFront: String
+  pickup: PickUp!
   receiveTime: String!
   receiverSignature: String!
 }
@@ -210,9 +211,10 @@ type Mutation {
 }
 
 type PickUp {
-  case: Case!
   created_at: String!
   delivery_signature: String!
+  evidence_id: Int!
+  evidences: Evidence!
   id: Int!
   photo_path: String!
   pickup_time: String!
@@ -357,8 +359,9 @@ input UpdateExaminResultsInput {
 }
 
 input UpdatePickupInput {
-  caseId: Float
+  created_at: String
   delivery_signature: String
+  evidence_number: String
   photo_path: String
   pickup_time: String
   receiver_name: String
