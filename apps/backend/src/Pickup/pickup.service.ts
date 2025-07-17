@@ -2,7 +2,7 @@ import {  Injectable,NotFoundException,BadRequestException } from "@nestjs/commo
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PickUp } from "./pickup.entity";
-import { Evidence } from "src/Evidences/evidence.entity";
+import { Evidence } from "../Evidences/evidence.entity";
 import { CreatePickupInput,UpdatePickupInput} from "./dto/pickup.input";
 
 @Injectable()

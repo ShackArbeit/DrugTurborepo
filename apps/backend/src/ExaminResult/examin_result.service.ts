@@ -2,7 +2,7 @@ import { Injectable, NotFoundException,BadRequestException } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExaminResult } from './examin_result.entity';
-import { Evidence } from 'src/Evidences/evidence.entity';
+import { Evidence } from '../Evidences/evidence.entity';
 import { CreateExaminResultsInput,UpdateExaminResultsInput } from './dto/examin-result.inputs';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,OneToOne} from 'typeorm';
 import { ObjectType,Field,Int } from '@nestjs/graphql';
-import { Case } from 'src/Case/case.entity';
-import { ExaminResult } from 'src/ExaminResult/examin_result.entity';
-import { PickUp } from 'src/Pickup/pickup.entity';
+import {Case} from '../Case/case.entity'
+import { ExaminResult } from '../ExaminResult/examin_result.entity'
+import {PickUp} from '../Pickup/pickup.entity'
 
 @Entity({name:'evidence'})
 @ObjectType()

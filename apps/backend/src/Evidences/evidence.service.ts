@@ -2,7 +2,7 @@ import { Injectable,NotFoundException} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Evidence } from "./evidence.entity";
-import { Case } from "src/Case/case.entity";
+import {Case} from '../Case/case.entity'
 import { CreateEvidenceInput,UpdateEvidenceInput } from "./dto/evidence.inputs";
 
 @Injectable()

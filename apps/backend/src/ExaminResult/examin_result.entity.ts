@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { ObjectType, Field, Int } from "@nestjs/graphql";
-import { Evidence } from "src/Evidences/evidence.entity";
+import { Evidence } from "../Evidences/evidence.entity";
 
 @Entity({name:'testResult'})
 @ObjectType()
