@@ -1,6 +1,7 @@
 import { Test,TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { NotFoundException } from "@nestjs/common";
 import { Case } from "../case.entity";
 import { CaseService } from "../case.service";
 import { CreateCaseInput,UpdateCaseInput } from "../dto/case.inputs";
@@ -108,7 +109,7 @@ describe('CaseService',()=>{
                 submitterTel: '02-22222222',
                 submitterSignature: '簽名',
                 createdAt: '2025-07-17T00:00:00Z',
-      };
+          };
               it('應該要成功建立新案件',async()=>{
                   caseRepositoryMock.create!.mockReturnValue(input)
                   caseRepositoryMock.save!.mockReturnValue(mockNewCase)
@@ -122,6 +123,35 @@ describe('CaseService',()=>{
                 caseRepositoryMock.create!.mockReturnValue(input);
                caseRepositoryMock.save!.mockRejectedValue(new Error('save error'));
                await expect(service.createCase(input)).rejects.toThrow('save error');
-    });
+        });
+        // 測試 findAll
+        describe('測試查找所有案件結果',()=>{
+             it('應該返回所有案件(包含 Evidence)',async()=>{
+                  caseRepositoryMock.find!.mockResolvedValue(mockCaseArray)
+                  const result=await service.findAll()
+                  expect(caseRepositoryMock.find).toHaveBeenCalledWith({ relations:['evidences']})
+                  expect(result).toMatchObject(mockCaseArray)
+             })
+             it('查詢失敗應該拋出錯誤',async()=>{
+                  caseRepositoryMock.find!.mockRejectedValue(new Error('find error'))
+                  await expect(service.findAll()).rejects.toThrow('find error')
+             })
         })
+        // 測試 findOne
+        describe('測試查找單一案件結果',()=>{
+             it('應該可以找到特定的案件結果',async()=>{
+                  caseRepositoryMock.findOne!.mockResolvedValue(mockCaseArray[0])
+                  const result=await service.findOne(1)
+                  expect(caseRepositoryMock.findOne).toHaveBeenCalledWith({
+                         where:{id:1},
+                          relations: ['evidences'],
+                  })
+                  expect(result).toMatchObject(mockCaseArray[0])
+             })
+             it('應該找不到特定案件結果',async()=>{
+                   caseRepositoryMock.findOne!.mockResolvedValue(undefined as any);
+                   await expect(service.findOne(99)).rejects.toThrow(NotFoundException);
+             })
+        })
+      })
 })
