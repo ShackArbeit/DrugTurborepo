@@ -46,12 +46,10 @@ const mockCaseArray: Case[] = [
   } as Case,
 ];
 
-// mockNewCase 也可能需要補齊必填屬性，但目前範例中沒有使用到，先不改動
 const mockNewCase: Case = {
   id: 3,
   caseNumber: 'A003',
   caseName: '新增案件',
-  // 其他必填屬性也應該在這裡補齊，例如：
   section: '義股',
   year: 2025,
   prefixLetter: '偵字',
