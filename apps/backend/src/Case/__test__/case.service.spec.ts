@@ -153,5 +153,44 @@ describe('CaseService',()=>{
                    await expect(service.findOne(99)).rejects.toThrow(NotFoundException);
              })
         })
-      })
+        //  測試更新 update 
+        describe('測試單一案件的更新',()=>{
+             it('應該成功回傳結果',async()=>{
+                  const id=1
+                  const updateCaseInput:UpdateCaseInput={caseName:'這是更新後的案件名稱'}
+                  const existing={...mockCaseArray[0]}
+                  const merged={...existing,...updateCaseInput}
+                  caseRepositoryMock.findOneBy!.mockResolvedValue(existing)
+                  caseRepositoryMock.merge!.mockReturnValue(merged)
+                  caseRepositoryMock.save!.mockResolvedValue(merged)
+                  const result=await service.update(id,updateCaseInput)
+                  expect(caseRepositoryMock.findOneBy).toHaveBeenCalledWith({id})
+                  expect(caseRepositoryMock.merge).toHaveBeenCalledWith(existing,updateCaseInput)
+                  expect(caseRepositoryMock.save).toHaveBeenCalledWith(merged)
+                  expect(result.caseName).toEqual('這是更新後的案件名稱')
+             })
+             it('應該會會傳錯誤結果',async()=>{
+                  caseRepositoryMock.findOneBy!.mockResolvedValue(undefined as any)
+                  await expect(service.update(99,{caseName:'這是更新後的案件名稱'})).rejects.toThrow(NotFoundException)
+             })
+        })
+      // 測試 remove 
+       describe('測試刪除單一案件',()=>{
+           it('成功刪除',async()=>{
+                caseRepositoryMock.delete!.mockResolvedValue({affected:1})
+                const result=await service.remove(1)
+                expect(caseRepositoryMock.delete).toHaveBeenCalledWith(1)
+                expect(result).toBe(true)
+           })
+           it('未刪除任何資料回應錯誤',async()=>{
+               caseRepositoryMock.delete!.mockResolvedValue({affected:0})
+               const result=await service.remove(99)
+               expect(result).toBe(false)
+           })
+           it('刪除失敗應拋出錯誤',async()=>{
+                caseRepositoryMock.delete!.mockRejectedValue(new Error('刪除失敗'))
+                await expect(service.remove(1)).rejects.toThrow('刪除失敗')
+           })
+       })
+    })
 })
