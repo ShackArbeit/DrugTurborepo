@@ -142,7 +142,7 @@ describe('CaseService',()=>{
                   const result=await service.findOne(1)
                   expect(caseRepositoryMock.findOne).toHaveBeenCalledWith({
                          where:{id:1},
-                          relations: ['evidences'],
+                         relations: ['evidences'],
                   })
                   expect(result).toMatchObject(mockCaseArray[0])
              })

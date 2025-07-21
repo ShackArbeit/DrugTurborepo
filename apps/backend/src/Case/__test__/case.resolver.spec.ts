@@ -52,7 +52,6 @@ describe('開始測試 Case Resolver',()=>{
 
     // 初始化
     beforeEach(async()=>{
-
           // 初始化 mock service
           caseService={
             // 模擬新增
@@ -93,8 +92,7 @@ describe('開始測試 Case Resolver',()=>{
     it('CaseResolver 應該要被定義的', () => {
          expect(resolver).toBeDefined();
     });
-    // 測試新增
-    describe('測試新增功能是否正常',()=>{
+    describe('測試查詢全部',()=>{
     // 測試回傳所有結果
     it('應該正常回傳所有的結果',async()=>{
                const result=await resolver.findAll()

@@ -24,8 +24,8 @@ export class EvidenceService{
       }
 
       const newEvidence = this.evidenceRepository.create({
-      ...input,
-      caseId: foundCase.id,
+          ...input,
+          caseId: foundCase.id,
       });
 
       const savedEvidence = await this.evidenceRepository.save(newEvidence);
