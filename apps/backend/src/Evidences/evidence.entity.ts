@@ -77,7 +77,6 @@ export class  Evidence{
       })
       examinResult?:ExaminResult
 
-
        // 關聯欄位:一個證物對應一個證物領回紀錄
       @Field(()=>PickUp)
       @OneToOne(() => PickUp, pickup => pickup.evidences, {cascade: true,onDelete: 'CASCADE',})

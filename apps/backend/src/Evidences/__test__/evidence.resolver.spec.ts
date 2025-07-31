@@ -7,14 +7,12 @@ import { PickUp } from "../../Pickup/pickup.entity";
 import { EvidenceService } from "../evidence.service";
 import { EvidenceResolver } from "../evidence.resolver";
 import { CreateEvidenceInput,UpdateEvidenceInput } from "../dto/evidence.inputs";
-import { EventListenerTypes } from "typeorm/metadata/types/EventListenerTypes";
+
 
 // 型別安全的 MockType
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<any,any[]>;
 };
-
-
 
 
 describe('開始測試 Evidence Resolver',()=>{
@@ -95,7 +93,7 @@ describe('開始測試 Evidence Resolver',()=>{
                   photoBack: 'back2.jpg',
                   receiveTime: '2025-07-18T12:00:00Z',
                   deliverySignature: '簽章A',
-                 receiverSignature: '簽章B',
+                  receiverSignature: '簽章B',
        }
        const createdEvidence={...mockEvidence,...createInput,id:2}
        beforeEach(async()=>{

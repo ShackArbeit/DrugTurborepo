@@ -8,7 +8,7 @@ import { ExaminResult } from "../../ExaminResult/examin_result.entity";
 import { PickUp } from "../../Pickup/pickup.entity";
 import { EvidenceService } from "../evidence.service";
 import { CreateEvidenceInput,UpdateEvidenceInput } from "../dto/evidence.inputs";
-import { UnionDefinitionFactory } from "@nestjs/graphql/dist/schema-builder/factories/union-definition.factory";
+
 
 // 前置模擬資料
 type MockType<T> = {
@@ -196,7 +196,6 @@ describe('開始測試 Evidence Service',()=>{
      })
      describe('測試更新單一 Evidence 證物',()=>{
          it('應該顯示成功更新',async()=>{
-               const id=1
                const updateEvidenceInput:UpdateEvidenceInput={evidenceType:'這是更新後的證物類型'}
                const existing={...evidenceArray[0]}
                const merged={...existing,...updateEvidenceInput}
