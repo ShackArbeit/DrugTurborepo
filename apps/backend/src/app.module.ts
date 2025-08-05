@@ -19,6 +19,7 @@ import { PickupModule } from './Pickup/pickup.module';
          playground: true,
          autoSchemaFile:join(process.cwd(),'./schema.gql'),
          sortSchema: true,
+         context: ({ req, res }) => ({ req, res }),
     }),
     // TypeORM 模組設定 (SQLite 資料庫)
     TypeOrmModule.forRoot({
