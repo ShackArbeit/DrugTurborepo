@@ -1,3 +1,8 @@
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../Auth/gql-auth.guard';
+import { RolesGuard } from '../Auth/role/roles.guard';
+import { Roles } from '../Auth/role/roles.decorator';
+import { Role } from '../Auth/role/role.enum';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { ExaminResult } from './examin_result.entity';
 import { ExaminResultService } from './examin_result.service';
@@ -18,6 +23,8 @@ export class ExaminResultResolver {
             return this.resultService.findOneResult(id);
       }
 
+   @UseGuards(GqlAuthGuard,RolesGuard)
+   @Roles(Role.Admin)
    @Mutation(() => ExaminResult, { description: '建立新檢測結果' })
             createExaminResult(
             @Args('input') input: CreateExaminResultsInput,
@@ -25,6 +32,8 @@ export class ExaminResultResolver {
             return this.resultService.createResult(input);
     }
 
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => ExaminResult, { description: '更新指定檢測結果' })
   updateExaminResult(
       @Args('id', { type: () => Int, description: '檢測結果 ID' }) id: number,
@@ -33,6 +42,8 @@ export class ExaminResultResolver {
       return this.resultService.updateResult(id, input);
   }
 
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => Boolean, { description: '刪除指定檢測結果' })
       removeExaminResult(
       @Args('id', { type: () => Int, description: '檢測結果 ID' }) id: number,

@@ -3,7 +3,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { NotFoundException,ConflictException } from "@nestjs/common";
 import { User } from "../user.entity";
-import { Role } from "../role.enum";
+import { Role } from "../../Auth/role/role.enum";
 import { RegisterUserInput } from "../dto/register-user.input";
 import { UsersService } from "../users.service";
 
@@ -20,17 +20,17 @@ const mockUser:User[]=[
       },
       {
             id:2,
-            username:'Amy',
-            password:'taipei2025',
-            role:Role.Admin
-      },
-      {
-            id:3,
             username:'John',
             password:'taichung2025',
             role:Role.User
       },
 ]
+
+const adminInput:RegisterUserInput={
+      username:'admin',
+      password:'thpo123456789',
+}
+
 jest.mock('bcryptjs',()=>({
      hash:jest.fn().mockResolvedValue('hashed_password')
 }))
@@ -56,6 +56,42 @@ describe('Userservice 的測試',()=>{
       })
       it('應該是被有定義的',()=>{
             expect(service).toBeDefined()
+      })
+      describe('測試預設管理者是否存在',()=>{
+             it('若不存在預設管理者就會自動新增',async()=>{
+                   userRepositoryMock.findOne!.mockResolvedValue(null)
+                   userRepositoryMock.create!.mockReturnValue({
+                        username:'admin',
+                        password:'hashed_password',
+                        role:undefined
+                   })
+                  userRepositoryMock.save!.mockResolvedValue({
+                        id: 3,
+                        username: 'admin',
+                        password: 'hashed_password',
+                        role: Role.Admin,
+                  });
+                  const result = await service.createUser(adminInput)
+                  expect(userRepositoryMock.create).toHaveBeenCalledWith({
+                        username: 'admin',
+                        password: 'hashed_password',
+                  });
+                  expect(userRepositoryMock.save).toHaveBeenCalled();
+                  expect(result).toMatchObject({
+                         username:'admin',
+                         password: 'hashed_password',
+                  })
+             })
+             it('若預設管理者已經存在會出現錯誤訊息',async()=>{
+                  const isAdminUser=mockUser.some(user=>user.role===Role.Admin)
+                  if(isAdminUser){
+                        userRepositoryMock.findOne!.mockResolvedValue(adminInput)
+                        await expect(service.createUser(adminInput)).rejects.toThrow(ConflictException)
+                        expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
+                               username:adminInput.username,password:adminInput.password
+                        })
+                  }
+             })
       })
       describe('測試新建 User',()=>{
             const input:RegisterUserInput={
@@ -92,16 +128,16 @@ describe('Userservice 的測試',()=>{
                  userRepositoryMock.findOne!.mockResolvedValue(mockUser[0])
                  await expect(service.createUser(input)).rejects.toThrow(ConflictException)
                  expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                where: { username: input.username },
-              });
+                  where: { username: input.username },
+                });
             })
       })
       describe('測試使用使用者名稱查詢',()=>{
             it('應該可以正常找到',async()=>{
                   userRepositoryMock.findOne!.mockResolvedValue(mockUser[1])
-                  const result = await service.findByUsername('Amy')
+                  const result = await service.findByUsername('Shack')
                   expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                        where:{username:'Amy'}
+                        where:{username:'Shack'}
                   })
                   expect(result).toMatchObject(mockUser[1])
             })

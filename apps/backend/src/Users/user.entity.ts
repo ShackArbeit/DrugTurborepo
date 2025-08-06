@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Role } from './role.enum';
+import { Role } from '../Auth/role/role.enum';
 
 @ObjectType()
 @Entity()

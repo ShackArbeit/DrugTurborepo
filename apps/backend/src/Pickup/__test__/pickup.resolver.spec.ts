@@ -1,14 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { NotFoundException, BadRequestException, ExecutionContext } from '@nestjs/common';
 import { PickupResolver } from '../pickup.resolver';
 import { PickupService } from '../pickup.service';
 import { PickUp } from '../pickup.entity';
 import { Evidence } from '../../Evidences/evidence.entity';
 import { CreatePickupInput, UpdatePickupInput } from '../dto/pickup.input';
 
+// ✅ 加入守衛的 mock
+import { GqlAuthGuard } from '../../Auth/gql-auth.guard';
+import { RolesGuard } from '../../Auth/role/roles.guard';
+
+const mockGqlAuthGuard = {
+  canActivate: jest.fn((context: ExecutionContext) => true),
+};
+const mockRolesGuard = {
+  canActivate: jest.fn((context: ExecutionContext) => true),
+};
+
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<any,any[]>;
-}
+  [P in keyof T]?: jest.Mock<any, any[]>;
+};
 
 describe('PickupResolver', () => {
   let resolver: PickupResolver;
@@ -28,10 +39,7 @@ describe('PickupResolver', () => {
     deliverySignature: '交付簽章',
     receiverSignature: '收件簽章',
     createdAt: '2025-07-18T10:00:00Z',
-    case: undefined,
-    examinResult: undefined,
-    pickup: undefined,
-  } as unknown as Evidence;
+  } as Evidence;
 
   const mockPickup: PickUp = {
     id: 88,
@@ -48,7 +56,7 @@ describe('PickupResolver', () => {
     receiver_signature: '領回簽章',
     remarks: '備註',
     created_at: '2025-07-18T12:00:00Z',
-  } as unknown as PickUp;
+  };
 
   const mockList: PickUp[] = [mockPickup];
 
@@ -94,6 +102,8 @@ describe('PickupResolver', () => {
       providers: [
         PickupResolver,
         { provide: PickupService, useValue: service },
+        { provide: GqlAuthGuard, useValue: mockGqlAuthGuard },
+        { provide: RolesGuard, useValue: mockRolesGuard },
       ],
     }).compile();
 

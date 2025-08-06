@@ -20,7 +20,7 @@ export class CaseService{
              return this.caseRepository.find({relations:['evidences']})
       }
       // 查詢單一案件（含其關聯 evidences）
-        async findOne(id: number): Promise<Case> {
+      async findOne(id: number): Promise<Case> {
             const singleCase = await this.caseRepository.findOne({
                   where: { id },
                   relations: ['evidences'],
