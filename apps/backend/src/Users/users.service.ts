@@ -1,4 +1,4 @@
-import { OnModuleInit } from '@nestjs/common';
+// import { OnModuleInit } from '@nestjs/common';
 import { Injectable,ConflictException,NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,32 +6,31 @@ import { Role } from '../Auth/role/role.enum';
 import { User } from './user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import * as bcrypt from 'bcryptjs';
-import { EventListenerTypes } from 'typeorm/metadata/types/EventListenerTypes';
+
 
 @Injectable()
-export class  UsersService implements OnModuleInit {
+export class  UsersService  {
    constructor( 
       @InjectRepository(User) 
       private usersRepository:Repository<User>){}  
 
-  async onModuleInit() {
-    const adminUser = await this.usersRepository.findOne({ where: { role: Role.Admin } });
-    if (!adminUser) {
-       const adminData: RegisterUserInput = {
-        username: 'admin',
-        password: 'thpo123456789',  
-    };
-      const newAdmin = await this.createUser(adminData);
-      newAdmin.role = Role.Admin;
-      await this.usersRepository.save(newAdmin);
-      console.log('預設 Admin 帳號已建立 (帳號：admin / 密碼：thpo123456789)');
-    }else{
-         console.log('系統已經存在預設的 Admin 帳號了')
-         console.log('管理者帳號是:',Role.Admin)
-         console.log('管理者密碼是:thpo123456789')
-    }
-  }
-
+  // async onModuleInit() {
+  //   const adminUser = await this.usersRepository.findOne({ where: { role: Role.Admin } });
+  //   if (!adminUser) {
+  //      const adminData: RegisterUserInput = {
+  //       username: 'admin',
+  //       password: 'thpo123456789',  
+  //   };
+  //     const newAdmin = await this.createUser(adminData);
+  //     newAdmin.role = Role.Admin;
+  //     await this.usersRepository.save(newAdmin);
+  //     console.log('預設 Admin 帳號已建立 (帳號：admin / 密碼：thpo123456789)');
+  //   }else{
+  //        console.log('系統已經存在預設的 Admin 帳號了')
+  //        console.log('管理者帳號是:',Role.Admin)
+  //        console.log('管理者密碼是:thpo123456789')
+  //   }
+  // }
    async createUser(registerUserInput:RegisterUserInput):Promise<User>{
        const {username,password}=registerUserInput
        const exists=await this.usersRepository.findOne({where:{username}})

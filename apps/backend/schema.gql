@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AuthInput {
+  password: String!
+  username: String!
+}
+
+type AuthResponse {
+  access_token: String!
+}
+
 type Case {
   caseName: String!
   caseNumber: String!
@@ -178,6 +187,8 @@ type Mutation {
   """建立新檢測結果"""
   createExaminResult(input: CreateExaminResultsInput!): ExaminResult!
   createPickup(input: CreatePickupInput!): PickUp!
+  login(authInput: AuthInput!): AuthResponse!
+  register(data: RegisterUserInput!): User!
   removeCase(id: Int!): Boolean!
 
   """刪除指定證物"""
@@ -192,6 +203,7 @@ type Mutation {
     id: Int!
   ): Boolean!
   removePickup(id: Int!): Boolean!
+  removeUser(id: Int!): Boolean!
   updateCase(id: Int!, input: UpdateCaseInput!): Case!
 
   """更新指定證物"""
@@ -248,12 +260,20 @@ type Query {
 
   """取得所有檢測結果"""
   examinResults: [ExaminResult!]!
+  me: User!
 
   """依 ID 取得單一領回紀錄"""
   pickup(id: Int!): PickUp!
 
   """取得所有領回紀錄"""
   pickups: [PickUp!]!
+  userById(id: Int!): User
+  users: [User!]!
+}
+
+input RegisterUserInput {
+  password: String!
+  username: String!
 }
 
 input UpdateCaseInput {
@@ -371,4 +391,10 @@ input UpdatePickupInput {
   satisfaction_levelOne: String
   satisfaction_levelThree: String
   satisfaction_levelTwo: String
+}
+
+type User {
+  id: ID!
+  role: String!
+  username: String!
 }

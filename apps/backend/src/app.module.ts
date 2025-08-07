@@ -10,6 +10,8 @@ import { CaseModule } from './Case/case.module';
 import { EvidenceModule } from './Evidences/evidence.module';
 import { ExaminResultModule } from './ExaminResult/examin_result.module';
 import { PickupModule } from './Pickup/pickup.module';
+import { UserModule} from './Users/users.module';
+import { AuthModule } from './Auth/auth.module';
 
 @Module({
   imports: [
@@ -25,13 +27,18 @@ import { PickupModule } from './Pickup/pickup.module';
     TypeOrmModule.forRoot({
         type:'sqlite',
         database:join(process.cwd(),'./db.sqlite'),
+        extra: {
+         busyTimeout: 9000,  // 等待 9 秒
+       },
         synchronize:true,  // 自動同步資料庫結構 
         autoLoadEntities:true // 自動載入實體
     }),
     CaseModule,
     EvidenceModule,
     ExaminResultModule,
-    PickupModule
+    PickupModule,
+    UserModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

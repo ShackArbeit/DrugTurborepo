@@ -6,16 +6,17 @@ import { AuthResolver } from './auth.resolver';
 import { UserModule } from 'src/Users/users.module';
 import { JwtStrategy} from './Jwt/jwt.strategy';
 import { jwtConstants } from './Jwt/constants';
+import { GqlAuthGuard } from './gql-auth.guard';
 
 @Module({
     imports:[
        UserModule,PassportModule.register({defaultStrategy:'jwt'}),
        JwtModule.register({
-            signOptions:{expiresIn:'60s'},
+            signOptions:{expiresIn:'6000s'},
             secret:jwtConstants.secret
        })
     ],
-    providers:[AuthService,AuthResolver,JwtStrategy]
+    providers:[AuthService,AuthResolver,JwtStrategy,GqlAuthGuard]
 })
 
 

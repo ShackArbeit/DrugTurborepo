@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { AuthInput } from './dto/auth.input';
 import { AuthResponse } from './dto/auth.response';
@@ -8,6 +8,7 @@ import { UnauthorizedException } from '@nestjs/common';
 export class AuthResolver{
       constructor(private readonly authService:AuthService){}
 
+      @Mutation(() => AuthResponse, { name: 'login' })
       async login(@Args('authInput') authInput: AuthInput): Promise<AuthResponse> {
            const user= await this.authService.validateUser(authInput.username,authInput.password)
            if(!user){
