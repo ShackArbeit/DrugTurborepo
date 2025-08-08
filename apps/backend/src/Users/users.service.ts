@@ -47,6 +47,7 @@ export class  UsersService  {
        const user=this.usersRepository.create({
             username,
             password:hashedPassword,
+            role: username === 'admin' ? Role.Admin : Role.User,
        })
        return this.usersRepository.save(user)
     }

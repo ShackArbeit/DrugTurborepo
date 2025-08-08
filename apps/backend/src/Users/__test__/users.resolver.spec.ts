@@ -75,14 +75,14 @@ describe('開始測試 User Resolver',()=>{
       })
       describe('測試取的所有使用者',()=>{
            it('應該可以正常取得',async()=>{
-                  const result = await resolver.findAllUser()
+                  const result = await resolver.findAllUsers()
                   expect(userServiceMock.findAllUsers).toHaveBeenCalled()
                   expect(result).toEqual([fakeUser])
            })
       })
       describe('測試透過 ID 查詢特定使用者',()=>{
           it('應該可以正常查詢',async()=>{
-              const result = await resolver.findSpecificUser(1)
+              const result = await resolver.findUserById(1)
               expect(userServiceMock.findById).toHaveBeenCalledWith(1)
               expect(result).toEqual(fakeUser)
           })
