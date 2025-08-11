@@ -1,103 +1,108 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card,CardHeader,CardTitle,CardContent,CardDescription } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {Scale,FolderSearch,FlaskConical,LogIn} from 'lucide-react'
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <main className=' relative min-h-[100dvh] overflow-hidden
+        bg-background text-foreground'
+        aria-label='臺灣高等檢察署數位鑑識首頁'
+        >
+         <div 
+         aria-hidden
+         className='absolute inset-0 pointer-events-none'
+         style={{
+          background:
+            "radial-gradient(60rem 30rem at 50% -10%, hsl(var(--primary)/0.08), transparent 60%)",
+         }}
+         />
+          <div
+           aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--muted))/0.15_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--muted))/0.15_1px,transparent_1px)] bg-[size:44px_44px]"
+         />
+         {/* 內容容器部分 */}
+         <div className='relative z-10 mx-auto max-w-5xl px-6 sm:py-10 '>
+          {/* Header 部分 */}
+            <header className=" flex flex-col items-center text-center ">
+            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary/30 bg-primary/5">
+              <Scale className="h-10 w-10 text-primary" aria-hidden />
+            </div>
+            <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+              臺灣高等檢察署數位鑑識首頁
+            </h1>
+              <p className="mt-3 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
+                提供案件資料、鑑識結果及權限式登入入口。
+              </p>
+             <p className='mt-2 text-pretty text-sm leading-6 text-muted-foreground sm:text-base'>
+                模式變更    <ModeToggle/>
+             </p>
+              <Separator className="mt-8 w-24 opacity-60" />
+          </header>
+          {/* 主要內容區塊 */}
+          <section
+          className='mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 '
+           aria-label="快速導引"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            {/* 案件相關 */}
+          <Card className='group hover:shadow-lg transition-shadow relative'>
+               <CardHeader className='space-y-2 text-center'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto'>
+                         <FolderSearch className="h-5 w-5 text-primary" aria-hidden/>
+                    </div>
+                    <CardTitle className="text-lg">案件相關(包含證物)</CardTitle>
+                    <CardDescription>新增、編輯、列表、詳細資料</CardDescription>
+               </CardHeader>
+               <CardContent>
+                   <Button asChild className='w-full'>
+                        <Link href="/cases" aria-label="前往案件相關頁">
+                               前往案件頁面
+                        </Link>
+                   </Button>
+               </CardContent>
+          </Card>
+           {/* 鑑識結果相關 */}
+          <Card className="group hover:shadow-lg transition-shadow relative">
+            <CardHeader className="space-y-2 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
+                <FlaskConical className="h-5 w-5 text-primary" aria-hidden />
+              </div>
+              <CardTitle className="text-lg">鑑識結果相關</CardTitle>
+              <CardDescription>結果登錄、比對、報表匯出</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="destructive" className="w-full">
+                <Link href="/exam-results" aria-label="前往鑑識結果相關頁">
+                  前往鑑識結果頁面
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+           {/* 使用者登入 */}
+          <Card className="group hover:shadow-lg transition-shadow md:col-span-1 sm:col-span-2 md:col-span-1 relative">
+            <CardHeader className="space-y-2 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
+                <LogIn className="h-5 w-5 text-primary" aria-hidden />
+              </div>
+              <CardTitle className="text-lg">使用者登入</CardTitle>
+              <CardDescription>以帳號密碼登入（支援 JWT）</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild  className="w-full">
+                <Link href="/login" aria-label="前往登入頁">
+                  登入
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>    
+          </section>
+           {/* 版權/腳註 */}
+          <footer className="mt-16 text-center text-sm text-muted-foreground">
+            © {new Date().getFullYear()} 臺灣高等檢察署 · 數位鑑識系統
+          </footer>
+         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
   );
 }
