@@ -3,13 +3,13 @@
 import * as React from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import { Sun, Moon } from "lucide-react"
 
 export function ModeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
 
-  // 防止 hydration mismatch：先確保 client 已 mount
-  const [mounted, setMounted] = React.useState(false)
+  const [mounted, setMounted] = useState(false)
   React.useEffect(() => setMounted(true), [])
 
   if (!mounted) return null

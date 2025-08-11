@@ -1,9 +1,11 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card,CardHeader,CardTitle,CardContent,CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {Scale,FolderSearch,FlaskConical,LogIn,PcCase} from 'lucide-react'
+import {Scale,FolderSearch,FlaskConical,LogIn} from 'lucide-react'
 import { ModeToggle } from "@/components/mode-toggle";
+import { FileText } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -28,13 +30,13 @@ export default function Home() {
           {/* Header 部分 */}
             <header className=" flex flex-col items-center text-center ">
             <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary/30 bg-primary/5">
-              <Scale className="h-10 w-10 text-primary" aria-hidden />
+              <FileText className="h-10 w-10 text-primary" aria-hidden />
             </div>
             <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              臺灣高等檢察署數位鑑識首頁
+                 數位鑑識案件首頁
             </h1>
               <p className="mt-3 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
-                提供案件資料、鑑識結果及權限式登入入口。
+                  提供案件新增、修改、刪除。
               </p>
              <p className='mt-2 text-pretty text-sm leading-6 text-muted-foreground sm:text-base'>
                 模式變更    <ModeToggle/>
@@ -43,39 +45,22 @@ export default function Home() {
           </header>
           {/* 主要內容區塊 */}
           <section
-          className='mt-12 grid gap-6 sm:grid-cols-2  '
+          className='mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 '
            aria-label="快速導引"
           >
             {/* 案件相關 */}
           <Card className='group hover:shadow-lg transition-shadow relative'>
                <CardHeader className='space-y-2 text-center'>
-                    <div className='relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto'>
                          <FolderSearch className="h-5 w-5 text-primary" aria-hidden/>
                     </div>
-                    <CardTitle className="text-lg">案件相關</CardTitle>
-                    <CardDescription>新增、更新、刪除、查詢案件資料</CardDescription>
+                    <CardTitle className="text-lg">案件相關(包含證物)</CardTitle>
+                    <CardDescription>新增、編輯、列表、詳細資料</CardDescription>
                </CardHeader>
                <CardContent>
                    <Button asChild className='w-full'>
-                        <Link href="/Case" aria-label="前往案件相關頁">
+                        <Link href="/cases" aria-label="前往案件相關頁">
                                前往案件頁面
-                        </Link>
-                   </Button>
-               </CardContent>
-          </Card>
-          {/* 證物相關 */}
-          <Card className='group hover:shadow-lg transition-shadow relative'>
-               <CardHeader className='space-y-2 text-center'>
-                    <div className='relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto'>
-                         <PcCase className="h-5 w-5 text-primary" aria-hidden/>
-                    </div>
-                    <CardTitle className="text-lg">證物相關</CardTitle>
-                    <CardDescription>新增、更新、刪除、查詢證物資料</CardDescription>
-               </CardHeader>
-               <CardContent>
-                   <Button asChild className='w-full' variant="secondary">
-                        <Link href="/Case" aria-label="前往案件相關頁">
-                               前往證物頁面
                         </Link>
                    </Button>
                </CardContent>
@@ -83,7 +68,7 @@ export default function Home() {
            {/* 鑑識結果相關 */}
           <Card className="group hover:shadow-lg transition-shadow relative">
             <CardHeader className="space-y-2 text-center">
-              <div className="relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
                 <FlaskConical className="h-5 w-5 text-primary" aria-hidden />
               </div>
               <CardTitle className="text-lg">鑑識結果相關</CardTitle>
@@ -100,7 +85,7 @@ export default function Home() {
            {/* 使用者登入 */}
           <Card className="group hover:shadow-lg transition-shadow md:col-span-1 sm:col-span-2 md:col-span-1 relative">
             <CardHeader className="space-y-2 text-center">
-              <div className="relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
                 <LogIn className="h-5 w-5 text-primary" aria-hidden />
               </div>
               <CardTitle className="text-lg">使用者登入</CardTitle>
