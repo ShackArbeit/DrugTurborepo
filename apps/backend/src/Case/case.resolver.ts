@@ -13,7 +13,6 @@ import { CreateCaseInput,UpdateCaseInput } from "./dto/case.inputs";
 export class CaseResolver{
       constructor(private readonly caseService:CaseService){}
    
-
       @Query(()=>[Case],{name:'cases'})
       findAll():Promise<Case[]>{
             return this.caseService.findAll()
@@ -24,15 +23,15 @@ export class CaseResolver{
             return this.caseService.findOne(id)
       }
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(()=>Case)
       createCase(@Args('input') input:CreateCaseInput):Promise<Case>{
            return this.caseService.createCase(input)
       }
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(()=>Case)
       updateCase(
             @Args('id',{type:()=>Int}) id:number,
@@ -41,8 +40,8 @@ export class CaseResolver{
           return this.caseService.update(id,input)
       }
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(()=>Boolean)
       removeCase(@Args('id',{type:()=>Int}) id:number){
           return this.caseService.remove(id)

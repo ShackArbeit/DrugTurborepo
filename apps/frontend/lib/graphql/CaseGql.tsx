@@ -38,9 +38,9 @@ export const GET_CASE_BY_ID=gql`
             prefixLetter
             section
             evidences {
-            id
-            evidenceNumber
-            evidenceType
+              id
+              evidenceNumber
+              evidenceType
             }
         }
     }

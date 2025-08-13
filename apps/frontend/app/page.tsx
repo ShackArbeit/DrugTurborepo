@@ -57,7 +57,7 @@ export default function Home() {
                </CardHeader>
                <CardContent>
                    <Button asChild className='w-full'>
-                        <Link href="/Case" aria-label="前往案件相關頁">
+                        <Link href="/case" aria-label="前往案件相關頁">
                                前往案件頁面
                         </Link>
                    </Button>
