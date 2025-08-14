@@ -41,6 +41,11 @@ export class CreateEvidenceInput{
      @Field(()=>String,{description:'收件時間',nullable:false})
      receiveTime:string
 
+
+     // 建立時間
+     @Field(()=>String,{description:'建立時間',nullable:false})
+     createdAt:string
+
     // 交付人簽章 (圖檔/base64)
     @Field(()=>String,{description:'交付人簽章',nullable:false})
     deliverySignature:string

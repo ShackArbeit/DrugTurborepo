@@ -2,6 +2,7 @@
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ModeToggle } from '../mode-toggle';
 import Link from 'next/link';
 
 export default function CasesToolbar({
@@ -19,8 +20,15 @@ export default function CasesToolbar({
         onChange={(e) => onChange(e.target.value)}
         className="max-w-xl"
       />
-      <Button asChild>
-        <Link href="/cases/new">新增案件</Link>
+      <div className="flex items-center gap-2">
+          <span className="text-lg">點擊轉換模式</span>
+          <ModeToggle />
+      </div>
+      <Button asChild variant="destructive">
+        <Link href="/case/new">新增案件</Link>
+      </Button>
+      <Button asChild  variant="secondary">
+        <Link href="/">返回首頁</Link>
       </Button>
     </div>
   );

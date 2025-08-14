@@ -70,6 +70,9 @@ input CreateEvidenceInput {
   """對應案件的 caseNumber"""
   caseNumber: String!
 
+  """建立時間"""
+  createdAt: String!
+
   """交付人簽章"""
   deliverySignature: String!
 
@@ -317,6 +320,9 @@ input UpdateCaseInput {
 input UpdateEvidenceInput {
   """對應案件的 caseNumber"""
   caseNumber: String
+
+  """建立時間"""
+  createdAt: String
 
   """交付人簽章"""
   deliverySignature: String

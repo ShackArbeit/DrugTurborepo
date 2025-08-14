@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/table'; // Assuming these are standard shadcn/ui components
+import { Button } from '@/components/ui/button'; // Assuming this is a standard shadcn/ui button component
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -47,36 +47,40 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  return (
-    <div className="space-y-4"> 
-   
-      <div className="bg-white rounded-xl shadow-md overflow-hidden"> 
+  return (  
+    <div className="space-y-4 text-gray-900 dark:text-gray-100 font-inter">      
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700"> 
         <Table>
-          <TableHeader className="bg-gray-50">
+          <TableHeader className="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
             {table.getHeaderGroups().map((hg) => (
-              <TableRow key={hg.id} className="border-b border-gray-200">
+              <TableRow 
+                key={hg.id} 
+                className="border-b border-gray-200 dark:border-gray-600"
+              >
                 {hg.headers.map((h) => (
                   <TableHead
                     key={h.id}
                     className="
-                    h-12 
-                    px-6
-                    text-lg font-semibold text-gray-600 uppercase tracking-wider"
+                      h-12 
+                      px-6
+                      text-lg font-semibold uppercase tracking-wider
+                      transition-colors duration-200 ease-in-out
+                    "
                   >
                     {h.isPlaceholder ? null : (
                       <div
                         className={`${
                           h.column.getCanSort()
-                            ? 'cursor-pointer select-none hover:text-cyan-600 transition-colors'
+                            ? 'cursor-pointer select-none hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors duration-200 ease-in-out'
                             : ''
                         }`}
-                        // onClick={h.column.getToggleSortingHandler()}
+                        // onClick={h.column.getToggleSortingHandler()} 
                       >
                         {flexRender(h.column.columnDef.header, h.getContext())}
-                        {/* {h.column.columnDef.header as React.ReactNode} */}
-                        {/* {({ asc: ' ▲', desc: ' ▼' } as any)[
-                          h.column.getIsSorted() as string
-                        ] ?? null} */}
+                        {/* {{ 
+                          asc: ' ▲', 
+                          desc: ' ▼' 
+                        }[h.column.getIsSorted() as string] ?? null} */}
                       </div>
                     )}
                   </TableHead>
@@ -84,14 +88,20 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+          {/* Table Body with row styling and hover effects for both modes */}
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   className="
-                  text-base
-                  border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors"
+                    text-base
+                    text-gray-800 dark:text-gray-200
+                    border-b border-gray-300 dark:border-gray-700 
+                    last:border-b-0 
+                    hover:bg-gray-50 dark:hover:bg-gray-700 
+                    transition-colors duration-200 ease-in-out
+                  "
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="p-4 align-middle">
@@ -104,7 +114,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-gray-500"
+                  className="h-24 text-center text-gray-500 dark:text-gray-400"
                 >
                   沒有資料
                 </TableCell>
@@ -114,26 +124,46 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-end gap-3 p-4 bg-white rounded-xl shadow-md">
+      <div className="flex items-center justify-end gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-700">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="rounded-full border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+          className="
+            rounded-full 
+            border border-gray-300 dark:border-gray-600 
+            text-gray-600 dark:text-gray-300 
+            hover:bg-gray-100 dark:hover:bg-gray-700 
+            dark:hover:text-gray-100
+            transition-colors duration-200 ease-in-out
+            px-4 py-2 
+            focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
         >
-             上一頁
+          上一頁
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="rounded-full border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+          className="
+            rounded-full 
+            border border-gray-300 dark:border-gray-600 
+            text-gray-600 dark:text-gray-300 
+            hover:bg-gray-100 dark:hover:bg-gray-700 
+            dark:hover:text-gray-100
+            transition-colors duration-200 ease-in-out
+            px-4 py-2 
+            focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
         >
-            下一頁
+          下一頁
         </Button>
-        <div className="text-sm font-medium text-gray-600">
+        <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
           第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount()} 頁
         </div>
       </div>

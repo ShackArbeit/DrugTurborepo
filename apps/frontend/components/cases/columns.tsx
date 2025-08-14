@@ -45,7 +45,7 @@ export const columns=(onDelete:(id:number)=>void):ColumnDef<CaseRow>[]=>{
                         <Link href={`/case/${id}`}>查看詳細</Link>
                   </Button>
                   <Button asChild variant="outline" size="sm">
-                        <Link href={`/cases/${id}/edit`}>編輯</Link>
+                        <Link href={`/case/${id}/edit`}>編輯</Link>
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => onDelete(id)}>
                         刪除

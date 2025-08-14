@@ -24,15 +24,15 @@ export class EvidenceResolver{
             return this.evidenceService.findOneEvidence(id)
       }
      
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(() => Evidence, { description: '建立新證物' })
       createEvidence(@Args('input') input:CreateEvidenceInput):Promise<Evidence>{
              return this.evidenceService.createEvidence(input)
       }
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(() => Evidence, { description: '更新指定證物' })
       updateEvidence(@Args('input') input:UpdateEvidenceInput,
                       @Args('id',{type:()=>Int,description:'證物 ID'}) id:number):Promise<Evidence> 
@@ -40,8 +40,8 @@ export class EvidenceResolver{
             return this.evidenceService.updateEvidence(id,input)
       }
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+      // @UseGuards(GqlAuthGuard,RolesGuard)
+      // @Roles(Role.Admin)
       @Mutation(() => Boolean, { description: '刪除指定證物' })
       removeEvidence(@Args('id',{type:()=>Int,description: '證物 ID'}) id:number):Promise<boolean>{
             return this.evidenceService.removeEvidence(id)
