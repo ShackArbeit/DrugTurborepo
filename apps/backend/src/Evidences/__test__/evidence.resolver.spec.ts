@@ -110,6 +110,7 @@ describe("開始測試 Evidence Resolver", () => {
     receiveTime: "2025-07-18T12:00:00Z",
     deliverySignature: "簽章A",
     receiverSignature: "簽章B",
+    createdAt: '2025-08-14T10:00:00.000Z'
   };
 
   const createdEvidence = { ...mockEvidence, ...createInput, id: 2 };

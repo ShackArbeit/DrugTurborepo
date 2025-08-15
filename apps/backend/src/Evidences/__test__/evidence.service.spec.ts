@@ -141,6 +141,7 @@ describe('開始測試 Evidence Service',()=>{
                       receiveTime: '2025-07-18T11:00:00Z',
                       deliverySignature: '簽章A',
                       receiverSignature: '簽章B',
+                      createdAt: '2025-08-14T10:00:00.000Z'
                }
          it('應該成功建立新的 Evidence',async()=>{
                caseRepositoryMock.findOne!.mockResolvedValue(caseData)
