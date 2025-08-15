@@ -39,7 +39,7 @@ input CreateCaseInput {
   caseType: String!
 
   """建立時間"""
-  createdAt: String!
+  createdAt: String = null
 
   """冠字"""
   prefixLetter: String
@@ -290,7 +290,7 @@ input UpdateCaseInput {
   caseType: String
 
   """建立時間"""
-  createdAt: String
+  createdAt: String = null
 
   """冠字"""
   prefixLetter: String
