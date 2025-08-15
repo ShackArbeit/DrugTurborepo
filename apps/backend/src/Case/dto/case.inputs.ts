@@ -49,7 +49,7 @@ export class CreateCaseInput{
       submitterSignature:string
 
       // 建立時間
-      @Field(()=>String,{description:'建立時間',nullable:false})
+      @Field(()=>String,{description:'建立時間',nullable: true, defaultValue: null})
       createdAt:string
 }
 

@@ -5,8 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { CREATE_CASE } from '@/lib/graphql/CaseGql';
 import { useRouter } from 'next/navigation';
-
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -18,7 +16,9 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form';
-
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { ModeToggle } from '@/components/mode-toggle';
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 
@@ -88,15 +88,20 @@ export default function NewCasePage() {
 
   return (
     <div className="p-4 max-w-5xl border-4 border-indigo-200 border-y-indigo-500 m-auto ">
-      <p className="text-4xl font-semibold mb-4">新增案件</p>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <div className='w-full flex mt-3 mb-3 justify-around'>   
+        <p className='mx-4'>點擊中轉換模式<ModeToggle/></p>
+        <Button asChild >
+                <Link href="/case">返回列表</Link>
+        </Button>
+    </div>
+      <Form {...form} >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-5 ">
           <FormField
             control={form.control}
             name="caseNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel >案件編號 *</FormLabel>
+                <FormLabel className='mb-2'>案件編號 *</FormLabel>
                 <FormControl>
                   <Input placeholder="例：113-北-000123" {...field} />
                 </FormControl>
@@ -111,7 +116,7 @@ export default function NewCasePage() {
               name="caseType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>案件類型 *</FormLabel>
+                  <FormLabel className='mb-2'>案件類型 *</FormLabel>
                   <FormControl>
                     <Input placeholder="例：毒品、詐欺、車禍…" {...field} />
                   </FormControl>
@@ -124,7 +129,7 @@ export default function NewCasePage() {
               name="createdAt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>建立時間（ISO）*</FormLabel>
+                  <FormLabel className='mb-2'>建立時間（ISO）*</FormLabel>
                   <FormControl>
                     <Input placeholder="例如 2025-08-14T10:00:00.000Z" {...field} />
                   </FormControl>
@@ -139,7 +144,7 @@ export default function NewCasePage() {
             name="caseName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>案件摘要 *</FormLabel>
+                <FormLabel className='mb-2'>案件摘要 *</FormLabel>
                 <FormControl>
                   <Textarea placeholder="輸入案件摘要/描述…" {...field} />
                 </FormControl>
@@ -153,7 +158,7 @@ export default function NewCasePage() {
               name="year"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>年度 *</FormLabel>
+                  <FormLabel className='mb-2'>年度 *</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="例：2025" {...field} />
                   </FormControl>
@@ -166,7 +171,7 @@ export default function NewCasePage() {
               name="prefixLetter"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>冠字（可選）</FormLabel>
+                  <FormLabel className='mb-2'>冠字（可選）</FormLabel>
                   <FormControl>
                     <Input placeholder="例：北、桃、刑…" {...field} />
                   </FormControl>
@@ -179,7 +184,7 @@ export default function NewCasePage() {
               name="section"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>股別（可選）</FormLabel>
+                  <FormLabel className='mb-2'>股別（可選）</FormLabel>
                   <FormControl>
                     <Input placeholder="例：偵二、鑑識股…" {...field} />
                   </FormControl>
@@ -194,7 +199,7 @@ export default function NewCasePage() {
               name="submitUnit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>送件單位 *</FormLabel>
+                  <FormLabel className='mb-2'>送件單位 *</FormLabel>
                   <FormControl>
                     <Input placeholder="例：某某分局偵查隊" {...field} />
                   </FormControl>
@@ -207,7 +212,7 @@ export default function NewCasePage() {
               name="submitterName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>送件人姓名 *</FormLabel>
+                  <FormLabel className='mb-2'>送件人姓名 *</FormLabel>
                   <FormControl>
                     <Input placeholder="例：王小明" {...field} />
                   </FormControl>
@@ -223,7 +228,7 @@ export default function NewCasePage() {
               name="submitterPhone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>手機 *</FormLabel>
+                  <FormLabel className='mb-2'>手機 *</FormLabel>
                   <FormControl>
                     <Input placeholder="例：0912-345-678" {...field} />
                   </FormControl>
@@ -236,7 +241,7 @@ export default function NewCasePage() {
               name="submitterTel"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>市話 *</FormLabel>
+                  <FormLabel className='mb-2'>市話 *</FormLabel>
                   <FormControl>
                     <Input placeholder="例：02-1234-5678" {...field} />
                   </FormControl>
@@ -251,7 +256,7 @@ export default function NewCasePage() {
             name="submitterSignature"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>簽名（圖檔路徑/Base64）*</FormLabel>
+                <FormLabel className='mb-2'>簽名（圖檔路徑/Base64）*</FormLabel>
                 <FormControl>
                   <Input placeholder="例：/uploads/sign/xxx.png 或 data:image/png;base64,..." {...field} />
                 </FormControl>
@@ -259,7 +264,7 @@ export default function NewCasePage() {
               </FormItem>
             )}
           />
-          <div className="flex justify-center gap-2 pt-2 border border-1 border-teal-500 ">
+          <div className="flex justify-center gap-2 pt-2  ">
             <Button type="submit" disabled={loading}>
               送出
             </Button>

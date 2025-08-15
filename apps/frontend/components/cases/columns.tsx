@@ -1,6 +1,7 @@
 'use client' 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 
 export type EvidenceLite = {

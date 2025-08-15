@@ -23,7 +23,7 @@ export default function CasePage() {
     : list;
 
   async function handleDelete(id: number) {
-    const ok = confirm('確定刪除？');
+    const ok = confirm('刪除後與該案件的證物紀錄也會一併刪除，確定要刪除嗎?');
     if (!ok) return;
 
     await removeCase({
