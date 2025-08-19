@@ -51,6 +51,11 @@ export class Case{
       @Column({type:"text",name:"submitter_name"})
       submitterName: string;  
 
+      // 建立案件紀錄人姓名
+      @Field({nullable:false})
+      @Column({ type: 'text', name: 'receiver_signature', nullable: true })
+      Creator_Name?:string
+
       // 送件人手機
       @Field()
       @Column({type:"text",name:"submitter_phone"})
@@ -60,11 +65,7 @@ export class Case{
       @Field({nullable:false})
       @Column({type:"text",name:"submitter_tel",nullable:true})
       submitterTel?:string
-  
-      // 送件人簽章 (圖檔路徑或 base64)
-      @Field({nullable:false})
-      @Column({ type: 'text', name: 'submitter_signature', nullable: true })
-      submitterSignature?: string; 
+
 
       // 建立時間 (ISO 格式字串)
       @Field()

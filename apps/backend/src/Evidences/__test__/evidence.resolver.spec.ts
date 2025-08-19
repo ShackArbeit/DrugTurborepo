@@ -41,7 +41,6 @@ describe("開始測試 Evidence Resolver", () => {
     submitterName: "小王",
     submitterPhone: "0912000000",
     submitterTel: "02-2222222",
-    submitterSignature: "簽章",
     createdAt: "2025-07-17T00:00:00Z",
     evidences: [],
   };
@@ -88,8 +87,8 @@ describe("開始測試 Evidence Resolver", () => {
     photoFront: "front.jpg",
     photoBack: "back.jpg",
     receiveTime: "2025-07-18T10:00:00Z",
-    deliverySignature: "交付簽章",
-    receiverSignature: "收件簽章",
+    deliveryName: "交付簽章",
+    receiverName: "收件簽章",
     createdAt: "2025-07-18T10:00:00Z",
     case: mockCase,
     examinResult: mockExaminResult,
@@ -108,8 +107,9 @@ describe("開始測試 Evidence Resolver", () => {
     photoFront: "front2.jpg",
     photoBack: "back2.jpg",
     receiveTime: "2025-07-18T12:00:00Z",
-    deliverySignature: "簽章A",
-    receiverSignature: "簽章B",
+    deliveryName: "簽章A",
+    receiverName: "簽章B",
+    is_Pickup:true,
     createdAt: '2025-08-14T10:00:00.000Z'
   };
 

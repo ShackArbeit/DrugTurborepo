@@ -40,7 +40,7 @@ const mockCaseArray: Case[] = [
     submitterName: '李四', 
     submitterPhone: '0905324740',
     submitterTel: '22467946',
-    submitterSignature: '簽名2',
+    
     createdAt: '2022-08-01',
     evidences: []
   } as Case,
@@ -57,6 +57,7 @@ const mockNewCase: Case = {
   submitUnit: '某單位',
   submitterName: '王五', 
   submitterPhone: '0912345678',
+  Creator_Name:'Shack',
   createdAt: '2023-01-01',
   evidences: [],
 } as Case;
@@ -105,7 +106,7 @@ describe('CaseService',()=>{
                 submitterName: '王小明',
                 submitterPhone: '0912000000',
                 submitterTel: '02-22222222',
-                submitterSignature: '簽名',
+                Creator_Name:'Shack',
                 createdAt: '2025-07-17T00:00:00Z',
           };
               it('應該要成功建立新案件',async()=>{

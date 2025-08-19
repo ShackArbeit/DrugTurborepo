@@ -88,8 +88,8 @@ describe('PickupService', () => {
         satisfaction_levelThree: '非常滿意',
         satisfaction_levelFour: '非常滿意',
         receiver_name: '張警員',
-        delivery_signature: '交付簽章',
-        receiver_signature: '領回簽章',
+        delivery_Name: '交付簽章',
+        receiver_Name: '領回簽章',
         remarks: '備註',
         created_at: '2025-07-18T12:00:00Z',
       };

@@ -33,7 +33,7 @@ export const columns=(onDelete:(id:number)=>void):ColumnDef<CaseRow>[]=>{
       {accessorKey:'caseType',header:'案件類型'},
       {accessorKey: 'caseName', header: '案件名稱'},
       {accessorKey: 'submitUnit', header: '送件單位'},
-      {accessorKey:'submitterName', header: '送件人名'},
+      {accessorKey:'submitterName', header: '送件人姓名'},
       {accessorKey:'createdAt', header:'建立時間'},
       {
             id: 'actions',

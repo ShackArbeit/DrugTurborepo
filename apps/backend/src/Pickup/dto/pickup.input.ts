@@ -25,10 +25,11 @@ export class CreatePickupInput{
       receiver_name?: string;
 
       @Field({ nullable: false})
-      delivery_signature?: string;
+      delivery_Name?: string;
 
       @Field({ nullable: false})
-      receiver_signature?: string;
+      receiver_Name?: string;
+
 
       @Field({ nullable: false })
       remarks?: string;

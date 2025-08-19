@@ -89,7 +89,7 @@ export default function NewCasePage() {
   return (
     <div className="p-4 max-w-5xl border-4 border-indigo-200 border-y-indigo-500 m-auto ">
       <div className='w-full flex mt-3 mb-3 justify-around'>   
-        <p className='mx-4'>點擊中轉換模式<ModeToggle/></p>
+        <p className='mx-4'>點擊轉換模式<ModeToggle/></p>
         <Button asChild >
                 <Link href="/case">返回列表</Link>
         </Button>

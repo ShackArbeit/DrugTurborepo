@@ -23,8 +23,8 @@ export class ExaminResultResolver {
             return this.resultService.findOneResult(id);
       }
 
-   @UseGuards(GqlAuthGuard,RolesGuard)
-   @Roles(Role.Admin)
+  //  @UseGuards(GqlAuthGuard,RolesGuard)
+  //  @Roles(Role.Admin)
    @Mutation(() => ExaminResult, { description: '建立新檢測結果' })
             createExaminResult(
             @Args('input') input: CreateExaminResultsInput,
@@ -32,8 +32,8 @@ export class ExaminResultResolver {
             return this.resultService.createResult(input);
     }
 
-  @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles(Role.Admin)
+  // @UseGuards(GqlAuthGuard,RolesGuard)
+  // @Roles(Role.Admin)
   @Mutation(() => ExaminResult, { description: '更新指定檢測結果' })
   updateExaminResult(
       @Args('id', { type: () => Int, description: '檢測結果 ID' }) id: number,
@@ -42,8 +42,8 @@ export class ExaminResultResolver {
       return this.resultService.updateResult(id, input);
   }
 
-  @UseGuards(GqlAuthGuard,RolesGuard)
-  @Roles(Role.Admin)
+  // @UseGuards(GqlAuthGuard,RolesGuard)
+  // @Roles(Role.Admin)
   @Mutation(() => Boolean, { description: '刪除指定檢測結果' })
       removeExaminResult(
       @Args('id', { type: () => Int, description: '檢測結果 ID' }) id: number,

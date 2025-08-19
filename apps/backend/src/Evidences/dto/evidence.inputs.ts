@@ -41,18 +41,21 @@ export class CreateEvidenceInput{
      @Field(()=>String,{description:'收件時間',nullable:false})
      receiveTime:string
 
-
      // 建立時間
      @Field(()=>String,{description:'建立時間',nullable:false})
      createdAt:string
 
-    // 交付人簽章 (圖檔/base64)
-    @Field(()=>String,{description:'交付人簽章',nullable:false})
-    deliverySignature:string
+    // 交付人姓名
+    @Field(()=>String,{description:'交付人姓名',nullable:false})
+    deliveryName:string
 
-    // 收件人簽章(圖檔/base64)
-    @Field(()=>String,{description:'收件人簽章',nullable:false})
-    receiverSignature:string
+    // 收件人姓名
+    @Field(()=>String,{description:'收件人姓名',nullable:false})
+    receiverName:string
+
+    // 是否已領回
+    @Field(()=>Boolean,{description:'是否已領回',nullable:false})
+    is_Pickup:boolean;
 }
 
 // 第二部分是讓輸入後的欄位可以更新的部分

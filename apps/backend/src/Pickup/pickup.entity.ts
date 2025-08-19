@@ -54,17 +54,12 @@ export class PickUp{
       // 領回者姓名
       @Field({ nullable: false })
       @Column()
-      receiver_name?: string;
+      receiver_Name?: string;
 
-      // 交付者簽章
+      // 交付人姓名
       @Field({ nullable: false })
       @Column()
-      delivery_signature?: string;
-
-      // 領回者簽章
-      @Field({ nullable: false })
-      @Column()
-      receiver_signature:string
+      delivery_Name?: string;
 
       // 備註欄
       @Field({ nullable: true })

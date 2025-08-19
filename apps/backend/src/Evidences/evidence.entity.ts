@@ -16,7 +16,6 @@ export class  Evidence{
       @Column({type:"integer",name:"case_id"})
       caseId:number // 外鍵欄位：對應 Case 的 ID
 
-
       @Field()
       @Column({type:"text",name:"evidence_number",unique:true})
       evidenceNumber: string;   // 證物編號
@@ -50,14 +49,15 @@ export class  Evidence{
       @Column({ type: 'text', name: 'receive_time', nullable: true })
       receiveTime?: string;      // 收件時間
 
+      // 交付人姓名
       @Field({nullable:false})
-      @Column({ type: 'text', name: 'delivery_signature', nullable: true })
-      deliverySignature?: string; // 交付人簽章 (圖檔/base64)
+      @Column({ type: 'text', name: 'delivery_Name', nullable: true })
+      deliveryName?: string; 
 
-      
+      // 收件人姓名
       @Field({nullable:false})
-      @Column({ type: 'text', name: 'receiver_signature', nullable: true })
-      receiverSignature?: string; // 收件人簽章
+      @Column({ type: 'text', name: 'receiver_Name', nullable: true })
+      receiverName?: string; 
 
       @Field()
       @Column({ type: 'text', name: 'created_at' })
@@ -69,6 +69,11 @@ export class  Evidence{
       @JoinColumn({ name: 'case_id' })      // 明確指定外鍵欄位名稱為 case_id
       case: Case;
 
+      // 是否已領回
+      @Field()
+      @Column({type:'boolean',name:'is_Pickup'})
+      is_Pickup:boolean;
+
       // 關聯欄位:一個證物對應一個證物檢測結果
       @Field(()=>ExaminResult)
       @OneToOne(()=>ExaminResult,examinResult=>examinResult.evidences,{
@@ -76,7 +81,6 @@ export class  Evidence{
               eager:false
       })
       examinResult?:ExaminResult
-
        // 關聯欄位:一個證物對應一個證物領回紀錄
       @Field(()=>PickUp)
       @OneToOne(() => PickUp, pickup => pickup.evidences, {cascade: true,onDelete: 'CASCADE',})

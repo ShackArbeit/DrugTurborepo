@@ -36,7 +36,7 @@ describe("開始測試 Case Resolver", () => {
     submitterName: "王小明",
     submitterPhone: "0912345678",
     submitterTel: "02-1111111",
-    submitterSignature: "簽章",
+    Creator_Name:'Shack',
     createdAt: "2025-07-17T00:00:00Z",
     evidences: [],
   } as Case;
@@ -54,7 +54,7 @@ describe("開始測試 Case Resolver", () => {
     submitterName: "李小華",
     submitterPhone: "0922333444",
     submitterTel: "02-2222222",
-    submitterSignature: "簽章",
+    Creator_Name:'Shack',
     createdAt: "2025-07-18T00:00:00Z",
   };
 

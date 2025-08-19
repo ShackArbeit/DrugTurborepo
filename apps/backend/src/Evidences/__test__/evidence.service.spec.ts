@@ -26,7 +26,6 @@ const caseData:Case={
         submitterName: '王小明',
         submitterPhone: '0911222333',
         submitterTel: '02-33334444',
-        submitterSignature: '簽章',
         createdAt: '2025-07-18T00:00:00Z',
         evidences: [],
 }
@@ -53,9 +52,8 @@ const pickup: PickUp = {
       satisfaction_levelTwo: '非常滿意',
       satisfaction_levelThree: '非常滿意',
       satisfaction_levelFour: '非常滿意',
-      receiver_name: '張警員',
-      delivery_signature: '交付簽章',
-      receiver_signature: '領回簽章',
+      receiver_Name: '張警員',
+      delivery_Name: '交付簽章',
       remarks: '備註',
       created_at: '2025-07-18T12:00:00Z',
       evidences: undefined,
@@ -73,8 +71,9 @@ const evidenceArray: Evidence[] = [
       photoFront: 'photo1.jpg',
       photoBack: 'photo2.jpg',
       receiveTime: '2025-07-18T10:00:00Z',
-      deliverySignature: '交付簽章',
-      receiverSignature: '收件簽章',
+      deliveryName: '交付簽章',
+      receiverName: '收件簽章',
+      is_Pickup:true,
       createdAt: '2025-07-18T10:00:00Z',
       case: caseData,
       examinResult: examinResult,
@@ -139,8 +138,9 @@ describe('開始測試 Evidence Service',()=>{
                       photoFront: 'front.jpg',
                       photoBack: 'back.jpg',
                       receiveTime: '2025-07-18T11:00:00Z',
-                      deliverySignature: '簽章A',
-                      receiverSignature: '簽章B',
+                      deliveryName: '簽章A',
+                      receiverName: '簽章B',
+                      is_Pickup:true,
                       createdAt: '2025-08-14T10:00:00.000Z'
                }
          it('應該成功建立新的 Evidence',async()=>{

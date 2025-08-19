@@ -12,6 +12,7 @@ type AuthResponse {
 }
 
 type Case {
+  Creator_Name: String!
   caseName: String!
   caseNumber: String!
   caseType: String!
@@ -23,12 +24,14 @@ type Case {
   submitUnit: String!
   submitterName: String!
   submitterPhone: String!
-  submitterSignature: String!
   submitterTel: String!
   year: Int!
 }
 
 input CreateCaseInput {
+  """建立案件人姓名"""
+  Creator_Name: String!
+
   """案件摘要"""
   caseName: String!
 
@@ -56,9 +59,6 @@ input CreateCaseInput {
   """送件人手機"""
   submitterPhone: String!
 
-  """送件人簽名"""
-  submitterSignature: String!
-
   """送件人電話"""
   submitterTel: String!
 
@@ -73,8 +73,8 @@ input CreateEvidenceInput {
   """建立時間"""
   createdAt: String!
 
-  """交付人簽章"""
-  deliverySignature: String!
+  """交付人姓名"""
+  deliveryName: String!
 
   """證物廠牌"""
   evidenceBrand: String!
@@ -91,6 +91,9 @@ input CreateEvidenceInput {
   """證物類型"""
   evidenceType: String!
 
+  """是否已領回"""
+  is_Pickup: Boolean!
+
   """反面照片"""
   photoBack: String!
 
@@ -100,8 +103,8 @@ input CreateEvidenceInput {
   """收件時間"""
   receiveTime: String!
 
-  """收件人簽章"""
-  receiverSignature: String!
+  """收件人姓名"""
+  receiverName: String!
 }
 
 input CreateExaminResultsInput {
@@ -135,12 +138,12 @@ input CreateExaminResultsInput {
 
 input CreatePickupInput {
   created_at: String!
-  delivery_signature: String!
+  delivery_Name: String!
   evidence_number: String!
   photo_path: String!
   pickup_time: String!
+  receiver_Name: String!
   receiver_name: String!
-  receiver_signature: String!
   remarks: String!
   satisfaction_levelFour: String!
   satisfaction_levelOne: String!
@@ -152,7 +155,7 @@ type Evidence {
   case: Case!
   caseId: Int!
   createdAt: String!
-  deliverySignature: String!
+  deliveryName: String!
   evidenceBrand: String
   evidenceNumber: String!
   evidenceOriginalNo: String
@@ -160,11 +163,12 @@ type Evidence {
   evidenceType: String!
   examinResult: ExaminResult!
   id: Int!
+  is_Pickup: Boolean!
   photoBack: String
   photoFront: String
   pickup: PickUp!
   receiveTime: String!
-  receiverSignature: String!
+  receiverName: String!
 }
 
 type ExaminResult {
@@ -227,14 +231,13 @@ type Mutation {
 
 type PickUp {
   created_at: String!
-  delivery_signature: String!
+  delivery_Name: String!
   evidence_id: Int!
   evidences: Evidence!
   id: Int!
   photo_path: String!
   pickup_time: String!
-  receiver_name: String!
-  receiver_signature: String!
+  receiver_Name: String!
   remarks: String
   satisfaction_levelFour: String!
   satisfaction_levelOne: String!
@@ -280,6 +283,9 @@ input RegisterUserInput {
 }
 
 input UpdateCaseInput {
+  """建立案件人姓名"""
+  Creator_Name: String
+
   """案件摘要"""
   caseName: String
 
@@ -307,9 +313,6 @@ input UpdateCaseInput {
   """送件人手機"""
   submitterPhone: String
 
-  """送件人簽名"""
-  submitterSignature: String
-
   """送件人電話"""
   submitterTel: String
 
@@ -324,8 +327,8 @@ input UpdateEvidenceInput {
   """建立時間"""
   createdAt: String
 
-  """交付人簽章"""
-  deliverySignature: String
+  """交付人姓名"""
+  deliveryName: String
 
   """證物廠牌"""
   evidenceBrand: String
@@ -342,6 +345,9 @@ input UpdateEvidenceInput {
   """證物類型"""
   evidenceType: String
 
+  """是否已領回"""
+  is_Pickup: Boolean
+
   """反面照片"""
   photoBack: String
 
@@ -351,8 +357,8 @@ input UpdateEvidenceInput {
   """收件時間"""
   receiveTime: String
 
-  """收件人簽章"""
-  receiverSignature: String
+  """收件人姓名"""
+  receiverName: String
 }
 
 input UpdateExaminResultsInput {
@@ -386,12 +392,12 @@ input UpdateExaminResultsInput {
 
 input UpdatePickupInput {
   created_at: String
-  delivery_signature: String
+  delivery_Name: String
   evidence_number: String
   photo_path: String
   pickup_time: String
+  receiver_Name: String
   receiver_name: String
-  receiver_signature: String
   remarks: String
   satisfaction_levelFour: String
   satisfaction_levelOne: String

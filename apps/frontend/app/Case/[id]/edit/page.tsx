@@ -131,7 +131,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
   return (
    <>
    <div className='w-full flex mt-3 justify-around'>
-      <p className='mx-4'>點擊中轉換模式<ModeToggle/></p>
+      <p className='mx-4'>點擊轉換模式<ModeToggle/></p>
       <Button asChild >
               <Link href="/case">返回列表</Link>
       </Button>

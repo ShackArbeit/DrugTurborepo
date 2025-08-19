@@ -36,8 +36,8 @@ describe('PickupResolver', () => {
     photoFront: 'front.jpg',
     photoBack: 'back.jpg',
     receiveTime: '2025-07-18T10:00:00Z',
-    deliverySignature: '交付簽章',
-    receiverSignature: '收件簽章',
+    deliveryName: '交付簽章',
+    receiverName: '收件簽章',
     createdAt: '2025-07-18T10:00:00Z',
   } as Evidence;
 
@@ -51,9 +51,8 @@ describe('PickupResolver', () => {
     satisfaction_levelTwo: '非常滿意',
     satisfaction_levelThree: '非常滿意',
     satisfaction_levelFour: '非常滿意',
-    receiver_name: '張警員',
-    delivery_signature: '交付簽章',
-    receiver_signature: '領回簽章',
+    receiver_Name: '張警員',
+    delivery_Name: '交付簽章',
     remarks: '備註',
     created_at: '2025-07-18T12:00:00Z',
   };
@@ -68,9 +67,8 @@ describe('PickupResolver', () => {
     satisfaction_levelTwo: '非常滿意',
     satisfaction_levelThree: '非常滿意',
     satisfaction_levelFour: '非常滿意',
-    receiver_name: '張警員',
-    delivery_signature: '交付簽章',
-    receiver_signature: '領回簽章',
+    receiver_Name: '張警員',
+    delivery_Name: '交付簽章',
     remarks: '備註',
     created_at: '2025-07-18T12:00:00Z',
   };

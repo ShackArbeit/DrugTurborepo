@@ -32,6 +32,10 @@ export class CreateCaseInput{
       @Field(()=>String,{description:'送件單位',nullable:false})
       submitUnit:string
 
+      // 建立案件人姓名
+      @Field(()=>String,{description:'建立案件人姓名',nullable:false})
+      Creator_Name:string
+
       // 送件人姓名
       @Field(()=>String,{description:'送件人姓名',nullable:false})
       submitterName:string
@@ -43,10 +47,6 @@ export class CreateCaseInput{
       // 送件人電話
       @Field(()=>String,{description:'送件人電話',nullable:false})
       submitterTel:string
-
-      // 送件人簽名
-      @Field(()=>String,{description:'送件人簽名',nullable:false})
-      submitterSignature:string
 
       // 建立時間
       @Field(()=>String,{description:'建立時間',nullable: true, defaultValue: null})

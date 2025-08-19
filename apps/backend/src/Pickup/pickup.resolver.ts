@@ -22,15 +22,15 @@ export class PickupResolver{
             return this.pickupService.findOnePickup(id)
        }
 
-       @UseGuards(GqlAuthGuard,RolesGuard)
-       @Roles(Role.Admin)
+     //   @UseGuards(GqlAuthGuard,RolesGuard)
+     //   @Roles(Role.Admin)
        @Mutation(() => PickUp)
        async createPickup(@Args('input') input: CreatePickupInput):Promise<PickUp>{
              return this.pickupService.createPick(input)
        }   
 
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+     //  @UseGuards(GqlAuthGuard,RolesGuard)
+     //  @Roles(Role.Admin)
       @Mutation(() => PickUp)
       async updatePickup(
              @Args('id', { type: () => Int }) id: number,
@@ -39,8 +39,8 @@ export class PickupResolver{
             return this.pickupService.updatePick(id,input)
       }
       
-      @UseGuards(GqlAuthGuard,RolesGuard)
-      @Roles(Role.Admin)
+     //  @UseGuards(GqlAuthGuard,RolesGuard)
+     //  @Roles(Role.Admin)
       @Mutation(() => Boolean)
       async removePickup(@Args('id', { type: () => Int }) id: number):Promise<boolean>{
            return this.pickupService.removePick(id)
