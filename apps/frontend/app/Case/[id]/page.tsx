@@ -43,9 +43,10 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+        <Info label="案件資料建立者" value={c.Creator_Name} />
         <Info label="年度" value={String(c.year)} />
         <Info label="案件類型" value={c.caseType} />
-        <Info label="案件摘要" value={c.caseName} />
+        {/* <Info label="案件摘要" value={c.caseName} /> */}
         <Info label="送件單位" value={c.submitUnit} />
         <Info label="股別" value={c.section} />
         <Info label="冠字" value={c.prefixLetter} />

@@ -82,4 +82,10 @@ export class EvidenceService{
            const response=await this.evidenceRepository.delete(id)
            return (response.affected??0)>0
      }
+     async findByCaseId(caseId: number): Promise<Evidence[]> {
+          return this.evidenceRepository.find({
+          where: { case: { id: caseId } }, // 或 where: { caseId }
+          order: { createdAt: 'ASC' },     // 可依需求排序
+          });
+   }
 }

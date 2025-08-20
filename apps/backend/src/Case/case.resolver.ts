@@ -1,50 +1,53 @@
-import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from '../Auth/gql-auth.guard';
-import { RolesGuard } from '../Auth/role/roles.guard';
-import { Roles } from '../Auth/role/roles.decorator';
-import { Role } from '../Auth/role/role.enum';
-import { Resolver,Query,Mutation,Args,Int} from "@nestjs/graphql";
-import { Case } from "./case.entity";
-import { CaseService } from "./case.service";
-import { CreateCaseInput,UpdateCaseInput } from "./dto/case.inputs";
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Case } from './case.entity';
+import { CaseService } from './case.service';
+import { Evidence } from '../Evidences/evidence.entity';
+import { EvidenceService } from '../Evidences/evidence.service';
+import { CreateCaseInput, UpdateCaseInput } from './dto/case.inputs';
 
+@Resolver(() => Case)
+export class CaseResolver {
+  constructor(
+    private readonly caseService: CaseService,
+    private readonly evidenceService: EvidenceService, // 取得關聯證物用
+  ) {}
 
-@Resolver(()=>Case)
-export class CaseResolver{
-      constructor(private readonly caseService:CaseService){}
-   
-      @Query(()=>[Case],{name:'cases'})
-      findAll():Promise<Case[]>{
-            return this.caseService.findAll()
-      }
+  /** 取得所有案件 */
+  @Query(() => [Case], { name: 'cases' })
+  findAll(): Promise<Case[]> {
+    return this.caseService.findAll();
+  }
 
-      @Query(()=>Case,{name:'case'})
-      findOne(@Args('id',{type:()=>Int}) id:number):Promise<Case>{
-            return this.caseService.findOne(id)
-      }
+  /** 取得單一案件 */
+  @Query(() => Case, { name: 'case' })
+  findOne(@Args('id', { type: () => Int }) id: number): Promise<Case> {
+    return this.caseService.findOne(id);
+  }
 
-      // @UseGuards(GqlAuthGuard,RolesGuard)
-      // @Roles(Role.Admin)
-      @Mutation(()=>Case)
-      createCase(@Args('input') input:CreateCaseInput):Promise<Case>{
-           return this.caseService.createCase(input)
-      }
+  /** 建立案件 */
+  @Mutation(() => Case)
+  createCase(@Args('input') input: CreateCaseInput): Promise<Case> {
+    return this.caseService.createCase(input);
+  }
 
-      // @UseGuards(GqlAuthGuard,RolesGuard)
-      // @Roles(Role.Admin)
-      @Mutation(()=>Case)
-      updateCase(
-            @Args('id',{type:()=>Int}) id:number,
-            @Args('input') input:UpdateCaseInput
-      ):Promise<Case>{
-          return this.caseService.update(id,input)
-      }
+  /** 更新案件 */
+  @Mutation(() => Case)
+  updateCase(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: UpdateCaseInput,
+  ): Promise<Case> {
+    return this.caseService.update(id, input);
+  }
 
-      // @UseGuards(GqlAuthGuard,RolesGuard)
-      // @Roles(Role.Admin)
-      @Mutation(()=>Boolean)
-      removeCase(@Args('id',{type:()=>Int}) id:number){
-          return this.caseService.remove(id)
-      }
+  /** 刪除案件 */
+  @Mutation(() => Boolean)
+  removeCase(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
+    return this.caseService.remove(id);
+  }
 
+  @ResolveField(() => [Evidence])
+  async evidences(@Parent() c: Case): Promise<Evidence[]> {
+    const list = await this.evidenceService.findByCaseId(c.id);
+    return Array.isArray(list) ? list : [];
+  }
 }

@@ -53,7 +53,7 @@ export class Case{
 
       // 建立案件紀錄人姓名
       @Field({nullable:false})
-      @Column({ type: 'text', name: 'receiver_signature', nullable: true })
+      @Column({ type: 'text', name: 'Creator_Name', nullable: true })
       Creator_Name?:string
 
       // 送件人手機

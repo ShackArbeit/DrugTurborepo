@@ -37,9 +37,9 @@ export class CreateEvidenceInput{
      @Field(()=>String,{description:'反面照片',nullable:false})
      photoBack:string
 
-     // 收件時間
-     @Field(()=>String,{description:'收件時間',nullable:false})
-     receiveTime:string
+    //  // 收件時間
+    //  @Field(()=>String,{description:'收件時間',nullable:false})
+    //  receiveTime:string
 
      // 建立時間
      @Field(()=>String,{description:'建立時間',nullable:false})

@@ -1,7 +1,6 @@
 'use client' 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 
 export type EvidenceLite = {
@@ -31,9 +30,10 @@ export const columns=(onDelete:(id:number)=>void):ColumnDef<CaseRow>[]=>{
       return [
       {accessorKey: 'caseNumber', header: '案件編號'},
       {accessorKey:'caseType',header:'案件類型'},
-      {accessorKey: 'caseName', header: '案件名稱'},
+      // {accessorKey: 'caseName', header: '案件名稱'},
       {accessorKey: 'submitUnit', header: '送件單位'},
       {accessorKey:'submitterName', header: '送件人姓名'},
+      {accessorKey:'Creator_Name', header: '資料建立者姓名'},
       {accessorKey:'createdAt', header:'建立時間'},
       {
             id: 'actions',

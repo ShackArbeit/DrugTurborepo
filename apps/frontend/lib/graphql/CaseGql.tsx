@@ -11,9 +11,9 @@ export const GET_ALL_CAESE=gql`
                 prefixLetter
                 section
                 submitUnit
+                Creator_Name
                 submitterName
                 submitterPhone
-                submitterSignature
                 submitterTel
                 year
                 createdAt  
@@ -29,10 +29,10 @@ export const GET_CASE_BY_ID=gql`
             caseType
             caseName
             submitUnit
+            Creator_Name
             submitterName
             submitterPhone
             submitterTel
-            submitterSignature
             createdAt
             year
             prefixLetter

@@ -45,9 +45,9 @@ export class  Evidence{
       photoBack?: string; // 證物反面照片   
       
 
-      @Field({nullable:false})
-      @Column({ type: 'text', name: 'receive_time', nullable: true })
-      receiveTime?: string;      // 收件時間
+      // @Field({nullable:false})
+      // @Column({ type: 'text', name: 'receive_time', nullable: true })
+      // receiveTime?: string;     
 
       // 交付人姓名
       @Field({nullable:false})

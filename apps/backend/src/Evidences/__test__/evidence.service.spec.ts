@@ -70,7 +70,6 @@ const evidenceArray: Evidence[] = [
       evidenceOriginalNo: 'TAG123',
       photoFront: 'photo1.jpg',
       photoBack: 'photo2.jpg',
-      receiveTime: '2025-07-18T10:00:00Z',
       deliveryName: '交付簽章',
       receiverName: '收件簽章',
       is_Pickup:true,
@@ -92,9 +91,8 @@ const newEvidence: Evidence = {
       evidenceOriginalNo: 'TAG183',
       photoFront: 'photo2.jpg',
       photoBack: 'photo3.jpg',
-      receiveTime: '2025-07-31T10:00:00Z',
-      deliverySignature: '交付簽章2',
-      receiverSignature: '收件簽章2',
+      deliveryName: '交付簽章2',
+      receiverName: '收件簽章2',
       createdAt: '2025-07-31T10:00:00Z', 
 } as Evidence;
 //  開始測試
@@ -137,7 +135,6 @@ describe('開始測試 Evidence Service',()=>{
                       evidenceOriginalNo: 'TAG999',
                       photoFront: 'front.jpg',
                       photoBack: 'back.jpg',
-                      receiveTime: '2025-07-18T11:00:00Z',
                       deliveryName: '簽章A',
                       receiverName: '簽章B',
                       is_Pickup:true,

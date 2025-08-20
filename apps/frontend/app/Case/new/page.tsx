@@ -37,7 +37,7 @@ const schema = z.object({
     .string()
     .min(1, '市話為必填')
     .regex(phoneRegex, '市話格式不正確（僅允許數字、+、-、空白，至少 8 碼）'),
-  submitterSignature: z.string().min(1, '簽名（路徑或 Base64）為必填'),
+  Creator_Name: z.string().min(1, '至少輸入三個文字以上'),
   createdAt: z
     .string()
     .refine((v) => !Number.isNaN(Date.parse(v)), '建立時間格式需為 ISO 或可被解析的日期字串'),
@@ -67,7 +67,7 @@ export default function NewCasePage() {
       submitterName: '',
       submitterPhone: '',
       submitterTel: '',
-      submitterSignature: '',
+      Creator_Name: '',
       year: new Date().getFullYear(),
       prefixLetter: '',
       section: '',
@@ -253,12 +253,12 @@ export default function NewCasePage() {
 
           <FormField
             control={form.control}
-            name="submitterSignature"
+            name="Creator_Name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='mb-2'>簽名（圖檔路徑/Base64）*</FormLabel>
+                <FormLabel className='mb-2'>建立資料者姓名</FormLabel>
                 <FormControl>
-                  <Input placeholder="例：/uploads/sign/xxx.png 或 data:image/png;base64,..." {...field} />
+                  <Input placeholder="姓名..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

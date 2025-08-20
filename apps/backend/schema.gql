@@ -100,9 +100,6 @@ input CreateEvidenceInput {
   """正面照片"""
   photoFront: String!
 
-  """收件時間"""
-  receiveTime: String!
-
   """收件人姓名"""
   receiverName: String!
 }
@@ -167,7 +164,6 @@ type Evidence {
   photoBack: String
   photoFront: String
   pickup: PickUp!
-  receiveTime: String!
   receiverName: String!
 }
 
@@ -353,9 +349,6 @@ input UpdateEvidenceInput {
 
   """正面照片"""
   photoFront: String
-
-  """收件時間"""
-  receiveTime: String
 
   """收件人姓名"""
   receiverName: String

@@ -8,7 +8,7 @@ import { CreateCaseInput,UpdateCaseInput } from "./dto/case.inputs";
 export class CaseService{
       constructor(
             @InjectRepository(Case)
-            private readonly caseRepository:Repository<Case> 
+            private readonly caseRepository:Repository<Case>,
       ){}
       // 建立新案件 
       async createCase(CaseInput:CreateCaseInput):Promise<Case>{
@@ -17,13 +17,14 @@ export class CaseService{
       }
       // 查詢所有案件（含其關聯 evidences）
       async findAll():Promise<Case[]>{
-             return this.caseRepository.find({relations:['evidences']})
+             return this.caseRepository.find();
+            // return this.caseRepository.find({relations:['evidences']})
       }
       // 查詢單一案件（含其關聯 evidences）
       async findOne(id: number): Promise<Case> {
             const singleCase = await this.caseRepository.findOne({
                   where: { id },
-                  relations: ['evidences'],
+                  // relations: ['evidences'],
       });
             if (!singleCase) throw new NotFoundException(`Case with id ${id} not found`);
             return singleCase;
@@ -42,5 +43,4 @@ export class CaseService{
             const response=await this.caseRepository.delete(id)
             return (response.affected ?? 0) > 0;
       }
-
 }

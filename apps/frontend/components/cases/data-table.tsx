@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState } from 'react';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'; // Assuming these are standard shadcn/ui components
-import { Button } from '@/components/ui/button'; // Assuming this is a standard shadcn/ui button component
+} from '@/components/ui/table'; 
+import { Button } from '@/components/ui/button'; 
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -30,10 +30,9 @@ type Props<TData, TValue> = {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  globalFilterPlaceholder = '搜尋…',
 }: Props<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data,

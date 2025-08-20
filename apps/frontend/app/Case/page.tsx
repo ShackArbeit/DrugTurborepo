@@ -41,7 +41,7 @@ export default function CasePage() {
     alert('刪除成功');
   }
 
-  // 3) 每次 render 建立 columns 也沒關係；若你真的需要穩定參考，可以把 makeColumns 搬到元件外部或在 columns 定義內部使用 accessorKey
+  // 3) 每次 render 建立 columns 也沒關係；
   const columns = makeColumns(handleDelete);
 
     //  const rows: CaseRow[] = useMemo(() => {
