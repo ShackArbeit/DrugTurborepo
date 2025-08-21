@@ -7,26 +7,91 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/mode-toggle';
 
-// 優化後的 Info component，能更好地處理不同類型的資料顯示
-function Info({ label, value }: { label: string; value?: string | boolean | Date | null }) {
-  let displayValue: string;
-  if (value instanceof Date) {
-    displayValue = value.toLocaleDateString(); // 格式化 Date 物件
-  } else if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)) {
-    // 處理 ISO 格式的日期字串，轉換為本地化日期
-    displayValue = new Date(value).toLocaleDateString();
-  } else if (typeof value === 'boolean') {
-    displayValue = value ? '是' : '否'; // 轉換布林值
-  } else if (value === null || value === undefined || value.trim() === '') {
-    displayValue = '-'; // 處理 null, undefined, 或空字串
-  } else {
-    displayValue = value; // 顯示其他字串值
+/** 更穩健的值轉字串工具 */
+function normalizeDisplay(value?: string | boolean | Date | null): string {
+  if (value === null || value === undefined) return '-';
+  if (value instanceof Date) return value.toLocaleString();
+  if (typeof value === 'boolean') return value ? '是' : '否';
+  if (typeof value === 'string') {
+    // ISO 字串日期處理
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? value : d.toLocaleString();
+    }
+    const trimmed = value.trim();
+    return trimmed === '' ? '-' : trimmed;
   }
+  try {
+     return String(value);
+  } catch {
+     return '-';
+  }
+}
+
+function Info({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | boolean | Date | null;
+}) {
+  const displayValue = normalizeDisplay(value);
 
   return (
-    <div className="mb-2 mt-2 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 transition-colors">
-      <div className="text-xl font-bold text-teal-900 dark:text-teal-300 mb-1">{label}</div>
-      <div className="font-medium text-base text-gray-700 dark:text-gray-300">{displayValue}</div>
+    <div className="rounded-xl border bg-white/60 p-4 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-800/60 transition-colors">
+      <div className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+        {label}
+      </div>
+      <div className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words">
+        {displayValue}
+      </div>
+    </div>
+  );
+}
+
+function CaseSummaryCard({
+  caseNumber,
+  caseName,
+  ordinal,
+}: {
+  caseNumber?: string | null;
+  caseName?: string | null;
+  ordinal: number | string;
+}) {
+  return (
+    <div className="w-full rounded-2xl border bg-gradient-to-b from-white to-gray-50 p-0 shadow-lg dark:from-gray-900 dark:to-gray-850 dark:border-gray-700 transition-colors">
+      <div className="flex items-center justify-between rounded-t-2xl border-b px-6 py-4 dark:border-gray-700">
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          案件資訊
+        </h2>
+        <span className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-700/50 bg-teal-50 dark:bg-teal-900/20">
+          {`此證物為此案件的第 ${ordinal} 件`}
+        </span>
+      </div>
+
+      <div className="px-6 py-5">
+        <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-12">
+          <div className="sm:col-span-3">
+            <dt className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              案件編號
+            </dt>
+            <dd className="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100 break-words">
+              {normalizeDisplay(caseNumber ?? '')}
+            </dd>
+          </div>
+
+          <div className="sm:col-span-9">
+            <dt className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              案件名稱
+            </dt>
+            <dd className="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100 break-words">
+              {normalizeDisplay(caseName ?? '')}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="mt-6 border-t dark:border-gray-700" />
+      </div>
     </div>
   );
 }
@@ -43,26 +108,28 @@ export default function EvidenceDetailPage({
     variables: { id: numericId },
   });
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="text-center py-8 text-gray-700 dark:text-gray-200">載入中…</div>
+      <div className="py-10 text-center text-gray-700 dark:text-gray-200">
+        載入中…
+      </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <div className="text-center py-8 text-red-500 dark:text-red-400">
+      <div className="py-10 text-center text-red-600 dark:text-red-400">
         錯誤：{String(error.message)}
       </div>
     );
+  }
 
   const c = data.evidence;
 
   // --- 計算「第 N 件」：依 createdAt 升冪排序，再找目前證物的索引 ---
-  // 為了保險起見，複製陣列並過濾無效值，確保排序和查找的正確性
-  const evidencesInSameCase =
-    Array.isArray(c.case?.evidences) ? 
-      [...c.case.evidences].filter(e => e && e.createdAt) : 
-      [];
+  const evidencesInSameCase = Array.isArray(c.case?.evidences)
+    ? [...c.case.evidences].filter((e: any) => e && e.createdAt)
+    : [];
 
   evidencesInSameCase.sort(
     (a: any, b: any) =>
@@ -78,48 +145,32 @@ export default function EvidenceDetailPage({
   const isPickupText = c.is_Pickup ? '已領回' : '尚未領回';
 
   return (
-    <div className="p-6 space-y-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      <div className="flex flex-col md:flex-row justify-between items-center">
-        <p className="text-3xl font-semibold">{`證物編號：${c.evidenceNumber}`}</p>
-        <div className="flex items-center gap-3 mt-4 md:mt-0">
+    <div className="p-6 space-y-6 bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
+      {/* 頁首：標題 + 操作 */}
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <p className="text-2xl md:text-3xl font-semibold tracking-tight">
+          {`證物編號：${normalizeDisplay(c.evidenceNumber)}`}
+        </p>
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg">點擊轉換模式</span>
+            <span className="text-sm md:text-base">點擊轉換模式</span>
             <ModeToggle />
           </div>
-          {/* 編輯按鈕：指向證物的編輯頁面 */}
           <Button asChild variant="outline">
             <Link href={`/evidence/${id}/edit`}>編輯</Link>
           </Button>
-          {/* 返回列表按鈕：指向證物列表頁面 */}
           <Button asChild variant="outline">
             <Link href="/evidence">返回列表</Link>
           </Button>
         </div>
       </div>
-
-      {/* 優化後的案件資訊區塊 */}
-      <div className="w-full p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">案件資訊</h2>
-        <div className="space-y-3">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center text-lg">
-            <span className="font-semibold text-gray-600 dark:text-gray-300 sm:w-28 flex-shrink-0">案件編號：</span>
-            <span className="text-gray-800 dark:text-gray-100 break-words mt-1 sm:mt-0">{c.case.caseNumber}</span>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center text-lg">
-            <span className="font-semibold text-gray-600 dark:text-gray-300 sm:w-28 flex-shrink-0">案件名稱：</span>
-            <span className="text-gray-800 dark:text-gray-100 break-words mt-1 sm:mt-0">{c.case.caseName}</span>
-          </div>
-        </div>
-
-        {/* 證物在案件中的順序，加上更顯眼的樣式 */}
-        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-          <span className="text-lg md:text-xl font-bold text-teal-700 dark:text-teal-400">
-            {`此證物為此案件的第 ${ordinal} 件證物`}
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+      {/* 優化後：案件資訊卡片 */}
+      <CaseSummaryCard
+        caseNumber={c.case?.caseNumber}
+        caseName={c.case?.caseName}
+        ordinal={ordinal}
+      />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Info label="證物交付者" value={c.deliveryName} />
         <Info label="接收證物鑑識人員" value={c.receiverName} />
         <Info label="證物編號" value={c.evidenceNumber} />
@@ -127,11 +178,9 @@ export default function EvidenceDetailPage({
         <Info label="證物廠牌" value={c.evidenceBrand} />
         <Info label="證物廠牌序號" value={c.evidenceSerialNo} />
         <Info label="原始證物編號" value={c.evidenceOriginalNo} />
-        {/* photoFront 和 photoBack 在你的 GraphQL 查詢中沒有被獲取，所以在此移除 */}
-        {/* <Info label="證物正面照" value={c.photoFront} /> */}
-        {/* <Info label="證物反面照" value={c.photoBack} /> */}
+        {/* 如需顯示照片可將 GraphQL 查詢補上 photoFront/photoBack，並自訂圖片卡片樣式 */}
         <Info label="鑑識後是否已領回" value={isPickupText} />
-        <Info label="建立時間" value={c.createdAt} /> {/* Info component 已優化以處理日期格式 */}
+        <Info label="建立時間" value={c.createdAt} />
       </div>
     </div>
   );

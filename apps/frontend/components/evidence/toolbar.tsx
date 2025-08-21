@@ -15,7 +15,7 @@ export default function EvidenceToolbar({
       return (
       <div className="flex items-center justify-between gap-2 py-2">
             <Input
-            placeholder="搜尋案件編號 / 案件摘要 / 送件單位 / 送件人"
+            placeholder="搜尋證物編號 / 證物類型 / 證物交付人 / 證物接受鑑識人員"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="max-w-xl"
@@ -25,7 +25,7 @@ export default function EvidenceToolbar({
             <ModeToggle />
             </div>
             <Button asChild variant="destructive">
-            <Link href="/evidence/new">新增案件</Link>
+            <Link href="/evidence/new">新增證物</Link>
             </Button>
             <Button asChild  variant="secondary">
             <Link href="/">返回首頁</Link>

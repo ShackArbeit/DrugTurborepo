@@ -10,7 +10,9 @@ import { useState } from "react"
 
 
 const EvidenceHomePage = () => {
-  const {data,error,loading}=useQuery(GET_ALL_EVIDENCES);
+  const {data,error,loading}=useQuery(GET_ALL_EVIDENCES,{
+      fetchPolicy: 'cache-and-network'
+  });
   const [removeEvidence]=useMutation(REMOVE_EVIDENCE);
   const [q,setQ]=useState('');
   const list: EvidenceRow[] = data?.evidences ?? [];

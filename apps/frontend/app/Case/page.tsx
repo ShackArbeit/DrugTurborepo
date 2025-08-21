@@ -9,7 +9,9 @@ import {useState} from 'react'
 
 
 export default function CasePage() {
-     const {data,error,loading}=useQuery(GET_ALL_CAESE)
+     const {data,error,loading}=useQuery(GET_ALL_CAESE,{
+         fetchPolicy: 'cache-and-network'
+     })
      const [removeCase] = useMutation(REMOVE_CASE);
      const [q, setQ] = useState('');
      
