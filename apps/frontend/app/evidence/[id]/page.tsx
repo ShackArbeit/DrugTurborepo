@@ -159,6 +159,9 @@ export default function EvidenceDetailPage({
           <Button asChild variant="outline">
             <Link href={`/evidence/${id}/edit`}>編輯</Link>
           </Button>
+          <Button asChild >
+            <Link href={`/case/${c.case.id}`}>查看對應案件</Link>
+          </Button>
           <Button asChild variant="outline">
             <Link href="/evidence">返回列表</Link>
           </Button>

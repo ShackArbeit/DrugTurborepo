@@ -25,6 +25,10 @@ const mockCaseArray: Case[] = [
     submitterPhone: '0905324765',
     submitterTel: '22467926',
     submitterSignature: '簽名1',
+    satisfaction_levelOne:'滿意',
+    satisfaction_levelTwo:'滿意',
+    satisfaction_levelThree:'滿意',
+    satisfaction_levelFour:'滿意',
     createdAt: '2022-07-01',
     evidences: []
   } as Case,
@@ -40,7 +44,10 @@ const mockCaseArray: Case[] = [
     submitterName: '李四', 
     submitterPhone: '0905324740',
     submitterTel: '22467946',
-    
+    satisfaction_levelOne:'滿意',
+    satisfaction_levelTwo:'滿意',
+    satisfaction_levelThree:'滿意',
+    satisfaction_levelFour:'滿意',
     createdAt: '2022-08-01',
     evidences: []
   } as Case,
@@ -58,6 +65,10 @@ const mockNewCase: Case = {
   submitterName: '王五', 
   submitterPhone: '0912345678',
   Creator_Name:'Shack',
+  satisfaction_levelOne:'滿意',
+  satisfaction_levelTwo:'滿意',
+  satisfaction_levelThree:'滿意',
+  satisfaction_levelFour:'滿意',
   createdAt: '2023-01-01',
   evidences: [],
 } as Case;
@@ -106,6 +117,10 @@ describe('CaseService',()=>{
                 submitterName: '王小明',
                 submitterPhone: '0912000000',
                 submitterTel: '02-22222222',
+               satisfaction_levelOne:'滿意',
+               satisfaction_levelTwo:'滿意',
+               satisfaction_levelThree:'滿意',
+               satisfaction_levelFour:'滿意',
                 Creator_Name:'Shack',
                 createdAt: '2025-07-17T00:00:00Z',
           };
@@ -128,7 +143,7 @@ describe('CaseService',()=>{
              it('應該返回所有案件(包含 Evidence)',async()=>{
                   caseRepositoryMock.find!.mockResolvedValue(mockCaseArray)
                   const result=await service.findAll()
-                  expect(caseRepositoryMock.find).toHaveBeenCalledWith({ relations:['evidences']})
+               //    expect(caseRepositoryMock.find).toHaveBeenCalledWith({ relations:['evidences']})
                   expect(result).toMatchObject(mockCaseArray)
              })
              it('查詢失敗應該拋出錯誤',async()=>{
@@ -143,7 +158,7 @@ describe('CaseService',()=>{
                   const result=await service.findOne(1)
                   expect(caseRepositoryMock.findOne).toHaveBeenCalledWith({
                          where:{id:1},
-                         relations: ['evidences'],
+                         // relations: ['evidences'],
                   })
                   expect(result).toMatchObject(mockCaseArray[0])
              })

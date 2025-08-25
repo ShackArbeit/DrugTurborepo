@@ -1,9 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException, ExecutionContext } from "@nestjs/common";
 import { Evidence } from "../evidence.entity";
-import { Case } from "../../Case/case.entity";
-import { ExaminResult } from "../../ExaminResult/examin_result.entity";
-import { PickUp } from "../../Pickup/pickup.entity";
+import { Case } from "../../Case/case.entity";;
 import { EvidenceService } from "../evidence.service";
 import { EvidenceResolver } from "../evidence.resolver";
 import { CreateEvidenceInput, UpdateEvidenceInput } from "../dto/evidence.inputs";
@@ -41,40 +39,13 @@ describe("開始測試 Evidence Resolver", () => {
     submitterName: "小王",
     submitterPhone: "0912000000",
     submitterTel: "02-2222222",
+    satisfaction_levelOne:'滿意',
+    satisfaction_levelTwo:'滿意',
+    satisfaction_levelThree:'滿意',
+    satisfaction_levelFour:'滿意',
     createdAt: "2025-07-17T00:00:00Z",
     evidences: [],
   };
-
-  const mockExaminResult: ExaminResult = {
-    id: 77,
-    evidence_id: 1,
-    is_rejected: false,
-    is_beyond_scope: false,
-    is_lab_related: false,
-    is_info_complete: true,
-    examiner_name: "李警官",
-    remarks: "OK",
-    created_at: "2025-07-18T11:00:00Z",
-    updated_at: "2025-07-18T11:00:00Z",
-    evidences: undefined,
-  } as ExaminResult;
-
-  const mockPickup: PickUp = {
-    id: 88,
-    evidence_id: 1,
-    pickup_time: "2025-07-18T12:00:00Z",
-    photo_path: "photo.jpg",
-    satisfaction_levelOne: "非常滿意",
-    satisfaction_levelTwo: "非常滿意",
-    satisfaction_levelThree: "非常滿意",
-    satisfaction_levelFour: "非常滿意",
-    receiver_name: "張警員",
-    delivery_signature: "交付簽章",
-    receiver_signature: "領回簽章",
-    remarks: "備註",
-    created_at: "2025-07-18T12:00:00Z",
-    evidences: undefined,
-  } as PickUp;
 
   const mockEvidence: Evidence = {
     id: 1,
@@ -88,10 +59,16 @@ describe("開始測試 Evidence Resolver", () => {
     photoBack: "back.jpg",
     deliveryName: "交付簽章",
     receiverName: "收件簽章",
+    photoFront2:'photo3.jpg',
+    photoBack2:'photo4.jpg',
+    is_rejected:true,
+    is_beyond_scope:true,
+    is_info_complete:true,
+    deliveryName2:'簽章A2',
+    receiverName2:'簽章B2',
     createdAt: "2025-07-18T10:00:00Z",
     case: mockCase,
-    examinResult: mockExaminResult,
-    pickup: mockPickup,
+   
   } as Evidence;
 
   const mockEvidenceList: Evidence[] = [mockEvidence];
@@ -107,6 +84,13 @@ describe("開始測試 Evidence Resolver", () => {
     photoBack: "back2.jpg",
     deliveryName: "簽章A",
     receiverName: "簽章B",
+     photoFront2:'photo3.jpg',
+    photoBack2:'photo4.jpg',
+    is_rejected:true,
+    is_beyond_scope:true,
+    is_info_complete:true,
+    deliveryName2:'簽章A2',
+    receiverName2:'簽章B2',
     is_Pickup:true,
     createdAt: '2025-08-14T10:00:00.000Z'
   };
@@ -153,7 +137,7 @@ describe("開始測試 Evidence Resolver", () => {
   });
 
   it("EvidenceResolver 應該要被定義的", () => {
-    expect(resolver).toBeDefined();
+    expect(resolver).toBeDefined()
   });
 
   describe("測試回傳全部結果", () => {
@@ -161,10 +145,6 @@ describe("開始測試 Evidence Resolver", () => {
       const result = await resolver.findAll();
       expect(evidenceService.findAllEvidence).toHaveBeenCalled();
       expect(result).toEqual(mockEvidenceList);
-      expect(result[0].examinResult).toBeDefined();
-      expect(result[0].examinResult?.id).toBe(77);
-      expect(result[0].pickup).toBeDefined();
-      expect(result[0].pickup?.id).toBe(88);
     });
   });
 

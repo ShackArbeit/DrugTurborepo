@@ -4,8 +4,6 @@ import { Repository } from "typeorm";
 import { NotFoundException } from "@nestjs/common";
 import { Evidence } from "../evidence.entity";
 import { Case } from "../../Case/case.entity";
-import { ExaminResult } from "../../ExaminResult/examin_result.entity";
-import { PickUp } from "../../Pickup/pickup.entity";
 import { EvidenceService } from "../evidence.service";
 import { CreateEvidenceInput,UpdateEvidenceInput } from "../dto/evidence.inputs";
 
@@ -26,38 +24,14 @@ const caseData:Case={
         submitterName: '王小明',
         submitterPhone: '0911222333',
         submitterTel: '02-33334444',
+        satisfaction_levelOne:'滿意',
+       satisfaction_levelTwo:'滿意',
+       satisfaction_levelThree:'滿意',
+       satisfaction_levelFour:'滿意',
         createdAt: '2025-07-18T00:00:00Z',
         evidences: [],
 }
-const examinResult: ExaminResult = {
-      id: 77,
-      evidence_id: 1,
-      is_rejected: false,
-      is_beyond_scope: false,
-      is_lab_related: false,
-      is_info_complete: true,
-      examiner_name: '李警官',
-      remarks: '結果OK',
-      created_at: '2025-07-18T11:00:00Z',
-      updated_at: '2025-07-18T11:00:00Z',
-      evidences: undefined,
-} as ExaminResult;
 
-const pickup: PickUp = {
-      id: 88,
-      evidence_id: 1,
-      pickup_time: '2025-07-18T12:00:00Z',
-      photo_path: 'photo.jpg',
-      satisfaction_levelOne: '非常滿意',
-      satisfaction_levelTwo: '非常滿意',
-      satisfaction_levelThree: '非常滿意',
-      satisfaction_levelFour: '非常滿意',
-      receiver_Name: '張警員',
-      delivery_Name: '交付簽章',
-      remarks: '備註',
-      created_at: '2025-07-18T12:00:00Z',
-      evidences: undefined,
-} as PickUp;
 
 const evidenceArray: Evidence[] = [
   {
@@ -73,10 +47,16 @@ const evidenceArray: Evidence[] = [
       deliveryName: '交付簽章',
       receiverName: '收件簽章',
       is_Pickup:true,
+      photoFront2:'photo3.jpg',
+      photoBack2:'photo4.jpg',
+      is_rejected:true,
+      is_beyond_scope:true,
+      is_info_complete:true,
+      deliveryName2:'簽章A2',
+      receiverName2:'簽章B2',
       createdAt: '2025-07-18T10:00:00Z',
       case: caseData,
-      examinResult: examinResult,
-      pickup: pickup,
+      
   } as Evidence,
 ];
 
@@ -93,6 +73,13 @@ const newEvidence: Evidence = {
       photoBack: 'photo3.jpg',
       deliveryName: '交付簽章2',
       receiverName: '收件簽章2',
+      photoFront2:'photo3.jpg',
+      photoBack2:'photo4.jpg',
+      is_rejected:true,
+      is_beyond_scope:true,
+      is_info_complete:true,
+      deliveryName2:'簽章A2',
+      receiverName2:'簽章B2',
       createdAt: '2025-07-31T10:00:00Z', 
 } as Evidence;
 //  開始測試
@@ -138,6 +125,13 @@ describe('開始測試 Evidence Service',()=>{
                       deliveryName: '簽章A',
                       receiverName: '簽章B',
                       is_Pickup:true,
+                      photoFront2:'front.jpg',
+                      photoBack2:'back.jpg',
+                      is_rejected:true,
+                      is_beyond_scope:true,
+                      is_info_complete:true,
+                      deliveryName2:'簽章A2',
+                      receiverName2:'簽章B2',
                       createdAt: '2025-08-14T10:00:00.000Z'
                }
          it('應該成功建立新的 Evidence',async()=>{
@@ -164,12 +158,8 @@ describe('開始測試 Evidence Service',()=>{
          it('應該是正常查詢到所有結果',async()=>{
                evidenceRepositoryMock.find!.mockResolvedValue(evidenceArray)
                const result=await service.findAllEvidence()
-               expect(evidenceRepositoryMock.find).toHaveBeenCalledWith({relations:['case','examinResult']})
+               expect(evidenceRepositoryMock.find).toHaveBeenCalledWith({relations:['case']})
                expect(result).toMatchObject(evidenceArray)
-               expect(result[0].examinResult).toBeDefined()
-               expect(result[0].examinResult?.id).toBe(77)
-               expect(result[0].pickup).toBeDefined()
-               expect(result[0].pickup?.id).toBe(88)
                expect(result[0].case?.id).toBe(1)
          })
          it('查詢失敗應該拋出錯誤',async()=>{
@@ -183,7 +173,7 @@ describe('開始測試 Evidence Service',()=>{
                 const result=await service.findOneEvidence(1)
                 expect(evidenceRepositoryMock.findOne).toHaveBeenCalledWith({
                      where:{id:1},
-                     relations:['case','examinResult']
+                     relations:['case']
                 })
                 expect(result).toMatchObject(evidenceArray[0])
            })

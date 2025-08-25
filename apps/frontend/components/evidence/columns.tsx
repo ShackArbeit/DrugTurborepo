@@ -13,14 +13,14 @@ export type EvidenceRow={
       receiveTime: string;
       deliveryName:string;
       receiverName: string;
-       createdAt: string | Date;
+      createdAt: string | Date;
       is_Pickup:boolean;
 }
 
 export const EvidenceColumns=(onDelete:(id:number)=>void):ColumnDef<EvidenceRow>[]=>{
       return [
-             {accessorKey:'deliveryName', header:'證物交付者'},
-             {accessorKey:'receiverName', header:'接受證物鑑識人員姓名'},
+            //  {accessorKey:'deliveryName', header:'證物交付者'},
+            //  {accessorKey:'receiverName', header:'接受證物鑑識人員姓名'},
              {accessorKey:'evidenceNumber', header:'證物編號'},
              {accessorKey:'evidenceType', header:'證物類型'},
              {accessorKey:'evidenceBrand', header:'證物廠牌名稱'},

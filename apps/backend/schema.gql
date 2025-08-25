@@ -20,6 +20,10 @@ type Case {
   evidences: [Evidence]!
   id: Int!
   prefixLetter: String!
+  satisfaction_levelFour: String!
+  satisfaction_levelOne: String!
+  satisfaction_levelThree: String!
+  satisfaction_levelTwo: String!
   section: String!
   submitUnit: String!
   submitterName: String!
@@ -46,6 +50,18 @@ input CreateCaseInput {
 
   """冠字"""
   prefixLetter: String
+
+  """滿意度四"""
+  satisfaction_levelFour: String
+
+  """滿意度一"""
+  satisfaction_levelOne: String
+
+  """滿意度三"""
+  satisfaction_levelThree: String
+
+  """滿意度二"""
+  satisfaction_levelTwo: String
 
   """股別"""
   section: String
@@ -76,6 +92,9 @@ input CreateEvidenceInput {
   """交付人姓名"""
   deliveryName: String!
 
+  """交付人姓名2"""
+  deliveryName2: String!
+
   """證物廠牌"""
   evidenceBrand: String!
 
@@ -94,58 +113,35 @@ input CreateEvidenceInput {
   """是否已領回"""
   is_Pickup: Boolean!
 
+  """鑑識能力"""
+  is_beyond_scope: Boolean!
+
+  """鑑識項目"""
+  is_info_complete: Boolean!
+
+  """相關項目"""
+  is_lab_related: Boolean!
+
+  """退件"""
+  is_rejected: Boolean!
+
   """反面照片"""
   photoBack: String!
+
+  """反面照片2"""
+  photoBack2: String!
 
   """正面照片"""
   photoFront: String!
 
+  """正面照片2"""
+  photoFront2: String!
+
   """收件人姓名"""
   receiverName: String!
-}
 
-input CreateExaminResultsInput {
-  """建立時間"""
-  created_at: String!
-
-  """對應證物的 evidenceNumber"""
-  evidenceNumber: String!
-
-  """鑑識人員姓名"""
-  examiner_name: String!
-
-  """是否超出鑑識能力範圍"""
-  is_beyond_scope: Boolean!
-
-  """案件資訊是否完整"""
-  is_info_complete: Boolean!
-
-  """是否屬於實驗室鑑識項目"""
-  is_lab_related: Boolean!
-
-  """是否應退件"""
-  is_rejected: Boolean!
-
-  """備註欄"""
-  remarks: String
-
-  """最後更新時間"""
-  updated_at: String!
-}
-
-input CreatePickupInput {
-  created_at: String!
-  delivery_Name: String!
-  evidence_number: String!
-  photo_path: String!
-  pickup_time: String!
-  receiver_Name: String!
-  receiver_name: String!
-  remarks: String!
-  satisfaction_levelFour: String!
-  satisfaction_levelOne: String!
-  satisfaction_levelThree: String!
-  satisfaction_levelTwo: String!
+  """收件人姓名2"""
+  receiverName2: String!
 }
 
 type Evidence {
@@ -153,32 +149,24 @@ type Evidence {
   caseId: Int!
   createdAt: String!
   deliveryName: String!
+  deliveryName2: String!
   evidenceBrand: String
   evidenceNumber: String!
   evidenceOriginalNo: String
   evidenceSerialNo: String
   evidenceType: String!
-  examinResult: ExaminResult!
   id: Int!
   is_Pickup: Boolean!
-  photoBack: String
-  photoFront: String
-  pickup: PickUp!
-  receiverName: String!
-}
-
-type ExaminResult {
-  created_at: String!
-  evidence_id: Int!
-  evidences: Evidence!
-  examiner_name: String!
-  id: Int!
   is_beyond_scope: Boolean!
   is_info_complete: Boolean!
   is_lab_related: Boolean!
   is_rejected: Boolean!
-  remarks: String
-  updated_at: String!
+  photoBack: String
+  photoBack2: String
+  photoFront: String
+  photoFront2: String
+  receiverName: String!
+  receiverName2: String!
 }
 
 type Mutation {
@@ -186,10 +174,6 @@ type Mutation {
 
   """建立新證物"""
   createEvidence(input: CreateEvidenceInput!): Evidence!
-
-  """建立新檢測結果"""
-  createExaminResult(input: CreateExaminResultsInput!): ExaminResult!
-  createPickup(input: CreatePickupInput!): PickUp!
   login(authInput: AuthInput!): AuthResponse!
   register(data: RegisterUserInput!): User!
   removeCase(id: Int!): Boolean!
@@ -199,13 +183,6 @@ type Mutation {
     """證物 ID"""
     id: Int!
   ): Boolean!
-
-  """刪除指定檢測結果"""
-  removeExaminResult(
-    """檢測結果 ID"""
-    id: Int!
-  ): Boolean!
-  removePickup(id: Int!): Boolean!
   removeUser(id: Int!): Boolean!
   updateCase(id: Int!, input: UpdateCaseInput!): Case!
 
@@ -215,30 +192,6 @@ type Mutation {
     id: Int!
     input: UpdateEvidenceInput!
   ): Evidence!
-
-  """更新指定檢測結果"""
-  updateExaminResult(
-    """檢測結果 ID"""
-    id: Int!
-    input: UpdateExaminResultsInput!
-  ): ExaminResult!
-  updatePickup(id: Int!, input: UpdatePickupInput!): PickUp!
-}
-
-type PickUp {
-  created_at: String!
-  delivery_Name: String!
-  evidence_id: Int!
-  evidences: Evidence!
-  id: Int!
-  photo_path: String!
-  pickup_time: String!
-  receiver_Name: String!
-  remarks: String
-  satisfaction_levelFour: String!
-  satisfaction_levelOne: String!
-  satisfaction_levelThree: String!
-  satisfaction_levelTwo: String!
 }
 
 type Query {
@@ -253,22 +206,7 @@ type Query {
 
   """取得所有證物"""
   evidences: [Evidence!]!
-
-  """依 ID 取得單一檢測結果"""
-  examinResult(
-    """檢測結果 ID"""
-    id: Int!
-  ): ExaminResult!
-
-  """取得所有檢測結果"""
-  examinResults: [ExaminResult!]!
   me: User!
-
-  """依 ID 取得單一領回紀錄"""
-  pickup(id: Int!): PickUp!
-
-  """取得所有領回紀錄"""
-  pickups: [PickUp!]!
   userById(id: Int!): User
   users: [User!]!
 }
@@ -296,6 +234,18 @@ input UpdateCaseInput {
 
   """冠字"""
   prefixLetter: String
+
+  """滿意度四"""
+  satisfaction_levelFour: String
+
+  """滿意度一"""
+  satisfaction_levelOne: String
+
+  """滿意度三"""
+  satisfaction_levelThree: String
+
+  """滿意度二"""
+  satisfaction_levelTwo: String
 
   """股別"""
   section: String
@@ -326,6 +276,9 @@ input UpdateEvidenceInput {
   """交付人姓名"""
   deliveryName: String
 
+  """交付人姓名2"""
+  deliveryName2: String
+
   """證物廠牌"""
   evidenceBrand: String
 
@@ -344,58 +297,35 @@ input UpdateEvidenceInput {
   """是否已領回"""
   is_Pickup: Boolean
 
+  """鑑識能力"""
+  is_beyond_scope: Boolean
+
+  """鑑識項目"""
+  is_info_complete: Boolean
+
+  """相關項目"""
+  is_lab_related: Boolean
+
+  """退件"""
+  is_rejected: Boolean
+
   """反面照片"""
   photoBack: String
+
+  """反面照片2"""
+  photoBack2: String
 
   """正面照片"""
   photoFront: String
 
+  """正面照片2"""
+  photoFront2: String
+
   """收件人姓名"""
   receiverName: String
-}
 
-input UpdateExaminResultsInput {
-  """建立時間"""
-  created_at: String
-
-  """對應證物的 evidenceNumber"""
-  evidenceNumber: String
-
-  """鑑識人員姓名"""
-  examiner_name: String
-
-  """是否超出鑑識能力範圍"""
-  is_beyond_scope: Boolean
-
-  """案件資訊是否完整"""
-  is_info_complete: Boolean
-
-  """是否屬於實驗室鑑識項目"""
-  is_lab_related: Boolean
-
-  """是否應退件"""
-  is_rejected: Boolean
-
-  """備註欄"""
-  remarks: String
-
-  """最後更新時間"""
-  updated_at: String
-}
-
-input UpdatePickupInput {
-  created_at: String
-  delivery_Name: String
-  evidence_number: String
-  photo_path: String
-  pickup_time: String
-  receiver_Name: String
-  receiver_name: String
-  remarks: String
-  satisfaction_levelFour: String
-  satisfaction_levelOne: String
-  satisfaction_levelThree: String
-  satisfaction_levelTwo: String
+  """收件人姓名2"""
+  receiverName2: String
 }
 
 type User {

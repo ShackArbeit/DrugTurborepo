@@ -67,6 +67,28 @@ export class Case{
       submitterTel?:string
 
 
+      // 以下為滿意度部分，將原本在 PickUp 的滿意度是針對證物，現在讓所有的滿意度只針對案件
+      // 滿意度一
+      @Field({ nullable: false })
+      @Column()
+      satisfaction_levelOne: string;
+
+      // 滿意度二
+      @Field({ nullable: false })
+      @Column()
+      satisfaction_levelTwo: string;
+
+      // 滿意度三
+      @Field({ nullable: false })
+      @Column()
+      satisfaction_levelThree: string;
+
+      // 滿意度四
+      @Field({ nullable: false })
+      @Column()
+      satisfaction_levelFour: string;
+
+
       // 建立時間 (ISO 格式字串)
       @Field()
       @Column({ type: 'text', name: 'created_at' })

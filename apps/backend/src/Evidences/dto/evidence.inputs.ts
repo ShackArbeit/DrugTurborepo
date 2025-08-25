@@ -35,15 +35,9 @@ export class CreateEvidenceInput{
 
      //證物反面照片
      @Field(()=>String,{description:'反面照片',nullable:false})
-     photoBack:string
+     photoBack:string  
 
-    //  // 收件時間
-    //  @Field(()=>String,{description:'收件時間',nullable:false})
-    //  receiveTime:string
-
-     // 建立時間
-     @Field(()=>String,{description:'建立時間',nullable:false})
-     createdAt:string
+    
 
     // 交付人姓名
     @Field(()=>String,{description:'交付人姓名',nullable:false})
@@ -53,9 +47,42 @@ export class CreateEvidenceInput{
     @Field(()=>String,{description:'收件人姓名',nullable:false})
     receiverName:string
 
+    // 以上是證物從行政人員交付給鑑識人員的部分
+
+    // 以下是證物見識完成後，由行政人員交付給原單位的部分
+    @Field(()=>String,{description:'正面照片2',nullable:false})
+    photoFront2:string
+
+    @Field(()=>String,{description:'反面照片2',nullable:false})
+    photoBack2:string
+
+    @Field(()=>Boolean,{description:'退件',nullable:false})
+    is_rejected:boolean
+
+    @Field(()=>Boolean,{description:'相關項目',nullable:false})
+    is_lab_related:boolean
+
+    @Field(()=>Boolean,{description:'鑑識能力',nullable:false})
+    is_beyond_scope:boolean
+
+
+    @Field(()=>Boolean,{description:'鑑識項目',nullable:false})
+    is_info_complete:boolean
+
+    @Field(()=>String,{description:'交付人姓名2',nullable:false})
+    deliveryName2:string
+
+    @Field(()=>String,{description:'收件人姓名2',nullable:false})
+    receiverName2:string
+
     // 是否已領回
     @Field(()=>Boolean,{description:'是否已領回',nullable:false})
     is_Pickup:boolean;
+
+
+    // 建立時間
+     @Field(()=>String,{description:'建立時間',nullable:false})
+     createdAt:string
 }
 
 // 第二部分是讓輸入後的欄位可以更新的部分

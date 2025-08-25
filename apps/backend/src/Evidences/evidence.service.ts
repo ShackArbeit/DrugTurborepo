@@ -45,14 +45,14 @@ export class EvidenceService{
 
      // 找尋所有的證物
      async findAllEvidence():Promise<Evidence[]>{
-          return this.evidenceRepository.find({relations:['case','examinResult']})
+          return this.evidenceRepository.find({relations:['case']})
      }
 
      // 找尋特定證物
      async findOneEvidence(id:number):Promise<Evidence>{
              const EvidenceItem=await this.evidenceRepository.findOne({
                    where:{id},
-                   relations:['case','examinResult']
+                   relations:['case']
              })
              if(!EvidenceItem){
                     throw new NotFoundException(`Evidence with id ${id} not found`)

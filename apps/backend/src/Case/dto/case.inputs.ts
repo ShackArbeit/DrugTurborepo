@@ -48,6 +48,22 @@ export class CreateCaseInput{
       @Field(()=>String,{description:'送件人電話',nullable:false})
       submitterTel:string
 
+     // 滿意度一
+     @Field(()=>String,{description:'滿意度一',nullable:true})
+     satisfaction_levelOne:string
+
+     // 滿意度二
+     @Field(()=>String,{description:'滿意度二',nullable:true})
+     satisfaction_levelTwo:string
+
+     // 滿意度三
+     @Field(()=>String,{description:'滿意度三',nullable:true})
+     satisfaction_levelThree:string
+
+     // 滿意度四
+     @Field(()=>String,{description:'滿意度四',nullable:true})
+     satisfaction_levelFour:string
+
       // 建立時間
       @Field(()=>String,{description:'建立時間',nullable: true, defaultValue: null})
       createdAt:string

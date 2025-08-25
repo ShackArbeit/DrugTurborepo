@@ -4,9 +4,9 @@ import { CreateCaseInput, UpdateCaseInput } from "../dto/case.inputs";
 import { Case } from "../case.entity";
 import { CaseResolver } from "../case.resolver";
 import { CaseService } from "../case.service";
+import { EvidenceService } from "../../Evidences/evidence.service";
 import { GqlAuthGuard } from "../../Auth/gql-auth.guard";
 import { RolesGuard } from "../../Auth/role/roles.guard";
-
 
 const mockGqlAuthGuard = {
   canActivate: jest.fn((context: ExecutionContext) => true),
@@ -23,6 +23,7 @@ type MockType<T> = {
 describe("開始測試 Case Resolver", () => {
   let resolver: CaseResolver;
   let caseService: MockType<CaseService>;
+  let evidenceService: MockType<EvidenceService>;
 
   const existingCase: Case = {
     id: 1,
@@ -36,8 +37,12 @@ describe("開始測試 Case Resolver", () => {
     submitterName: "王小明",
     submitterPhone: "0912345678",
     submitterTel: "02-1111111",
-    Creator_Name:'Shack',
+    Creator_Name: "Shack",
     createdAt: "2025-07-17T00:00:00Z",
+    satisfaction_levelOne:'滿意',
+    satisfaction_levelTwo:'滿意',
+    satisfaction_levelThree:'滿意',
+    satisfaction_levelFour:'滿意',
     evidences: [],
   } as Case;
 
@@ -54,11 +59,15 @@ describe("開始測試 Case Resolver", () => {
     submitterName: "李小華",
     submitterPhone: "0922333444",
     submitterTel: "02-2222222",
-    Creator_Name:'Shack',
+    Creator_Name: "Shack",
+    satisfaction_levelOne:'滿意',
+    satisfaction_levelTwo:'滿意',
+    satisfaction_levelThree:'滿意',
+    satisfaction_levelFour:'滿意',
     createdAt: "2025-07-18T00:00:00Z",
   };
 
-  const createCase: Case = { ...createInput, id: 2, evidences: [] } as Case;
+  const createdCase: Case = { ...createInput, id: 2, evidences: [] } as Case;
 
   const updateInput: UpdateCaseInput = {
     caseName: "新增修改的案件名稱",
@@ -70,36 +79,40 @@ describe("開始測試 Case Resolver", () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     caseService = {
-      createCase: jest.fn().mockResolvedValue(createCase),
-      findAll: jest.fn().mockReturnValue(caseList),
+      createCase: jest.fn().mockResolvedValue(createdCase),
+      findAll: jest.fn().mockResolvedValue(caseList),
       findOne: jest.fn().mockImplementation((id: number) => {
         if (id === existingCase.id) {
           return Promise.resolve(existingCase);
-        } else {
-          return Promise.reject(new NotFoundException(`Case with id ${id} not found`));
         }
+        return Promise.reject(new NotFoundException(`Case with id ${id} not found`));
       }),
       update: jest.fn().mockImplementation((id: number, input: UpdateCaseInput) => {
         if (id === existingCase.id) {
           return Promise.resolve(updatedCase);
-        } else {
-          return Promise.reject(new NotFoundException(`ID 為 ${id} 的案件不存在，無法更新。`));
         }
+        return Promise.reject(new NotFoundException(`ID 為 ${id} 的案件不存在，無法更新。`));
       }),
       remove: jest.fn().mockImplementation((id: number) => {
-        if (id === existingCase.id) {
-          return Promise.resolve(true);
-        } else {
-          return Promise.resolve(false);
-        }
+        if (id === existingCase.id) return Promise.resolve(true);
+        return Promise.resolve(false);
       }),
+    };
+
+    // 這裡不需要真的用到，但必須提供同一個 DI token，避免 Nest 解析失敗
+    evidenceService = {
+      // 如果你的 Resolver 內有呼叫其它方法，再補 mock：
+      // findByCaseId: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CaseResolver,
         { provide: CaseService, useValue: caseService },
+        { provide: EvidenceService, useValue: evidenceService }, // ★ 關鍵：補上 EvidenceService provider
         { provide: GqlAuthGuard, useValue: mockGqlAuthGuard },
         { provide: RolesGuard, useValue: mockRolesGuard },
       ],
@@ -129,6 +142,7 @@ describe("開始測試 Case Resolver", () => {
 
     it("找不到結果而拋出錯誤", async () => {
       await expect(resolver.findOne(99)).rejects.toThrow(NotFoundException);
+      expect(caseService.findOne).toHaveBeenCalledWith(99);
     });
   });
 
@@ -136,7 +150,7 @@ describe("開始測試 Case Resolver", () => {
     it("應該要回傳新增成功的結果", async () => {
       const result = await resolver.createCase(createInput);
       expect(caseService.createCase).toHaveBeenCalledWith(createInput);
-      expect(result).toEqual(createCase);
+      expect(result).toEqual(createdCase);
     });
   });
 
