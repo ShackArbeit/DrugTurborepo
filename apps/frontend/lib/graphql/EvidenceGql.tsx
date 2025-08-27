@@ -14,6 +14,12 @@ export const GET_ALL_EVIDENCES=gql`
                   createdAt
                   deliveryName
                   receiverName
+                  is_rejected
+                  is_beyond_scope
+                  is_lab_related
+                  is_info_complete
+                  deliveryName2
+                  receiverName2
                   is_Pickup
                   case{
                   id 
@@ -38,6 +44,12 @@ export const GET_EVIDENCE_BY_ID = gql`
       deliveryName
       receiverName
       createdAt
+      is_rejected
+      is_beyond_scope
+      is_lab_related
+      is_info_complete
+      deliveryName2
+      receiverName2
       is_Pickup
       case {
         id

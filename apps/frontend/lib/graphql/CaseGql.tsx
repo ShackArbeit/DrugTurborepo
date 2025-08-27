@@ -15,6 +15,10 @@ export const GET_ALL_CAESE=gql`
                 submitterName
                 submitterPhone
                 submitterTel
+                satisfaction_levelOne
+                satisfaction_levelTwo
+                satisfaction_levelThree
+                satisfaction_levelFour
                 year
                 createdAt  
        }
@@ -33,6 +37,10 @@ export const GET_CASE_BY_ID=gql`
             submitterName
             submitterPhone
             submitterTel
+            satisfaction_levelOne
+            satisfaction_levelTwo
+            satisfaction_levelThree
+            satisfaction_levelFour
             createdAt
             year
             prefixLetter

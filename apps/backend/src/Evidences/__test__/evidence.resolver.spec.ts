@@ -62,6 +62,7 @@ describe("開始測試 Evidence Resolver", () => {
     photoFront2:'photo3.jpg',
     photoBack2:'photo4.jpg',
     is_rejected:true,
+    is_lab_related:true,
     is_beyond_scope:true,
     is_info_complete:true,
     deliveryName2:'簽章A2',

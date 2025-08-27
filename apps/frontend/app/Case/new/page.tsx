@@ -6,7 +6,6 @@ import { useMutation } from '@apollo/client';
 import { CREATE_CASE } from '@/lib/graphql/CaseGql';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Form,
   FormField,
@@ -15,9 +14,20 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ModeToggle } from '@/components/mode-toggle';
+import { Separator } from '@/components/ui/separator';
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 
@@ -46,6 +56,10 @@ const schema = z.object({
     .max(2100, '年度不可大於 2100'),
   prefixLetter: z.string().optional(),
   section: z.string().optional(),
+  satisfaction_levelOne: z.string().optional(),
+  satisfaction_levelTwo: z.string().optional(),
+  satisfaction_levelThree: z.string().optional(),
+  satisfaction_levelFour: z.string().optional()
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -66,6 +80,10 @@ export default function NewCasePage() {
       submitterPhone: '',
       submitterTel: '',
       Creator_Name: '',
+      satisfaction_levelOne: '',
+      satisfaction_levelTwo: '',
+      satisfaction_levelThree: '',
+      satisfaction_levelFour: '',
       year: new Date().getFullYear(),
       prefixLetter: '',
       section: '',
@@ -86,7 +104,8 @@ export default function NewCasePage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6">
-      <div className="sticky top-0 z-10 -mx-4 mb-6 border-b bg-white/80 px-4 py-3 backdrop-blur dark:bg-gray-900/80">
+      {/* 頂部工具列 */}
+      <div className="sticky top-0 z-10 -mx-4 mb-6 border-b bg-white/90 px-4 py-3 backdrop-blur dark:bg-gray-900/80 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">新增案件</h1>
@@ -103,17 +122,13 @@ export default function NewCasePage() {
       </div>
 
       {/* 表單卡片 */}
-      <div className="rounded-2xl border bg-gradient-to-b from-white to-gray-50 p-6 shadow-sm dark:from-gray-900 dark:to-gray-900/60 dark:border-gray-800">
+      <div className="rounded-2xl border bg-white dark:bg-gray-900 p-6 shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            
             {/* 區塊：基本識別 */}
-            <section>
-              <div className="mb-4 flex items-end justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold tracking-tight">基本識別</h2>
-                  <p className="text-sm text-muted-foreground">案件編號與類型等必填資訊。</p>
-                </div>
-              </div>
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold">基本識別</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -124,7 +139,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：113-北-000123" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -137,7 +152,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：毒品、詐欺、車禍…" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -150,7 +165,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例如 2025-08-14T10:00:00.000Z" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -158,26 +173,23 @@ export default function NewCasePage() {
                   control={form.control}
                   name="caseName"
                   render={({ field }) => (
-                    <FormItem className="md:col-span-1">
+                    <FormItem>
                       <FormLabel>案件摘要 *</FormLabel>
                       <FormControl>
-                        <Input placeholder="輸入案件摘要/描述…" {...field}  />
+                        <Input placeholder="輸入案件摘要/描述…" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
               </div>
             </section>
 
-            <div className="border-t dark:border-gray-800" />
+            <Separator />
 
             {/* 區塊：編號屬性 */}
-            <section>
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold tracking-tight">編號屬性</h2>
-                <p className="text-sm text-muted-foreground">年度、冠字與股別。</p>
-              </div>
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold">編號屬性</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <FormField
                   control={form.control}
@@ -188,7 +200,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input type="number" placeholder="例：2025" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -201,7 +213,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：北、桃、刑…" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -214,21 +226,18 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：偵二、鑑識股…" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
               </div>
             </section>
 
-            <div className="border-t dark:border-gray-800" />
+            <Separator />
 
             {/* 區塊：送件資訊 */}
-            <section>
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold tracking-tight">送件資訊</h2>
-                <p className="text-sm text-muted-foreground">送件單位、送件人與聯絡方式。</p>
-              </div>
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold">送件資訊</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -239,7 +248,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：某某分局偵查隊" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -252,7 +261,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：王小明" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -265,7 +274,7 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：0912-345-678" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -278,21 +287,18 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="例：02-1234-5678" {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
               </div>
             </section>
 
-            <div className="border-t dark:border-gray-800" />
+            <Separator />
 
             {/* 區塊：其他 */}
-            <section>
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold tracking-tight">其他</h2>
-                <p className="text-sm text-muted-foreground">建立資料者等補充欄位。</p>
-              </div>
+            <section className="space-y-4">
+              <h2 className="text-lg font-semibold">其他</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -303,7 +309,101 @@ export default function NewCasePage() {
                       <FormControl>
                         <Input placeholder="姓名..." {...field} />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage className="text-sm text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* 滿意度選單 */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="satisfaction_levelOne"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>案件承辦速度</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="請選擇…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="excellent">很滿意</SelectItem>
+                            <SelectItem value="good">滿意</SelectItem>
+                            <SelectItem value="normal">普通</SelectItem>
+                            <SelectItem value="bad">有點不滿意</SelectItem>
+                            <SelectItem value="worse">非常不滿意</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="satisfaction_levelTwo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>證物處理準確性</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="請選擇…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="excellent">很滿意</SelectItem>
+                          <SelectItem value="good">滿意</SelectItem>
+                          <SelectItem value="normal">普通</SelectItem>
+                          <SelectItem value="bad">有點不滿意</SelectItem>
+                          <SelectItem value="worse">非常不滿意</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="satisfaction_levelThree"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>行政人員服務態度</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="請選擇…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="excellent">很滿意</SelectItem>
+                          <SelectItem value="good">滿意</SelectItem>
+                          <SelectItem value="normal">普通</SelectItem>
+                          <SelectItem value="bad">有點不滿意</SelectItem>
+                          <SelectItem value="worse">非常不滿意</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="satisfaction_levelFour"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>符合貴單位要求</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="請選擇…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="excellent">很滿意</SelectItem>
+                          <SelectItem value="good">滿意</SelectItem>
+                          <SelectItem value="normal">普通</SelectItem>
+                          <SelectItem value="bad">有點不滿意</SelectItem>
+                          <SelectItem value="worse">非常不滿意</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -312,7 +412,7 @@ export default function NewCasePage() {
 
             {/* 提交列 */}
             <div className="flex items-center justify-center gap-3 pt-2">
-              <Button type="submit" disabled={loading} className="min-w-28">
+              <Button type="submit" disabled={loading} className="min-w-28 bg-gradient-to-r from-teal-500 to-blue-500 text-white hover:opacity-90">
                 送出
               </Button>
               <Button

@@ -19,7 +19,7 @@ export default function CasePage() {
   const keyword = q.trim().toLowerCase();
   const rows: CaseRow[] = keyword
     ? list.filter((it: any) =>
-        [it.caseNumber, it.caseName, it.submitUnit, it.submitterName]
+        [it.caseNumber, it.caseName, it.submitUnit, it.submitterName,it.Creator_Name,it.caseType]
           .some((f: string) => (f ?? '').toLowerCase().includes(keyword))
       )
     : list;

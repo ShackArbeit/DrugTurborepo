@@ -43,11 +43,11 @@ export default function Home() {
           </header>
           {/* 主要內容區塊 */}
           <section
-          className='mt-12 grid gap-6 sm:grid-cols-2  '
+          className='mt-12 grid sm:grid-cols-3  gap-5'
            aria-label="快速導引"
           >
             {/* 案件相關 */}
-          <Card className='group hover:shadow-lg transition-shadow relative'>
+          <Card className='group hover:shadow-lg transition-shadow relative '>
                <CardHeader className='space-y-2 text-center'>
                     <div className='relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto'>
                          <FolderSearch className="h-5 w-5 text-primary" aria-hidden/>
@@ -79,23 +79,6 @@ export default function Home() {
                         </Link>
                    </Button>
                </CardContent>
-          </Card>
-           {/* 鑑識結果相關 */}
-          <Card className="group hover:shadow-lg transition-shadow relative">
-            <CardHeader className="space-y-2 text-center">
-              <div className="relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
-                <FlaskConical className="h-5 w-5 text-primary" aria-hidden />
-              </div>
-              <CardTitle className="text-lg">鑑識結果相關</CardTitle>
-              <CardDescription>結果登錄、比對、報表匯出</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild variant="destructive" className="w-full">
-                <Link href="/exam-results" aria-label="前往鑑識結果相關頁">
-                  前往鑑識結果頁面
-                </Link>
-              </Button>
-            </CardContent>
           </Card>
            {/* 使用者登入 */}
           <Card className="group hover:shadow-lg transition-shadow md:col-span-1 sm:col-span-2 md:col-span-1 relative">

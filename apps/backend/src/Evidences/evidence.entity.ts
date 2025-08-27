@@ -64,7 +64,7 @@ export class  Evidence{
 
       @Field({nullable:true})
       @Column({type:"text",name:"photo_back2",nullable:true})
-      photoBack2?: string; // 證物反面照片  
+      photoBack2?: string; // 證物反面照片
 
       // 是否應退件
       @Field()
@@ -96,24 +96,21 @@ export class  Evidence{
       @Column({ type: 'text', name: 'receiver_Name2', nullable: true })
       receiverName2?: string; 
 
+      // 是否已領回
+      @Field()
+      @Column({type:'boolean',name:'is_Pickup'})
+      is_Pickup:boolean;
+
       @Field()
       @Column({ type: 'text', name: 'created_at' })
       createdAt: string;         // 建立時間
-
-
-
-     
 
       // 關聯欄位：多個證物屬於一個案件
       @Field(() => Case)
       @ManyToOne(() => Case, caseEntity => caseEntity.evidences, { onDelete: 'CASCADE' })
       @JoinColumn({ name: 'case_id' })      // 明確指定外鍵欄位名稱為 case_id
       case: Case;
-
-      // 是否已領回
-      @Field()
-      @Column({type:'boolean',name:'is_Pickup'})
-      is_Pickup:boolean;
+  
 
      
 }
