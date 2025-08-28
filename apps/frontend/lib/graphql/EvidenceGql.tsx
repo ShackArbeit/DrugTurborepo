@@ -51,16 +51,16 @@ export const GET_EVIDENCE_BY_ID = gql`
       deliveryName2
       receiverName2
       is_Pickup
+      photoFront
+      photoBack
+      photoFront2
+      photoBack2
       case {
         id
         caseName
         caseNumber
         submitUnit
-        evidences {
-          id
-          evidenceNumber
-          createdAt
-        }
+        evidences { id evidenceNumber createdAt }
       }
     }
   }
