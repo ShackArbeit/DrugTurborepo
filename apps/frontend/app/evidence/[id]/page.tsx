@@ -44,7 +44,6 @@ function Info({
   return (
     <div
       className={[
-        // 外框：玻璃感＋細膩邊框＋柔和陰影
         'group relative rounded-2xl border p-4 md:p-5',
         'bg-white/70 dark:bg-zinc-900/60 backdrop-blur',
         'border-zinc-200/70 dark:border-zinc-800',
@@ -58,14 +57,11 @@ function Info({
         className="pointer-events-none absolute inset-y-0 left-0 w-1 rounded-l-2xl bg-gradient-to-b from-teal-400/70 to-sky-400/70 dark:from-teal-500/50 dark:to-sky-500/50 opacity-60 group-hover:opacity-100 transition-opacity"
       />
       <div className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3">
-        {/* 標籤：小型大寫、字距、弱化色 */}
         <div className="md:col-span-4 lg:col-span-5 xl:col-span-4">
           <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
             {label}
           </div>
         </div>
-
-        {/* 值：加粗、可換行、長字斷行，並加上微型幽靈背景增進可讀性 */}
         <div className="md:col-span-8 lg:col-span-7 xl:col-span-8">
           <div
             className={[
@@ -229,52 +225,103 @@ export default function EvidenceDetailPage({
         ordinal={ordinal}
       />
 
-      {/* 欄位區：使用密度更高的網格；小螢幕 1 欄、sm 2 欄、xl 3 欄 */}
-      
-           {/* 區塊一：基本資訊 */}
-        <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-            基本資訊(交付證物給鑑識人員)
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            <Info label="證物編號" value={c.evidenceNumber} />
-            <Info label="證物類型" value={c.evidenceType} />
-            <Info label="證物廠牌" value={c.evidenceBrand} />
-            <Info label="證物廠牌序號" value={c.evidenceSerialNo} />
-            <Info label="原始證物編號" value={c.evidenceOriginalNo} />
-            <Info label="證物交付者" value={c.deliveryName} />
-            <Info label="接收證物鑑識人員" value={c.receiverName} />
-          </div>
-        </section>
+      {/* 區塊一：基本資訊（交付證物給鑑識人員） */}
+      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+          基本資訊（交付證物給鑑識人員）
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <Info label="證物編號" value={c.evidenceNumber} />
+          <Info label="證物類型" value={c.evidenceType} />
+          <Info label="證物廠牌" value={c.evidenceBrand} />
+          <Info label="證物廠牌序號" value={c.evidenceSerialNo} />
+          <Info label="原始證物編號" value={c.evidenceOriginalNo} />
+          <Info label="證物交付者" value={c.deliveryName} />
+          <Info label="接收證物鑑識人員" value={c.receiverName} />
+        </div>
+      </section>
 
-        {/* 區塊二：鑑識與退件/領回相關 */}
-        <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-            鑑識與退件狀態(返回證物給原單位)
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            <Info label="是否超出鑑識能力範圍" value={c.is_beyond_scope} />
-            <Info label="是否屬於實驗室鑑識項目" value={c.is_lab_related} />
-            <Info label="案件資訊是否完整" value={c.is_info_complete} />
-            <Info label="是否應退件" value={c.is_rejected} />
-            <Info label="返回證物者" value={c.deliveryName2} />
-            <Info label="原單位領回證物者" value={c.receiverName2} />
-            <Info
-              label="鑑識後是否已領回"
-              value={isPickupText}
-              className="sm:col-span-2 xl:col-span-1"
-            />
-          </div>
-        </section>
+      {/* 區塊二：照片（接收與領回） */}
+      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+          照片（接收與領回）
+        </h3>
 
-        {/* 區塊三：建立時間 */}
-        <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-4">
-            建立資訊
-          </h3>
-          <Info label="建立時間" value={c.createdAt} />
-        </section>
-      
+        {!(c.photoFront || c.photoBack || c.photoFront2 || c.photoBack2) ? (
+          <div className="text-sm text-muted-foreground">尚無照片</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {c.photoFront && (
+              <div>
+                <div className="text-sm mb-1 text-muted-foreground">正面（接收）</div>
+                <img
+                  src={c.photoFront}
+                  alt="正面"
+                  className="w-full h-auto rounded-xl object-contain bg-black/5"
+                />
+              </div>
+            )}
+            {c.photoBack && (
+              <div>
+                <div className="text-sm mb-1 text-muted-foreground">反面（接收）</div>
+                <img
+                  src={c.photoBack}
+                  alt="反面"
+                  className="w-full h-auto rounded-xl object-contain bg-black/5"
+                />
+              </div>
+            )}
+            {c.photoFront2 && (
+              <div>
+                <div className="text-sm mb-1 text-muted-foreground">正面 2（領回）</div>
+                <img
+                  src={c.photoFront2}
+                  alt="正面 2"
+                  className="w-full h-auto rounded-xl object-contain bg-black/5"
+                />
+              </div>
+            )}
+            {c.photoBack2 && (
+              <div>
+                <div className="text-sm mb-1 text-muted-foreground">反面 2（領回）</div>
+                <img
+                  src={c.photoBack2}
+                  alt="反面 2"
+                  className="w-full h-auto rounded-xl object-contain bg-black/5"
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* 區塊三：鑑識與退件狀態（返回證物給原單位） */}
+      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+          鑑識與退件狀態（返回證物給原單位）
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <Info label="是否超出鑑識能力範圍" value={c.is_beyond_scope} />
+          <Info label="是否屬於實驗室鑑識項目" value={c.is_lab_related} />
+          <Info label="案件資訊是否完整" value={c.is_info_complete} />
+          <Info label="是否應退件" value={c.is_rejected} />
+          <Info label="返回證物者" value={c.deliveryName2} />
+          <Info label="原單位領回證物者" value={c.receiverName2} />
+          <Info
+            label="鑑識後是否已領回"
+            value={isPickupText}
+            className="sm:col-span-2 xl:col-span-1"
+          />
+        </div>
+      </section>
+
+      {/* 區塊四：建立時間 */}
+      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-4">
+          建立資訊
+        </h3>
+        <Info label="建立時間" value={c.createdAt} />
+      </section>
     </div>
   );
 }
