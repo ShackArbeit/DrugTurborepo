@@ -43,4 +43,11 @@ export class CaseService{
             const response=await this.caseRepository.delete(id)
             return (response.affected ?? 0) > 0;
       }
+
+      // ✅ 依案件編號找單一案件（不含關聯也沒關係，evidenceCount 由 Resolver 算）
+      async findByCaseNumber(caseNumber: string): Promise<Case | null> {
+               return this.caseRepository.findOne({
+                 where: { caseNumber }, 
+      });
+  }
 }

@@ -79,4 +79,13 @@ export const REMOVE_CASE = gql`
   }
 `;
 
-
+// 查詢特定案件所存在的證物數量
+export const CASE_BY_CASE_NUMBER=gql`
+     query CaseByCaseNumber($caseNumber:String!){
+           caseByCaseNumber(caseNumber:$caseNumber){
+                id
+                caseNumber
+                evidenceCount
+           }
+    }
+`

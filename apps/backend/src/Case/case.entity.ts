@@ -98,4 +98,8 @@ export class Case{
       @Field(()=>[Evidence],{nullable:"items"})
       @OneToMany(()=>Evidence,EvidenceEntity=>EvidenceEntity.case,{cascade:true})
       evidences?:Evidence[]
+
+      // ✅ 動態欄位：不入庫，由 Resolver 計算
+      @Field(() => Int, { description: '此案件目前的證物數量（動態欄位'})
+      evidenceCount?:number
 }

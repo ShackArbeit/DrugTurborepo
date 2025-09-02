@@ -17,6 +17,9 @@ type Case {
   caseNumber: String!
   caseType: String!
   createdAt: String!
+
+  """此案件目前的證物數量（動態欄位"""
+  evidenceCount: Int!
   evidences: [Evidence]!
   id: Int!
   prefixLetter: String!
@@ -196,6 +199,7 @@ type Mutation {
 
 type Query {
   case(id: Int!): Case!
+  caseByCaseNumber(caseNumber: String!): Case
   cases: [Case!]!
 
   """依 ID 取得單一證物"""

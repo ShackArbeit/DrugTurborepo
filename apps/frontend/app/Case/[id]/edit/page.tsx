@@ -512,7 +512,6 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
                                 <SelectGroup>
-                                  <SelectLabel>評分</SelectLabel>
                                   <SelectItem value="很滿意">很滿意</SelectItem>
                                   <SelectItem value="滿意">滿意</SelectItem>
                                   <SelectItem value="普通">普通</SelectItem>

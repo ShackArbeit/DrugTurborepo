@@ -24,6 +24,7 @@ export class CaseResolver {
     return this.caseService.findOne(id);
   }
 
+
   /** 建立案件 */
   @Mutation(() => Case)
   createCase(@Args('input') input: CreateCaseInput): Promise<Case> {
@@ -50,4 +51,17 @@ export class CaseResolver {
     const list = await this.evidenceService.findByCaseId(c.id);
     return Array.isArray(list) ? list : [];
   }
+
+   // ✅ 新增：用 caseNumber 查單一案件（前端會用這支）
+   @Query(()=>Case,{name: 'caseByCaseNumber', nullable: true })
+   caseByCaseNumber(@Args('caseNumber') caseNumber:string){
+        return this.caseService.findByCaseNumber(caseNumber)
+   }
+
+   // ✅ 新增：動態欄位 evidenceCount（不入庫）
+   @ResolveField(()=>Int,{name:'evidenceCount'})
+   evidenceCount(@Parent() c: Case):Promise<number>{
+       return this.evidenceService.countByCaseNumber(c.caseNumber
+       )
+   }
 }

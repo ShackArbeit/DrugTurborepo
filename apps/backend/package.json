@@ -29,6 +29,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "@vercel/blob": "^1.1.1",
     "bcryptjs": "^3.0.2",
     "graphql": "^16.11.0",
     "passport": "^0.7.0",

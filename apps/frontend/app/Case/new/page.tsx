@@ -2,8 +2,8 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@apollo/client';
-import { CREATE_CASE } from '@/lib/graphql/CaseGql';
+import { useMutation,useQuery } from '@apollo/client';
+import { CREATE_CASE,GET_ALL_CAESE } from '@/lib/graphql/CaseGql';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import {
@@ -19,17 +19,95 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-
+} from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Separator } from '@/components/ui/separator';
+import {useEffect} from 'react'
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
+
+ const selectTriggerClass = 'w-full rounded-2xl ';
+
+
+function genCaseNumber(now:Date,count:number){
+    const yyyy = now.getFullYear().toString()
+    const mm = '0'+now.getMonth().toString()
+    const seq = String(count+1).padStart(3,'0')
+    return `${yyyy}${mm}0${seq}`
+}
+
+const ProsecutorList01 = [
+  '臺灣高等檢察署',
+  '臺灣高等法院',
+  '最高檢察署',
+  '最高法院',
+  '臺灣高等檢察署智慧財產分署',
+  '智慧財產法院',
+  '臺灣基隆地方檢察署',
+  '臺灣基隆地方法院',
+  '臺灣宜蘭地方檢察署',
+  '臺灣宜蘭地方法院',
+  '臺灣臺北地方檢察署',
+  '臺灣臺北地方法院',
+  '臺灣士林地方檢察署',
+  '臺灣士林地方法院',
+  '臺灣新北地方檢察署',
+  '臺灣新北地方法院',
+  '臺灣桃園地方檢察署',
+  '臺灣桃園地方法院',
+  '臺灣新竹地方檢察署',
+  '臺灣新竹地方法院',
+  '臺灣苗栗地方檢察署',
+  '臺灣苗栗地方法院',
+  '臺灣臺中地方檢察署',
+  '臺灣高等檢察署臺中檢察分署',
+  '臺灣臺中地方法院',
+  '臺灣高等法院臺中分院',
+  '臺灣彰化地方檢察署',
+  '臺灣彰化地方法院',
+  '臺灣南投地方檢察署',
+  '臺灣南投地方法院',
+  '臺灣雲林地方檢察署',
+  '臺灣雲林地方法院',
+  '臺灣嘉義地方檢察署',
+  '臺灣嘉義地方法院',
+  '臺灣臺南地方檢察署',
+  '臺灣高等檢察署臺南檢察分署',
+  '臺灣臺南地方法院',
+  '臺灣高等法院臺南分院',
+  '臺灣高雄地方檢察署',
+  '臺灣高等檢察署高雄檢察分署',
+  '臺灣高雄地方法院',
+  '臺灣高等法院高雄分院',
+  '臺灣高雄少年及家事法院',
+  '臺灣橋頭地方檢察署',
+  '臺灣橋頭地方法院',
+  '臺灣屏東地方檢察署',
+  '臺灣屏東地方法院',
+  '臺灣澎湖地方檢察署',
+  '臺灣澎湖地方法院',
+  '臺灣花蓮地方檢察署',
+  '臺灣高等檢察署花蓮檢察分署',
+  '臺灣花蓮地方法院',
+  '臺灣高等法院花蓮分院',
+  '臺灣臺東地方檢察署',
+  '臺灣臺東地方法院',
+  '福建連江地方檢察署',
+  '福建連江地方法院',
+  '福建金門地方檢察署',
+  '福建高等檢察署金門檢察分署',
+  '福建金門地方法院',
+  '福建高等法院金門分院',
+];
+const prosecutorOptions = Array.from(new Set(ProsecutorList01))
+    .sort((a, b) => a.localeCompare(b, 'zh-Hant-TW'));
+
+
 
 const schema = z.object({
   caseNumber: z.string().min(1, '案件編號為必填'),
@@ -67,6 +145,8 @@ type FormValues = z.infer<typeof schema>;
 export default function NewCasePage() {
   const router = useRouter();
   const [createCase, { loading }] = useMutation(CREATE_CASE);
+  const {data, loading:allLoading}= useQuery(GET_ALL_CAESE)
+  const totalCount = data?.cases?.length ?? 0;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -90,6 +170,17 @@ export default function NewCasePage() {
     },
     mode: 'onBlur',
   });
+
+  useEffect(()=>{
+        if(allLoading)return 
+        const state = form.getFieldState('caseNumber')
+         const alreadyHas = form.getValues('caseNumber');
+         if( !state.isDirty && (!alreadyHas || alreadyHas.trim()==='')){
+             const auto = genCaseNumber(new Date,totalCount)
+             form.setValue('caseNumber',auto,{shouldValidate: true, shouldDirty: false })
+         }
+           
+  },[allLoading,totalCount,form])
 
   const onSubmit = async (v: FormValues) => {
     try {
@@ -137,7 +228,7 @@ export default function NewCasePage() {
                     <FormItem>
                       <FormLabel>案件編號 *</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：113-北-000123" {...field} />
+                         <Input placeholder="例：113-北-000123" {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -149,9 +240,29 @@ export default function NewCasePage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>案件類型 *</FormLabel>
-                      <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                              <SelectTrigger className={selectTriggerClass}>
+                                <SelectValue placeholder="請選擇案件類型…" />
+                              </SelectTrigger>
+                              <SelectContent className="rounded-xl">
+                                <SelectGroup>
+                                  <SelectItem value="詐欺">詐欺</SelectItem>
+                                  <SelectItem value="毒品">毒品</SelectItem>
+                                  <SelectItem value="殺人">殺人</SelectItem>
+                                  <SelectItem value="竊盜">竊盜</SelectItem>
+                                  <SelectItem value="強盜">強盜</SelectItem>
+                                  <SelectItem value="傷害">傷害</SelectItem>
+                                  <SelectItem value="侵害性自主">侵害性自主</SelectItem>
+                                  <SelectItem value="妨害公共秩序">妨害公共秩序</SelectItem>
+                                  <SelectItem value="槍砲彈藥刀械管制">槍砲彈藥刀械管制</SelectItem>
+                                  <SelectItem value="洗錢">洗錢</SelectItem>
+                                  <SelectItem value="其他">其他</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                      {/* <FormControl>
                         <Input placeholder="例：毒品、詐欺、車禍…" {...field} />
-                      </FormControl>
+                      </FormControl> */}
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
@@ -245,9 +356,23 @@ export default function NewCasePage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>送件單位 *</FormLabel>
-                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                              <SelectTrigger className={selectTriggerClass}>
+                                <SelectValue placeholder="請選擇送件單位…" />
+                              </SelectTrigger>
+                              <SelectContent className="rounded-xl">
+                                <SelectGroup>
+                                 <ScrollArea>
+                                    {prosecutorOptions.map((name)=>(
+                                       <SelectItem key={name} value={name}>{name}</SelectItem>
+                                    ))}
+                                 </ScrollArea>                   
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                      {/* <FormControl>
                         <Input placeholder="例：某某分局偵查隊" {...field} />
-                      </FormControl>
+                      </FormControl> */}
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
@@ -315,99 +440,7 @@ export default function NewCasePage() {
                 />
               </div>
 
-              {/* 滿意度選單 */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="satisfaction_levelOne"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>案件承辦速度</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="請選擇…" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="excellent">很滿意</SelectItem>
-                            <SelectItem value="good">滿意</SelectItem>
-                            <SelectItem value="normal">普通</SelectItem>
-                            <SelectItem value="bad">有點不滿意</SelectItem>
-                            <SelectItem value="worse">非常不滿意</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="satisfaction_levelTwo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>證物處理準確性</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="請選擇…" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="excellent">很滿意</SelectItem>
-                          <SelectItem value="good">滿意</SelectItem>
-                          <SelectItem value="normal">普通</SelectItem>
-                          <SelectItem value="bad">有點不滿意</SelectItem>
-                          <SelectItem value="worse">非常不滿意</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="satisfaction_levelThree"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>行政人員服務態度</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="請選擇…" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="excellent">很滿意</SelectItem>
-                          <SelectItem value="good">滿意</SelectItem>
-                          <SelectItem value="normal">普通</SelectItem>
-                          <SelectItem value="bad">有點不滿意</SelectItem>
-                          <SelectItem value="worse">非常不滿意</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="satisfaction_levelFour"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>符合貴單位要求</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="請選擇…" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="excellent">很滿意</SelectItem>
-                          <SelectItem value="good">滿意</SelectItem>
-                          <SelectItem value="normal">普通</SelectItem>
-                          <SelectItem value="bad">有點不滿意</SelectItem>
-                          <SelectItem value="worse">非常不滿意</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            
             </section>
 
             {/* 提交列 */}
