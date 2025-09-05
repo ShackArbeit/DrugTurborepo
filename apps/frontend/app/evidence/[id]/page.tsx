@@ -210,10 +210,10 @@ export default function EvidenceDetailPage({
             <Link href={`/evidence/${id}/edit`}>編輯</Link>
           </Button>
           <Button asChild>
-            <Link href={`/case/${c.case.id}`}>查看對應案件</Link>
+            <Link href={`/case/${c.case.id}`}>返回對應案件</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/evidence">返回列表</Link>
+            <Link href="/evidence">返回證物列表</Link>
           </Button>
         </div>
       </div>
@@ -305,14 +305,25 @@ export default function EvidenceDetailPage({
           <Info label="是否屬於實驗室鑑識項目" value={c.is_lab_related} />
           <Info label="案件資訊是否完整" value={c.is_info_complete} />
           <Info label="是否應退件" value={c.is_rejected} />
-          <Info label="返回證物者" value={c.deliveryName2} />
-          <Info label="原單位領回證物者" value={c.receiverName2} />
+          <Info label="返回證物者 ( 行政人員 )" value={c.deliveryName2} />
+          <Info label="原單位領回證物者 ( 送件單位 )" value={c.receiverName2} />
           <Info
             label="鑑識後是否已領回"
             value={isPickupText}
             className="sm:col-span-2 xl:col-span-1"
           />
         </div>
+      </section>
+      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
+          <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+              證物監管鏈紀錄表
+          </h3>
+          <Button asChild>
+            <Link  
+            href={`/evidence/${id}/print`}
+            target="_blank"
+            rel="noopener noreferrer">列印</Link>     
+          </Button>
       </section>
 
       {/* 區塊四：建立時間 */}

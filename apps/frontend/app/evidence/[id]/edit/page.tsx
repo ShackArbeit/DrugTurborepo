@@ -7,10 +7,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
+import { Switch } from '@/components/ui/switch';
 import { GET_EVIDENCE_BY_ID, UPDATE_EVIDENCE } from '@/lib/graphql/EvidenceGql';
-import { GET_ALL_CAESE } from '@/lib/graphql/CaseGql';
-
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +30,7 @@ import { uploadImage } from '@/lib/uploadImage';
 
 const schema = z.object({
   caseNumber: z.string().min(1),
+  caseName:z.string().min(1),
   evidenceNumber: z.string().min(1),
   evidenceType: z.string().min(1),
   evidenceBrand: z.string().min(1),
@@ -56,20 +55,93 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
-function filterRecentCases(cases: any[] = []) {
-  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 45);
-  return cases
-    .filter((c) => {
-      const t = Date.parse(c.createdAt);
-      return !Number.isNaN(t) && new Date(t) >= cutoff;
-    })
-    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+// function filterRecentCases(cases: any[] = []) {
+//   const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 45);
+//   return cases
+//     .filter((c) => {
+//       const t = Date.parse(c.createdAt);
+//       return !Number.isNaN(t) && new Date(t) >= cutoff;
+//     })
+//     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+// }
+
+function normalizeDisplay(value?: string | boolean | Date | null): string {
+  if (value === null || value === undefined) return '-';
+  if (value instanceof Date) return value.toLocaleString();
+  if (typeof value === 'boolean') return value ? '是' : '否';
+  if (typeof value === 'string') {
+    // ISO 字串日期處理
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? value : d.toLocaleString();
+    }
+    const trimmed = value.trim();
+    return trimmed === '' ? '-' : trimmed;
+  }
+  try {
+    return String(value);
+  } catch {
+    return '-';
+  }
 }
+
+
+
+function CaseSummaryCard({
+  caseNumber,
+  caseName,
+}: {
+  caseNumber?: string | null;
+  caseName?: string | null;
+}) {
+  return (
+    <div className="w-full rounded-3xl border overflow-hidden shadow-sm dark:border-zinc-800">
+      {/* 漸層標頭，與徽章 */}
+      <div className="relative">
+        <div className="h-20 md:h-24 bg-gradient-to-r from-sky-200 via-teal-200 to-emerald-200 dark:from-sky-900/40 dark:via-teal-900/30 dark:to-emerald-900/30" />
+        <div className="absolute inset-0 flex items-end">
+          <div className="w-full px-6 pb-4 md:pb-5 flex items-center justify-between">
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+              案件資訊
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-6 py-5 bg-white/70 dark:bg-zinc-900/60 backdrop-blur">
+        <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-12">
+          <div className="sm:col-span-3">
+            <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
+              所對應案件編號
+            </dt>
+            <dd className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 break-words">
+              {normalizeDisplay(caseNumber ?? '')}
+            </dd>
+          </div>
+
+          <div className="sm:col-span-9">
+            <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
+              案件名稱
+            </dt>
+            <dd className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 break-words">
+              {normalizeDisplay(caseName ?? '')}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="mt-6 border-t border-zinc-200/70 dark:border-zinc-800" />
+      </div>
+    </div>
+  );
+}
+
+
 
 export default function EditEvidencePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const numericId = Number(id);
   const router = useRouter();
+
 
   // 1) 單一證物
   const { data, loading: qLoading, error } = useQuery(GET_EVIDENCE_BY_ID, {
@@ -78,10 +150,10 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
   });
 
   // 2) 案件清單（45 天內）
-  const { data: casesData, loading: casesLoading, error: casesError } = useQuery(GET_ALL_CAESE, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const selectableCases = filterRecentCases(casesData?.cases ?? []);
+  // const { data: casesData, loading: casesLoading, error: casesError } = useQuery(GET_ALL_CAESE, {
+  //   fetchPolicy: 'cache-and-network',
+  // });
+  // const selectableCases = filterRecentCases(casesData?.cases ?? []);
 
   // 3) 更新 mutation
   const [updateEvidence, { loading: mLoading }] = useMutation(UPDATE_EVIDENCE);
@@ -91,6 +163,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     resolver: zodResolver(schema),
     defaultValues: {
       caseNumber: '',
+      caseName:'',
       evidenceNumber: '',
       evidenceType: '',
       evidenceBrand: '',
@@ -121,6 +194,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     if (!e || form.formState.isDirty) return;
     form.reset({
       caseNumber: e.case?.caseNumber ?? '',
+      caseName: e.case?.caseName??'',
       evidenceNumber: e.evidenceNumber ?? '',
       evidenceType: e.evidenceType ?? '',
       evidenceBrand: e.evidenceBrand ?? '',
@@ -158,6 +232,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     try {
       const payload = {
         caseNumber: v.caseNumber,
+        caseName:v.caseName,
         evidenceNumber: v.evidenceNumber,
         evidenceType: v.evidenceType,
         evidenceBrand: v.evidenceBrand,
@@ -240,13 +315,13 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
 
       {/* 內容 */}
       <div className="mx-auto w-full max-w-5xl px-4 py-6">
-        {casesError && (
+        {/* {casesError && (
           <Alert variant="destructive" className="mb-6 rounded-2xl">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>無法取得案件清單</AlertTitle>
             <AlertDescription className="break-words">{String(casesError.message)}</AlertDescription>
           </Alert>
-        )}
+        )} */}
 
         <Card className="rounded-3xl border shadow-sm">
           <CardHeader className="space-y-1">
@@ -258,37 +333,13 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
             <form id="edit-evidence-form" onSubmit={form.handleSubmit(onSubmit)}>
               <CardContent className="space-y-10">
                 {/* 對應案件 */}
-                <section className="space-y-4">
-                  <h3 className="text-lg font-semibold">對應案件</h3>
-                  <FormField
-                    control={form.control}
-                    name="caseNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>對應案件 *</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                            disabled={casesLoading || selectableCases.length === 0}
-                          >
-                            <SelectTrigger><SelectValue placeholder="請選擇案件（45 天內）" /></SelectTrigger>
-                            <SelectContent className="rounded-xl">
-                              {selectableCases.map((c: any) => (
-                                <SelectItem key={c.id} value={c.caseNumber}>
-                                  {`${c.caseNumber} — ${c.caseName}（${new Date(c.createdAt).toLocaleDateString()}）`}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </section>
+                   <CaseSummaryCard
+                    caseNumber={e.case?.caseNumber}
+                     caseName={e.case?.caseName}
+            />
+                 
 
-                <Separator />
+              <Separator />
 
                 {/* 基本資訊 */}
                 <section className="space-y-6">
@@ -319,20 +370,46 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                 </section>
 
                 <Separator />
+                 {/* 鑑識結果範圍 */}
+                <section className="space-y-6">
+                  <h3 className="text-lg font-semibold">鑑識結果</h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {[
+                      ['is_rejected', '是否應退件'],
+                      ['is_beyond_scope', '是否超出鑑識能力範圍'],
+                      ['is_lab_related', '是否屬於實驗室鑑識項目'],
+                      ['is_info_complete', ' 案件資訊是否完整'],
+                    ].map(([name, label]) => (
+                      <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
+                        <FormItem className='mb-4'>
+                          <FormLabel className='mb-4'>{label}</FormLabel>
+                             <FormControl>
+                                 <Switch
+                                     checked={!!field.value}
+                                     onCheckedChange={field.onChange}
+                                 />              
+                             </FormControl> 
+                          <FormMessage />
+                        </FormItem>
+                      )}/>
+                    ))}
+                  </div>
+                </section>
+
 
                 {/* 交付與接收 */}
                 <section className="space-y-6">
                   <h3 className="text-lg font-semibold">交付與接收</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {[
-                      ['deliveryName', '交付人姓名 *', '王小明'],
-                      ['receiverName', '接收人姓名 *', '趙技佐'],
-                      ['deliveryName2', '返回證物者（可選）', '李大華'],
-                      ['receiverName2', '原單位領回者（可選）', '林技士'],
+                      ['deliveryName', '交付人姓名 ( 行政人員 ) *', '王小明'],
+                      ['receiverName', '接收人姓名 ( 送件單位 ) *', '趙技佐'],
+                      ['deliveryName2', '返回證物者（ 行政人員 ）', '李大華'],
+                      ['receiverName2', '原單位領回者（ 送件單位 ）', '林技士'],
                     ].map(([name, label, ph]) => (
                       <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{label}</FormLabel>
+                        <FormItem className='mb-4'>
+                          <FormLabel className='mb-4'>{label}</FormLabel>
                           <FormControl><Input placeholder={String(ph)} {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>

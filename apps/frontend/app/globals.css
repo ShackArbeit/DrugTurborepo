@@ -120,3 +120,115 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@media screen {
+  :root {
+    --ink: #0f172a;           /* slate-900 */
+    --muted: #475569;         /* slate-600 */
+    --line: #cbd5e1;          /* slate-300 */
+    --paper: #ffffff;
+  }
+}
+
+/* A4 版心與投影片式留白 */
+@page {
+  size: A4;
+  margin: 14mm 14mm 16mm 14mm;  /* 列印邊界 */
+}
+@media print {
+  html, body { background: #fff !important; }
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  .a4 { box-shadow: none !important; }
+  .table-sticky thead { display: table-header-group; } /* 每頁重複表頭 */
+  .avoid-break { break-inside: avoid; page-break-inside: avoid; }
+  .no-break { page-break-after: avoid; }
+  .ink { color: #000 !important; }
+}
+
+/* 螢幕預覽卡片感 */
+.a4 {
+  max-width: 794px;           /* A4 72dpi 約 794px；視覺參考 */
+  margin: 0 auto;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  padding: 24px;
+}
+
+/* 標題樣式：公文質感 */
+.doc-title {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+/* 基本資訊條：玻璃質感邊框 */
+.info-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+.info-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background:
+    linear-gradient(180deg, rgba(148,163,184,0.06), rgba(148,163,184,0.02));
+}
+.info-item b {
+  font-weight: 700;
+}
+
+/* 表格：窄邊框 + 斑馬紋 + 聚焦狀態 */
+.table-clean {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+}
+.table-clean th, .table-clean td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  vertical-align: top;
+}
+.table-clean thead th {
+  background: #f8fafc; /* slate-50 */
+  font-weight: 700;
+  text-align: center;
+}
+.table-clean tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+.table-clean .row-tall {
+  height: 96px; /* 讓手寫簽名更好寫 */
+}
+
+/* 表尾小註記 */
+.doc-footnote {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* 工具列（螢幕可見、列印隱藏） */
+.toolbar {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 14px;
+}
+@media print { .toolbar { display: none !important; } }
+
+/* 讓列印顏色更接近螢幕（部分瀏覽器支援） */
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+

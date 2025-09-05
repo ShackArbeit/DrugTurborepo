@@ -189,7 +189,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
           <div className="flex items-center gap-2">
             <ModeToggle />
             <Button asChild variant="outline" className="rounded-xl">
-              <Link href="/case">返回列表</Link>
+              <Link href="/case">返回案件列表</Link>
             </Button>
             {/* 直接提交表單（關聯 form id） */}
             <Button type="submit" form="edit-case-form" disabled={mLoading} className="gap-2 rounded-xl">

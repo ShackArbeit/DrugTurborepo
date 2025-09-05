@@ -25,21 +25,7 @@ export class EvidenceService{
          }
          return /vercel-storage\.com/i.test(url);
      }
-     private async deleteVercelBlob(url?:string|null){
-           if(!url) return 
-           const token = process.env.BLOB_READ_WRITE_TOKEN;
-           if(!token){
-                console.warn('[deleteVercelBlob] BLOB_READ_WRITE_TOKEN is missing, skip:', url);
-                return;
-           }
-           try{
-               await blobDel(url!,{token})
-           }catch(err:any){
-                console.warn('[deleteVercelBlob] failed:', url, err);
-           }
-     }
-    
-
+     
      // 建立新證物
      async createEvidence(input: CreateEvidenceInput): Promise<Evidence> {
       const foundCase = await this.caseRepository.findOne({
@@ -104,13 +90,33 @@ export class EvidenceService{
            }
            return foundEvidence
      }
+
+     private async deleteVercelBlob(url?:string|null){
+           if(!url) return 
+           const token = 'vercel_blob_rw_JZL9gmRjflVqygDn_oiJwKxCdyLduVrHPoHiundDc5xK8mY';
+           if(!token){
+                console.warn('[deleteVercelBlob] BLOB_READ_WRITE_TOKEN is missing, skip:', url);
+                return;
+           }
+           try{
+               await blobDel(url!,{token})
+           }catch(err:any){
+                console.warn('[deleteVercelBlob] failed:', url, err);
+           }
+     }
+    
      // 移除某證物
+
      async removeEvidence(id:number):Promise<boolean>{
           //  const response=await this.evidenceRepository.delete(id)
           //  return (response.affected??0)>0
           const row = await this.evidenceRepository.findOne({where:{id}})
           if (!row) return false
           const urls = [row.photoFront, row.photoBack, row.photoFront2, row.photoBack2]
+          console.log("photoFront:",row.photoFront)
+          console.log("photoBack:",row.photoBack)
+          console.log("photoFront2:",row.photoFront2)
+          console.log('photoBack2',row.photoBack2)
           await Promise.all(urls.map((u) => this.deleteVercelBlob(u)))
           const res = await this.evidenceRepository.delete(id)
           return (res.affected ?? 0) > 0

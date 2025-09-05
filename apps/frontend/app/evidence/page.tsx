@@ -32,6 +32,9 @@ const EvidenceHomePage = () => {
         if(!ok) return 
         await removeEvidence({
             variables:{id},
+            refetchQueries:[
+               GET_ALL_EVIDENCES,
+            ],
             update(cache){
               cache.modify({
               fields: {

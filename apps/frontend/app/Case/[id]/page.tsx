@@ -17,7 +17,6 @@ import {
   Building2,
   UserRound,
   Gauge,
-  Clock4,
   PackageSearch,
 } from 'lucide-react';
 
@@ -79,6 +78,8 @@ export default function CaseDetailPage({
   const { id } = use(params);
   const numericId = Number(id);
   const { data, loading, error } = useQuery(GET_CASE_BY_ID, { variables: { id: numericId } });
+  const PickedClass = 'bg-blue-500 text-white';
+  const NonePick= 'bg-gray-200 text-gray-700';
 
   if (loading) {
     // 更精緻 Skeleton
@@ -109,8 +110,9 @@ export default function CaseDetailPage({
             <Button asChild variant="outline">
               <Link href="/case">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                返回列表
+                    案件列表
               </Link>
+             
             </Button>
           </div>
         </div>
@@ -129,7 +131,7 @@ export default function CaseDetailPage({
           <div>
             <nav className="mb-1 flex items-center text-sm text-muted-foreground">
               <Link href="/case" className="transition-colors hover:text-foreground">
-                案件列表
+                    案件列表
               </Link>
               <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
               <span className="font-medium text-foreground">案件詳細</span>
@@ -150,8 +152,14 @@ export default function CaseDetailPage({
             <Button asChild variant="outline">
               <Link href="/case">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                返回列表
-              </Link>
+                    返回案件列表
+                </Link>
+            </Button>
+            <Button asChild variant="outline">
+                  <Link href="/evidence">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                    返回證物列表
+                </Link>
             </Button>
             <Button asChild>
               <Link href={`/case/${id}/edit`}>
@@ -236,28 +244,36 @@ export default function CaseDetailPage({
             </div>
 
             <ul className="space-y-3">
-              {c.evidences?.map((e: any) => (
+              {c.evidences?.map((e: any) => {
+              const picked = !!e.is_Pickup; // 布林
+              const pickedClass =
+                'bg-slate-900 text-white border-slate-700 hover:border-slate-500 hover:bg-slate-800';
+              const unpickedClass =
+                'bg-slate-100 text-slate-800 border-slate-200 hover:border-slate-300 hover:bg-slate-50';
+              return (
                 <li key={e.id}>
-                  {/* 整塊即 Link，保證可鍵盤導覽 */}
                   <Link
                     href={`/evidence/${e.id}`}
-                    className="group block rounded-2xl border border-border/60 bg-background/60 p-4 shadow-sm transition-all hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className={[
+                      'group block rounded-2xl border p-4 shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
+                      picked ? pickedClass : unpickedClass,
+                    ].join(' ')}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="space-y-1">
                         <div className="text-xs text-muted-foreground">證物編號</div>
-                        <div className="text-base font-semibold tracking-tight">
-                          {e.evidenceNumber}
-                        </div>
+                        <div className="text-base font-semibold tracking-tight">{e.evidenceNumber}</div>
                       </div>
                       <div className="space-y-1">
                         <div className="text-xs text-muted-foreground">證物類型</div>
-                        <div className="text-base font-semibold tracking-tight">
-                          {e.evidenceType}
-                        </div>
+                        <div className="text-base font-semibold tracking-tight">{e.evidenceType}</div>
                       </div>
+                      <div className="text-base font-semibold tracking-tight">
+                        {picked ? '已領回' : '尚未領回'}
+                      </div>
+
                       <span
-                        className="inline-flex items-center justify-center rounded-md border border-border bg-muted/40 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors group-hover:border-primary/40 group-hover:bg-primary/10"
+                        className="inline-flex items-center justify-center rounded-md border bg-muted/40 px-3 py-1.5 text-sm font-medium transition-colors group-hover:bg-primary/10"
                         aria-hidden="true"
                       >
                         詳細內容
@@ -266,7 +282,9 @@ export default function CaseDetailPage({
                     </div>
                   </Link>
                 </li>
-              ))}
+              );
+            })}
+
 
               {(!c.evidences || c.evidences.length === 0) && (
                 <li className="rounded-2xl border border-dashed border-border/60 bg-muted/20 p-6 text-center text-sm text-muted-foreground">
@@ -279,7 +297,7 @@ export default function CaseDetailPage({
       </Card>
 
       {/* 底部輕量工具列：回列表 / 編輯（在長內容捲動後也方便操作） */}
-      <div className="mt-6 flex items-center justify-end gap-2">
+      {/* <div className="mt-6 flex items-center justify-end gap-2">
         <Button asChild variant="outline">
           <Link href="/case">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -292,7 +310,7 @@ export default function CaseDetailPage({
             編輯
           </Link>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

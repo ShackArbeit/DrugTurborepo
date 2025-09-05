@@ -49,6 +49,7 @@ export const GET_CASE_BY_ID=gql`
               id
               evidenceNumber
               evidenceType
+              is_Pickup
             }
         }
     }

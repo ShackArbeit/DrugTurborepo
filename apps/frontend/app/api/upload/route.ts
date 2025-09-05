@@ -51,18 +51,17 @@ export async function POST(req: Request){
          if (!file.type?.startsWith('image/')) {
                 return NextResponse.json({ error: 'Only image/* allowed' }, { status: 400 })
           }
-         if (file.size > 20 * 1024 * 1024) { // 你可自訂限制（例如 20MB）
+         if (file.size > 20 * 1024 * 1024) { 
              return NextResponse.json({ error: 'Max 20MB' }, { status: 400 })
           }
           const extFromName  = (file.name?.split('.').pop() || '').toLocaleLowerCase()
           const safeExt = extFromName ? `.${extFromName}` :'.jpg'
           const filename = `evidences/${Date.now()}-${crypto.randomUUID()}${safeExt}`
-          // 丟到 Vercel Blob：access: 'public' 讓回傳的 url 可直接顯示在 <img src="...">
           const blob = await put (filename,file,{
              access: 'public',
              contentType: file.type,
              addRandomSuffix: false,
-             token: 'vercel_blob_rw_JZL9gmRjflVqygDn_oiJwKxCdyLduVrHPoHiundDc5xK8mY'
+             token:'vercel_blob_rw_JZL9gmRjflVqygDn_oiJwKxCdyLduVrHPoHiundDc5xK8mY'
           })
           return NextResponse.json({ url: blob.url })
     }catch(err:any){
