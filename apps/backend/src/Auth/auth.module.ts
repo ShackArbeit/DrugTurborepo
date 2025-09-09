@@ -12,7 +12,7 @@ import { GqlAuthGuard } from './gql-auth.guard';
     imports:[
        UserModule,PassportModule.register({defaultStrategy:'jwt'}),
        JwtModule.register({
-            signOptions:{expiresIn:'6000s'},
+            signOptions:{expiresIn:'5260032s'},
             secret:jwtConstants.secret
        })
     ],

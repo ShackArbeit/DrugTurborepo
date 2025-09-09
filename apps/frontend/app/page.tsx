@@ -86,13 +86,13 @@ export default function Home() {
               <div className="relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
                 <LogIn className="h-5 w-5 text-primary" aria-hidden />
               </div>
-              <CardTitle className="text-lg">使用者登入</CardTitle>
-              <CardDescription>以帳號密碼登入（支援 JWT）</CardDescription>
+              <CardTitle className="text-lg">使用者註冊 / 登入</CardTitle>
+              <CardDescription> 以帳號密碼登入（支援 JWT）</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild  className="w-full">
-                <Link href="/login" aria-label="前往登入頁">
-                  登入
+                <Link href="/register" aria-label="前往登入頁">
+                  註冊/登入
                 </Link>
               </Button>
             </CardContent>

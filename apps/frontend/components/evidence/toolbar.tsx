@@ -1,8 +1,8 @@
 'use client'
-
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { ModeToggle } from "../mode-toggle"
+import LogoutButton from "../auth/LogOutButton"
 import Link from "next/link"
 
 export default function EvidenceToolbar({
@@ -30,6 +30,7 @@ export default function EvidenceToolbar({
             <Button asChild  variant="secondary">
             <Link href="/">返回首頁</Link>
             </Button>
+            <LogoutButton className='border border-2 border-fuchsia-900'/>
     </div>
       )
 }

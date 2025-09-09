@@ -4,6 +4,11 @@ import { CaseService } from './case.service';
 import { Evidence } from '../Evidences/evidence.entity';
 import { EvidenceService } from '../Evidences/evidence.service';
 import { CreateCaseInput, UpdateCaseInput } from './dto/case.inputs';
+import { GqlAuthGuard } from '../Auth/gql-auth.guard';
+import { RolesGuard } from '../Auth/role/roles.guard';
+import { Roles } from '../Auth/role/roles.decorator';
+import { Role } from '../Auth/role/role.enum';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Case)
 export class CaseResolver {
@@ -26,12 +31,16 @@ export class CaseResolver {
 
 
   /** 建立案件 */
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => Case)
   createCase(@Args('input') input: CreateCaseInput): Promise<Case> {
     return this.caseService.createCase(input);
   }
 
   /** 更新案件 */
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => Case)
   updateCase(
     @Args('id', { type: () => Int }) id: number,
@@ -41,6 +50,8 @@ export class CaseResolver {
   }
 
   /** 刪除案件 */
+  @UseGuards(GqlAuthGuard,RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => Boolean)
   removeCase(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
     return this.caseService.remove(id);

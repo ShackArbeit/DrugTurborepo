@@ -39,7 +39,7 @@ export class UsersResolver {
     return this.usersService.findAllUsers();
   }
 
-  /** 以 ID 查詢使用者（Admin 專用） */
+  /** 以 ID 查詢使用者（ Admin 專用） */
   @Query(() => User, { name: 'userById', nullable: true })
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)

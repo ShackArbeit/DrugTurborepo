@@ -174,7 +174,7 @@ export default function NewCasePage() {
   useEffect(()=>{
         if(allLoading)return 
         const state = form.getFieldState('caseNumber')
-         const alreadyHas = form.getValues('caseNumber');
+        const alreadyHas = form.getValues('caseNumber');
          if( !state.isDirty && (!alreadyHas || alreadyHas.trim()==='')){
              const auto = genCaseNumber(new Date,totalCount)
              form.setValue('caseNumber',auto,{shouldValidate: true, shouldDirty: false })
