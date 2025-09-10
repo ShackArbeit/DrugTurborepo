@@ -25,7 +25,7 @@ const LoginPage = () => {
                 const token = data?.login?.access_token
                 if(token){
                    localStorage.setItem('token',token)
-                   document.cookie=`token=${token}; path=/`
+                   document.cookie = `token=${token}; Path=/; Max-Age=604800; SameSite=Lax`;
                    router.push(returnTo)
                 }
                 await client.resetStore();

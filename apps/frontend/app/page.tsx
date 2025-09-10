@@ -1,15 +1,43 @@
+'use client'
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button} from "@/components/ui/button";
 import { Card,CardHeader,CardTitle,CardContent,CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {Scale,FolderSearch,FlaskConical,LogIn,PcCase} from 'lucide-react'
+import {Scale,FolderSearch,LogIn,PcCase,UserLock } from 'lucide-react'
 import { ModeToggle } from "@/components/mode-toggle";
+import { useEffect } from "react";
+import { useRouter,usePathname,useParams } from 'next/navigation';
+import Swal from 'sweetalert2';
+
+
+
 
 export default function Home() {
+  
+const router = useRouter()
+
+const showConfirm = async () => {
+    const result = await Swal.fire({
+      title: '需要登入',
+      text: '若未登入將無法使用各項功能',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '前往登入',
+      cancelButtonText: '稍後再說',
+      confirmButtonColor: '#16a34a',
+    });
+
+    if (result.isConfirmed) {
+      router.push('/register'); 
+    }
+  };
+showConfirm()
   return (
       <main className=' relative min-h-[100dvh] overflow-hidden
         bg-background text-foreground'
         aria-label='臺灣高等檢察署數位鑑識首頁'
+       data-previous-aria-hidden="true"
+        aria-hidden="true"
         >
          <div 
          aria-hidden
@@ -43,7 +71,7 @@ export default function Home() {
           </header>
           {/* 主要內容區塊 */}
           <section
-          className='mt-12 grid sm:grid-cols-3  gap-5'
+          className='mt-12 grid sm:grid-cols-2  gap-5'
            aria-label="快速導引"
           >
             {/* 案件相關 */}
@@ -93,6 +121,23 @@ export default function Home() {
               <Button asChild  className="w-full">
                 <Link href="/register" aria-label="前往登入頁">
                   註冊/登入
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>    
+          {/* 使用者權限管理，由 Admin 者登入後管理 */}
+          <Card className="group hover:shadow-lg transition-shadow md:col-span-1 sm:col-span-2 md:col-span-1 relative">
+            <CardHeader className="space-y-2 text-center">
+              <div className="relative bottom-1 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 m-auto">
+                <UserLock  className="h-5 w-5 text-primary" aria-hidden />
+              </div>
+              <CardTitle className="text-lg">使用者帳密管理</CardTitle>
+              <CardDescription> 由 Admin 管理者管理</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild  className="w-full">
+                <Link href="/accountAdmin" aria-label="前往登入頁">
+                   進入管理頁面
                 </Link>
               </Button>
             </CardContent>
