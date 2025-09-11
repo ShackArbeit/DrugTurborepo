@@ -210,12 +210,14 @@ type Query {
 
   """取得所有證物"""
   evidences: [Evidence!]!
-  me: User!
+  me: User
+  userByEmail(email: String!): User
   userById(id: Int!): User
   users: [User!]!
 }
 
 input RegisterUserInput {
+  email: String!
   password: String!
   username: String!
 }
@@ -333,7 +335,9 @@ input UpdateEvidenceInput {
 }
 
 type User {
+  email: String!
   id: ID!
+  password: String!
   role: String!
   username: String!
 }

@@ -1,3 +1,4 @@
+// src/Users/users.resolver.ts
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Mutation, Args, Query, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
@@ -21,14 +22,10 @@ export class UsersResolver {
   }
 
   /** 查詢自己（需登入） */
-  @Query(() => User, { name: 'me' })
+  @Query(() => User, { name: 'me', nullable: true })
   @UseGuards(GqlAuthGuard)
-  async getCurrentUser(
-    @Context() { req }: any,
-  ): Promise<User | null> {
-    return req.user
-      ? this.usersService.findById(req.user.id)
-      : null;
+  async getCurrentUser(@Context() { req }: any): Promise<User | null> {
+    return req.user ? this.usersService.findById(req.user.id) : null;
   }
 
   /** 查詢所有使用者（Admin 專用） */
@@ -39,7 +36,7 @@ export class UsersResolver {
     return this.usersService.findAllUsers();
   }
 
-  /** 以 ID 查詢使用者（ Admin 專用） */
+  /** 以 ID 查詢使用者（Admin 專用） */
   @Query(() => User, { name: 'userById', nullable: true })
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -47,6 +44,16 @@ export class UsersResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<User | null> {
     return this.usersService.findById(id);
+  }
+
+  /** 以 Email 查詢使用者（Admin 專用） */
+  @Query(() => User, { name: 'userByEmail', nullable: true })
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async findUserByEmail(
+    @Args('email', { type: () => String }) email: string,
+  ): Promise<User | null> {
+    return this.usersService.findByEmail(email);
   }
 
   /** 刪除使用者（Admin 專用） */

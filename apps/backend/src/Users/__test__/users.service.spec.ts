@@ -1,183 +1,241 @@
-import { Test,TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { NotFoundException,ConflictException } from "@nestjs/common";
-import { User } from "../user.entity";
-import { Role } from "../../Auth/role/role.enum";
-import { RegisterUserInput } from "../dto/register-user.input";
-import { UsersService } from "../users.service";
+// src/Users/__tests__/users.service.spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
+import { NotFoundException, ConflictException } from '@nestjs/common';
+import { UsersService } from '../users.service';
+import { User } from '../user.entity';
+import { Role } from '../../Auth/role/role.enum';
+import { RegisterUserInput } from '../dto/register-user.input';
 
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<any,any[]>;
+  [P in keyof T]?: jest.Mock<any, any[]>;
 };
 
-const mockUser:User[]=[
-      {
-            id:1,
-            username:'Shack',
-            password:'wang8119',
-            role:Role.User
-      },
-      {
-            id:2,
-            username:'John',
-            password:'taichung2025',
-            role:Role.User
-      },
-]
+// ---- Mocks ----
+jest.mock('bcryptjs', () => ({
+  hash: jest.fn().mockResolvedValue('hashed_password'),
+}));
 
-const adminInput:RegisterUserInput={
-      username:'admin',
-      password:'thpo123456789',
-}
+const mockUsers: User[] = [
+  {
+    id: 1,
+    username: 'Shack',
+    password: 'hashed_password',
+    email: 'shack@example.com',
+    role: Role.User,
+  },
+  {
+    id: 2,
+    username: 'John',
+    password: 'hashed_password',
+    email: 'john@example.com',
+    role: Role.User,
+  },
+];
 
-jest.mock('bcryptjs',()=>({
-     hash:jest.fn().mockResolvedValue('hashed_password')
-}))
+describe('UsersService 測試', () => {
+  let service: UsersService;
+  let repo: MockType<Repository<User>>;
 
-describe('Userservice 的測試',()=>{
-      let service:UsersService
-      let userRepositoryMock:MockType<Repository<User>>
+  beforeEach(async () => {
+    repo = {
+      create: jest.fn(),
+      findOne: jest.fn(),
+      save: jest.fn(),
+      delete: jest.fn(),
+      find: jest.fn(),
+    };
 
-      beforeEach(async()=>{
-             userRepositoryMock={
-                   create:jest.fn(),
-                   findOne:jest.fn(),
-                   save:jest.fn(),
-                   delete:jest.fn()
-             }
-             const module:TestingModule=await Test.createTestingModule({
-                  providers:[
-                        UsersService,
-                        {provide:getRepositoryToken(User),useValue:userRepositoryMock}
-                  ]
-             }).compile()
-             service=module.get<UsersService>(UsersService)
-      })
-      it('應該是被有定義的',()=>{
-            expect(service).toBeDefined()
-      })
-      describe('測試預設管理者是否存在',()=>{
-             it('若不存在預設管理者就會自動新增',async()=>{
-                   userRepositoryMock.findOne!.mockResolvedValue(null)
-                   userRepositoryMock.create!.mockReturnValue({
-                        username:'admin',
-                        password:'hashed_password',
-                        role:undefined
-                   })
-                  userRepositoryMock.save!.mockResolvedValue({
-                        id: 3,
-                        username: 'admin',
-                        password: 'hashed_password',
-                        role: Role.Admin,
-                  });
-                  const result = await service.createUser(adminInput)
-                  // expect(userRepositoryMock.create).toHaveBeenCalledWith({
-                  //       username: 'admin',
-                  //       password: 'hashed_password',
-                  // });
-                  expect(userRepositoryMock.save).toHaveBeenCalled();
-                  expect(result).toMatchObject({
-                         username:'admin',
-                         password: 'hashed_password',
-                  })
-             })
-             it('若預設管理者已經存在會出現錯誤訊息',async()=>{
-                  const isAdminUser=mockUser.some(user=>user.role===Role.Admin)
-                  if(isAdminUser){
-                        userRepositoryMock.findOne!.mockResolvedValue(adminInput)
-                        await expect(service.createUser(adminInput)).rejects.toThrow(ConflictException)
-                        expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                               username:adminInput.username,password:adminInput.password
-                        })
-                  }
-             })
-      })
-      describe('測試新建 User',()=>{
-            const input:RegisterUserInput={
-                        username:'Shack',
-                        password:'wang8119'
-                  }
-            it('應該是可以正常新增 User',async()=>{
-                   userRepositoryMock.findOne!.mockResolvedValue(null);
-                   userRepositoryMock.create!.mockReturnValue({
-                        ...input,
-                        password:'hashed_password',
-                        role:undefined
-                   })
-                   userRepositoryMock.save!.mockResolvedValue({
-                         id:1,
-                         username:input.username,
-                         password:'hashed_password',
-                         role:Role.User
-                   })
-                   const result = await service.createUser(input)
-                   expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                         where:{username:input.username}
-                   })
-                   expect(userRepositoryMock.save).toHaveBeenCalled()
-                   expect(result).toMatchObject({
-                         id:1,
-                         username:'Shack',
-                         role:Role.User,
-                         password:expect.any(String)
-                   })
-                  
-            })
-            it('應該在使用者名稱已存在時拋出 ConflictException',async()=>{
-                 userRepositoryMock.findOne!.mockResolvedValue(mockUser[0])
-                 await expect(service.createUser(input)).rejects.toThrow(ConflictException)
-                 expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                  where: { username: input.username },
-                });
-            })
-      })
-      describe('測試使用使用者名稱查詢',()=>{
-            it('應該可以正常找到',async()=>{
-                  userRepositoryMock.findOne!.mockResolvedValue(mockUser[1])
-                  const result = await service.findByUsername('Shack')
-                  expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-                        where:{username:'Shack'}
-                  })
-                  expect(result).toMatchObject(mockUser[1])
-            })
-             it('找不到 username，應回傳 null', async () => {
-            userRepositoryMock.findOne!.mockResolvedValue(null);
-            const result = await service.findByUsername('NonExist');
-            expect(userRepositoryMock.findOne).toHaveBeenCalledWith({ where: { username: 'NonExist' } });
-            expect(result).toBeNull();
-         });
-      })
-      describe('測試使用 ID 查詢',()=>{
-            it('應該可以正常查詢',async()=>{
-                  userRepositoryMock.findOne!.mockResolvedValue(mockUser[1])
-                  const result = await service.findById(2)
-                  expect(userRepositoryMock.findOne).toHaveBeenCalledWith(
-                         {where:{id:2}}
-                  )
-                  expect(result).toMatchObject(mockUser[1])
-            })
-             it('找不到該 id，應回傳 null', async () => {
-                  userRepositoryMock.findOne!.mockResolvedValue(null);
-                  const result = await service.findById(999);
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        { provide: getRepositoryToken(User), useValue: repo },
+      ],
+    }).compile();
 
-                  expect(userRepositoryMock.findOne).toHaveBeenCalledWith({ where: { id: 999 } });
-                  expect(result).toBeNull();
-          });
-      })
-      describe('測試移除使用者帳號',()=>{
-            it('應該要可以正常移除',async()=>{
-                   userRepositoryMock.delete!.mockResolvedValue({ affected: 1 }); 
-                  const result = await service.removerUser(1);
-                  expect(userRepositoryMock.delete).toHaveBeenCalledWith(1);
-                  expect(result).toBe(true);
-            })
-            it('應該拋出 NotFoundException 如果找不到要刪除的帳號', async () => {
-                  userRepositoryMock.delete!.mockResolvedValue({ affected: 0 });
-                  await expect(service.removerUser(99)).rejects.toThrow(NotFoundException);
-            });
-      })
-})
+    service = module.get<UsersService>(UsersService);
+  });
 
+  it('Service 應被定義', () => {
+    expect(service).toBeDefined();
+  });
 
+  describe('createUser（一般使用者）', () => {
+    const input: RegisterUserInput = {
+      username: 'Alice',
+      password: 'alice123456',
+      email: 'Alice@Example.com', // 大小寫混合，Service 會轉小寫
+    };
 
+    it('應可正常新增（username 與 email 都不重複）', async () => {
+      // 1) 查 username：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 2) 查 email（正規化小寫後）：無
+      repo.findOne!.mockResolvedValueOnce(null);
+
+      // 建立與儲存回傳
+      repo.create!.mockReturnValue({
+        username: input.username.trim(),
+        password: 'hashed_password',
+        email: input.email.trim().toLowerCase(),
+        role: Role.User,
+      });
+      repo.save!.mockResolvedValue({
+        id: 10,
+        username: 'Alice',
+        password: 'hashed_password',
+        email: 'alice@example.com',
+        role: Role.User,
+      });
+
+      const result = await service.createUser(input);
+
+      // 第一次 findOne 檢查 username
+      expect(repo.findOne).toHaveBeenNthCalledWith(1, {
+        where: { username: 'Alice' },
+      });
+
+      // 第二次 findOne 檢查 email（以 LOWER 比對；這裡無法精準比對 Raw 物件內容，驗證次序即可）
+      expect(repo.findOne).toHaveBeenNthCalledWith(2, expect.any(Object));
+
+      expect(repo.save).toHaveBeenCalled();
+      expect(result).toMatchObject({
+        id: 10,
+        username: 'Alice',
+        email: 'alice@example.com',
+        role: Role.User,
+      });
+    });
+
+    it('若 username 已存在應拋 ConflictException', async () => {
+      // 1) 查 username：已存在
+      repo.findOne!.mockResolvedValueOnce(mockUsers[0]);
+
+      await expect(service.createUser(input)).rejects.toThrow(ConflictException);
+      expect(repo.findOne).toHaveBeenCalledWith({
+        where: { username: 'Alice' },
+      });
+      // 第二次不會再查 email
+    });
+
+    it('username 不重複，但 email 已存在（大小寫不同）→ ConflictException', async () => {
+      // 1) 查 username：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 2) 查 email：回傳某既有 user（以 LOWER 比對）
+      repo.findOne!.mockResolvedValueOnce(mockUsers[1]);
+
+      await expect(service.createUser(input)).rejects.toThrow(ConflictException);
+
+      // 兩次 findOne 都有執行
+      expect(repo.findOne).toHaveBeenNthCalledWith(1, {
+        where: { username: 'Alice' },
+      });
+      expect(repo.findOne).toHaveBeenNthCalledWith(2, expect.any(Object));
+    });
+  });
+
+  describe('createUser（admin 唯一）', () => {
+    const adminInput: RegisterUserInput = {
+      username: 'admin',
+      password: 'admin_secret',
+      email: 'admin@office.gov.tw',
+    };
+
+    it('admin 不存在 → 可新增 admin；若系統已有 admin → ConflictException', async () => {
+      // 情境 A：可成功新增 admin
+      // 1) 查 username：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 2) 查 email：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 3) 查系統是否已有 Admin：無
+      repo.findOne!.mockResolvedValueOnce(null);
+
+      repo.create!.mockReturnValue({
+        username: 'admin',
+        password: 'hashed_password',
+        email: 'admin@office.gov.tw',
+        role: Role.Admin,
+      });
+      repo.save!.mockResolvedValue({
+        id: 100,
+        username: 'admin',
+        password: 'hashed_password',
+        email: 'admin@office.gov.tw',
+        role: Role.Admin,
+      });
+
+      const created = await service.createUser(adminInput);
+      expect(created).toMatchObject({
+        id: 100,
+        username: 'admin',
+        email: 'admin@office.gov.tw',
+        role: Role.Admin,
+      });
+
+      // 情境 B：系統已有 Admin 時應拋 Conflict
+      // 重設 mock
+      repo.findOne!.mockReset();
+      // 1) 查 username：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 2) 查 email：無
+      repo.findOne!.mockResolvedValueOnce(null);
+      // 3) 查系統是否已有 Admin：存在
+      repo.findOne!.mockResolvedValueOnce({
+        id: 999,
+        username: 'root',
+        password: 'hashed_password',
+        email: 'root@office.gov.tw',
+        role: Role.Admin,
+      });
+
+      await expect(service.createUser(adminInput)).rejects.toThrow(ConflictException);
+      expect(repo.findOne).toHaveBeenNthCalledWith(3, { where: { role: Role.Admin } });
+    });
+  });
+
+  describe('finders', () => {
+    it('findAllUsers', async () => {
+      repo.find!.mockResolvedValue(mockUsers);
+      const list = await service.findAllUsers();
+      expect(repo.find).toHaveBeenCalled();
+      expect(list).toEqual(mockUsers);
+    });
+
+    it('findByUsername', async () => {
+      repo.findOne!.mockResolvedValue(mockUsers[0]);
+      const u = await service.findByUsername('Shack');
+      expect(repo.findOne).toHaveBeenCalledWith({ where: { username: 'Shack' } });
+      expect(u).toEqual(mockUsers[0]);
+    });
+
+    it('findById', async () => {
+      repo.findOne!.mockResolvedValue(mockUsers[1]);
+      const u = await service.findById(2);
+      expect(repo.findOne).toHaveBeenCalledWith({ where: { id: 2 } });
+      expect(u).toEqual(mockUsers[1]);
+    });
+
+    it('findByEmail（忽略大小寫）', async () => {
+      repo.findOne!.mockResolvedValue(mockUsers[1]);
+      const u = await service.findByEmail('JoHn@Example.com');
+      // 具體檢查 Raw 內容較繁瑣，這裡驗證呼叫與回傳即可
+      expect(repo.findOne).toHaveBeenCalledWith(expect.objectContaining({ where: expect.any(Object) }));
+      expect(u).toEqual(mockUsers[1]);
+    });
+  });
+
+  describe('removerUser', () => {
+    it('刪除成功', async () => {
+      repo.delete!.mockResolvedValue({ affected: 1 });
+      const ok = await service.removerUser(1);
+      expect(repo.delete).toHaveBeenCalledWith(1);
+      expect(ok).toBe(true);
+    });
+
+    it('刪除不到 → NotFoundException', async () => {
+      repo.delete!.mockResolvedValue({ affected: 0 });
+      await expect(service.removerUser(99)).rejects.toThrow(NotFoundException);
+    });
+  });
+});

@@ -1,70 +1,84 @@
-// import { OnModuleInit } from '@nestjs/common';
-import { Injectable,ConflictException,NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Role } from '../Auth/role/role.enum';
-import { User } from './user.entity';
-import { RegisterUserInput } from './dto/register-user.input';
+import { Repository, Raw } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
+import { User } from './user.entity';
+import { RegisterUserInput } from './dto/register-user.input';
+import { Role } from '../Auth/role/role.enum';
 
 @Injectable()
-export class  UsersService  {
-   constructor( 
-      @InjectRepository(User) 
-      private usersRepository:Repository<User>){}  
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
 
-  // async onModuleInit() {
-  //   const adminUser = await this.usersRepository.findOne({ where: { role: Role.Admin } });
-  //   if (!adminUser) {
-  //      const adminData: RegisterUserInput = {
-  //       username: 'admin',
-  //       password: 'thpo123456789',  
-  //   };
-  //     const newAdmin = await this.createUser(adminData);
-  //     newAdmin.role = Role.Admin;
-  //     await this.usersRepository.save(newAdmin);
-  //     console.log('預設 Admin 帳號已建立 (帳號：admin / 密碼：thpo123456789)');
-  //   }else{
-  //        console.log('系統已經存在預設的 Admin 帳號了')
-  //        console.log('管理者帳號是:',Role.Admin)
-  //        console.log('管理者密碼是:thpo123456789')
-  //   }
-  // }
-   async createUser(registerUserInput:RegisterUserInput):Promise<User>{
-       const {username,password}=registerUserInput
-       const exists=await this.usersRepository.findOne({where:{username}})
-       if(exists){
-            throw new ConflictException('使用者名稱已被註冊')
-       }
-      if (username === 'admin') {
-            const adminExists = await this.usersRepository.findOne({ where: { role: Role.Admin } });
-            if (adminExists) {
-                throw new ConflictException('管理者帳號已存在，無法重複註冊');
-            }
-       }
-       const hashedPassword = await bcrypt.hash(password,10)
-       const user=this.usersRepository.create({
-            username,
-            password:hashedPassword,
-            role: username === 'admin' ? Role.Admin : Role.User,
-       })
-       return this.usersRepository.save(user)
+  /** 註冊 */
+  async createUser(input: RegisterUserInput): Promise<User> {
+    const username = input.username.trim();
+    const email = input.email.trim().toLowerCase();
+
+    // 1) 檢查 username 是否存在
+    const existsByUsername = await this.usersRepository.findOne({ where: { username } });
+    if (existsByUsername) {
+      throw new ConflictException('使用者名稱已被註冊');
     }
-    async findAllUsers():Promise<User[]>{
-          return this.usersRepository.find()
+
+    // 2) 檢查 email 是否存在（以小寫比對）
+    const existsByEmail = await this.usersRepository.findOne({
+      where: { email: Raw(alias => `LOWER(${alias}) = :email`, { email }) },
+    });
+    if (existsByEmail) {
+      throw new ConflictException('Email 已被註冊');
     }
-    async findByUsername(username: string): Promise<User |null> {
-      return this.usersRepository.findOne({ where: { username } });
+
+    // 3) 確保系統中只能有一個 Admin（當 username === 'admin' 時）
+    if (username === 'admin') {
+      const adminExists = await this.usersRepository.findOne({ where: { role: Role.Admin } });
+      if (adminExists) {
+        throw new ConflictException('管理者帳號已存在，無法重複註冊');
+      }
     }
-    async findById(id: number): Promise<User |null> {
-      return this.usersRepository.findOne({ where: { id } });
+
+    // 4) 雜湊密碼
+    const hashedPassword = await bcrypt.hash(input.password, 10);
+
+    // 5) 建立與儲存
+    const user = this.usersRepository.create({
+      username,
+      password: hashedPassword,
+      email, 
+      role: username === 'admin' ? Role.Admin : Role.User,
+    });
+
+    return this.usersRepository.save(user);
+  }
+
+  async findAllUsers(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { username } });
+  }
+
+  async findById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const normalized = email.trim().toLowerCase();
+    return this.usersRepository.findOne({
+      where: { email: Raw(alias => `LOWER(${alias}) = :email`, { email: normalized }) },
+    });
+  }
+
+  async removerUser(id: number): Promise<boolean> {
+    const result = await this.usersRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('找不到該使用者');
     }
-   async removerUser(id:number):Promise<boolean>{
-     const result = await this.usersRepository.delete(id);
-          if (result.affected === 0) {
-          throw new NotFoundException('找不到該使用者');
-          }
-     return true;
-   }
+    return true;
+  }
 }

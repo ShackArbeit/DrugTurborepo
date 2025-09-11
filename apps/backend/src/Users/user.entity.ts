@@ -13,8 +13,13 @@ export class User{
       @Column({ unique: true })
       username: string;
 
+      @Field()
       @Column()
       password: string;
+
+      @Field()
+      @Column({ unique: true })
+      email: string ;
 
       @Field(()=>String)
       @Column({ type: 'text', default: Role.User })
