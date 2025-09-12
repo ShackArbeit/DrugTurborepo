@@ -13,7 +13,7 @@ export class User{
       @Column({ unique: true })
       username: string;
 
-      @Field()
+      
       @Column()
       password: string;
 
@@ -24,4 +24,11 @@ export class User{
       @Field(()=>String)
       @Column({ type: 'text', default: Role.User })
       role:Role
+
+      //  以下是忘記密碼時的設定
+      @Column({ type: 'varchar', length: 128, nullable: true })
+      resetPasswordToken: string | null;
+
+      @Column({ type: 'timestamp', nullable: true })
+      resetPasswordExpires: Date | null;
 }

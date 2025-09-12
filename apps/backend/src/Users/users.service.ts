@@ -1,17 +1,22 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MailerService } from '@nestjs-modules/mailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-
+import * as crypto from 'crypto';
 import { User } from './user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { Role } from '../Auth/role/role.enum';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly config:ConfigService,
+    private readonly mailer : MailerService
   ) {}
 
   /** 註冊 */
@@ -50,6 +55,8 @@ export class UsersService {
       password: hashedPassword,
       email, 
       role: username === 'admin' ? Role.Admin : Role.User,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
     });
 
     return this.usersRepository.save(user);
@@ -81,4 +88,70 @@ export class UsersService {
     }
     return true;
   }
+
+  // 以下為忘記密碼時的設定
+  async forgotPassword(username:string,email:string):Promise<boolean>{
+          const normalizedEmail = email.trim().toLowerCase()
+          const user = await this.usersRepository.findOne({
+              where:{
+                  username : username.trim(),
+                  email : Raw((alias)=>`LOWER(${alias})=email`,{
+                     email:normalizedEmail
+                  })
+              }
+          })
+          if(!user){
+              throw new NotFoundException('找不到符合的使用者名稱或 Email');
+          }
+          const token = crypto.randomBytes(32).toString('hex')
+          const expireTime = 60 
+          const expire = new Date(Date.now() + expireTime*60*100)
+          user.resetPasswordToken = token 
+          user.resetPasswordExpires = expire 
+          await this.usersRepository.save(user)
+          const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
+          const resetUrl = `${frontendUrl}/reset-password?token=${encodeURIComponent(
+            token,
+          )}`;
+          try{
+               await this.mailer.sendMail({
+                    to:user.email,
+                    subject:'重設密碼',
+                    html:`
+                       <p>您好 ${user.username}，</p>
+                       <p>請點擊以下連結重設您的密碼（60 分鐘內有效）：</p>
+                       <p><a href="${resetUrl}">${resetUrl}</a></p>
+                       <p>如果您未發起此請求，可以忽略此信。</p>
+                    `
+               })
+          }catch(err){
+              console.log('Error:',err)
+          }
+          return true
+  }
+  // 以下為重設密碼的設定
+  async changePassword(newPassword:string,token:string):Promise<boolean>{
+      const nowTime = new Date()
+      const user = await this.usersRepository.findOne({
+          where:{
+               resetPasswordToken:token
+          }
+      })
+      if(!user||!user.resetPasswordExpires|| user.resetPasswordExpires <nowTime ){
+           throw new BadRequestException('重設連結無效或已過期，請重新申請。');
+      }
+      const hashNewPassword = await bcrypt.hash(newPassword,10)
+      user.password = hashNewPassword 
+      user.resetPasswordToken = null
+      user.resetPasswordExpires = null 
+      await this.usersRepository.save(user)
+      return true
+
+  }
+
 }
+
+
+
+    
+

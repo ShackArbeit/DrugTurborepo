@@ -3,7 +3,7 @@ import { UseGuards } from '@nestjs/common';
 import { Resolver, Mutation, Args, Query, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { RegisterUserInput } from './dto/register-user.input';
+import { ForgotPasswordInput, RegisterUserInput, ResetPasswordInput } from './dto/register-user.input';
 import { GqlAuthGuard } from '../Auth/gql-auth.guard';
 import { RolesGuard } from '../Auth/role/roles.guard';
 import { Roles } from '../Auth/role/roles.decorator';
@@ -65,4 +65,19 @@ export class UsersResolver {
   ): Promise<boolean> {
     return this.usersService.removerUser(id);
   }
+
+  @Mutation(() => Boolean, { name: 'forgotPassword' })
+  async forgetPassword(@Args('forgotPasswordInput', { type: () => ForgotPasswordInput }) forgotPasswordInput: ForgotPasswordInput):Promise<boolean>{
+          const {username,email} = forgotPasswordInput
+          return this.usersService.forgotPassword(username,email)
+  }
+
+  @Mutation(() => Boolean, { name: 'resetPassword' })
+  async changePassword(@Args('resetPasswordInput', { type: () =>  ResetPasswordInput }) resetPasswordInput: ResetPasswordInput){
+        const {token, newPassword} = resetPasswordInput
+        return this.usersService.changePassword(token,newPassword)
+  }
+
 }
+
+

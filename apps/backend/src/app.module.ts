@@ -10,6 +10,7 @@ import { CaseModule } from './Case/case.module';
 import { EvidenceModule } from './Evidences/evidence.module';
 import { UserModule} from './Users/users.module';
 import { AuthModule } from './Auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { AuthModule } from './Auth/auth.module';
     CaseModule,
     EvidenceModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],
