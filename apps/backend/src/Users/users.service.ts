@@ -1,5 +1,4 @@
 import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
@@ -8,7 +7,9 @@ import * as crypto from 'crypto';
 import { User } from './user.entity';
 import { RegisterUserInput } from './dto/register-user.input';
 import { Role } from '../Auth/role/role.enum';
-import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { AppMailService } from '../Mail/mail.service';
+
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly config:ConfigService,
-    private readonly mailer : MailerService
+    private readonly mailer : AppMailService
   ) {}
 
   /** 註冊 */
@@ -95,7 +96,7 @@ export class UsersService {
           const user = await this.usersRepository.findOne({
               where:{
                   username : username.trim(),
-                  email : Raw((alias)=>`LOWER(${alias})=email`,{
+                  email : Raw((alias)=>`LOWER(${alias})=:email`,{
                      email:normalizedEmail
                   })
               }
@@ -104,29 +105,20 @@ export class UsersService {
               throw new NotFoundException('找不到符合的使用者名稱或 Email');
           }
           const token = crypto.randomBytes(32).toString('hex')
-          const expireTime = 60 
-          const expire = new Date(Date.now() + expireTime*60*100)
+          const expireMinutes = Number(this.config.get('RESET_LINK_EXPIRES_MINUTES', '60'));
+          const expiresAt = new Date(Date.now() + expireMinutes * 60 * 1000);
           user.resetPasswordToken = token 
-          user.resetPasswordExpires = expire 
+          user.resetPasswordExpires = expiresAt
           await this.usersRepository.save(user)
           const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
-          const resetUrl = `${frontendUrl}/reset-password?token=${encodeURIComponent(
-            token,
-          )}`;
-          try{
-               await this.mailer.sendMail({
-                    to:user.email,
-                    subject:'重設密碼',
-                    html:`
-                       <p>您好 ${user.username}，</p>
-                       <p>請點擊以下連結重設您的密碼（60 分鐘內有效）：</p>
-                       <p><a href="${resetUrl}">${resetUrl}</a></p>
-                       <p>如果您未發起此請求，可以忽略此信。</p>
-                    `
-               })
-          }catch(err){
-              console.log('Error:',err)
-          }
+          const resetUrl = `${frontendUrl}/reset-password/${encodeURIComponent(token)}`;
+          await this.mailer.sendResetPasswordMail({
+              to: user.email,
+              username: user.username,
+              resetUrl,
+              expiresMinutes: expireMinutes,
+        });
+
           return true
   }
   // 以下為重設密碼的設定

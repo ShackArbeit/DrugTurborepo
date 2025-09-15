@@ -172,11 +172,17 @@ type Evidence {
   receiverName2: String!
 }
 
+input ForgotPasswordInput {
+  email: String!
+  username: String!
+}
+
 type Mutation {
   createCase(input: CreateCaseInput!): Case!
 
   """建立新證物"""
   createEvidence(input: CreateEvidenceInput!): Evidence!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): Boolean!
   login(authInput: AuthInput!): AuthResponse!
   register(data: RegisterUserInput!): User!
   removeCase(id: Int!): Boolean!
@@ -187,6 +193,7 @@ type Mutation {
     id: Int!
   ): Boolean!
   removeUser(id: Int!): Boolean!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): Boolean!
   updateCase(id: Int!, input: UpdateCaseInput!): Case!
 
   """更新指定證物"""
@@ -220,6 +227,11 @@ input RegisterUserInput {
   email: String!
   password: String!
   username: String!
+}
+
+input ResetPasswordInput {
+  newPassword: String!
+  token: String!
 }
 
 input UpdateCaseInput {

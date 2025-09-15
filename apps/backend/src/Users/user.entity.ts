@@ -26,9 +26,9 @@ export class User{
       role:Role
 
       //  以下是忘記密碼時的設定
-      @Column({ type: 'varchar', length: 128, nullable: true })
+      @Column({ type: 'varchar', length: 255, nullable: true })
       resetPasswordToken: string | null;
 
-      @Column({ type: 'timestamp', nullable: true })
+      @Column({ type: 'datetime', nullable: true })
       resetPasswordExpires: Date | null;
 }

@@ -68,6 +68,9 @@ importers:
       graphql:
         specifier: ^16.11.0
         version: 16.11.0
+      handlebars:
+        specifier: ^4.7.8
+        version: 4.7.8
       nodemailer:
         specifier: ^7.0.6
         version: 7.0.6

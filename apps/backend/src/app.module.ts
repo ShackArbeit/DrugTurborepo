@@ -10,7 +10,7 @@ import { CaseModule } from './Case/case.module';
 import { EvidenceModule } from './Evidences/evidence.module';
 import { UserModule} from './Users/users.module';
 import { AuthModule } from './Auth/auth.module';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './Mail/mail.module';
 
 @Module({
   imports: [
@@ -36,7 +36,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
     EvidenceModule,
     UserModule,
     AuthModule,
-    
+    // Email 模組設定
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],
