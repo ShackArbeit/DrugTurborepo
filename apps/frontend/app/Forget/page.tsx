@@ -1,6 +1,6 @@
 'use client';
 import React, { Suspense, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMutation, useApolloClient } from '@apollo/client';
 import {FORGOT_PASSWORD_MUTATION} from '../../lib/graphql/Password'
 import { Button } from '@/components/ui/button';
@@ -19,14 +19,11 @@ function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
   const [forgetpassword, { loading, error }] = useMutation(FORGOT_PASSWORD_MUTATION);
 
-  // 這行需要被 Suspense 包住
-  const searchParams = useSearchParams();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { data } = await forgetpassword({ variables: { forgotPasswordInput: { username, email } } });
-      if(data?.forgetpassword){
+      if(data?.forgotPassword){
          await client.resetStore()
           await Swal.fire({
           icon: 'success',
@@ -62,19 +59,20 @@ function ForgotPasswordForm() {
         <CardHeader>
           <CardTitle className="text-center text-xl font-bold">忘記密碼</CardTitle>
         </CardHeader>
+        <p className='m-auto'>請輸入帳號及電子信箱以獲取重設的 URL</p>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="username">帳號</Label>
-              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              <Label htmlFor="username" >帳號</Label>
+              <Input className='mt-4' id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
             </div>
             <div>
-              <Label htmlFor="password">電子信箱</Label>
-              <Input id="password" type="password" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Label htmlFor="email">電子信箱</Label>
+              <Input className='mt-4' id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
             {error && <p className="text-red-500 text-sm">{error.message}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? '登入中...' : '登入'}
+              {loading ? '整理中...' : '送出'}
             </Button>
           </form>
         </CardContent>

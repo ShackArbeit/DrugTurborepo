@@ -11,6 +11,7 @@ import { EvidenceModule } from './Evidences/evidence.module';
 import { UserModule} from './Users/users.module';
 import { AuthModule } from './Auth/auth.module';
 import { MailModule } from './Mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -37,7 +38,12 @@ import { MailModule } from './Mail/mail.module';
     UserModule,
     AuthModule,
     // Email 模組設定
-    MailModule
+    MailModule,
+    // Config 模組設定
+     ConfigModule.forRoot({
+      isGlobal: true,           
+      envFilePath: '.env',      
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

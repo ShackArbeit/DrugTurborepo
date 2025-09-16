@@ -111,7 +111,7 @@ export class UsersService {
           user.resetPasswordExpires = expiresAt
           await this.usersRepository.save(user)
           const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
-          const resetUrl = `${frontendUrl}/reset-password/${encodeURIComponent(token)}`;
+          const resetUrl = `${frontendUrl}/ResetPassword/${encodeURIComponent(token)}`;
           await this.mailer.sendResetPasswordMail({
               to: user.email,
               username: user.username,
