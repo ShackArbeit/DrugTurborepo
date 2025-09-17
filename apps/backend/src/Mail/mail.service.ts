@@ -7,9 +7,6 @@ export class AppMailService {
 
   constructor(private readonly mailer: MailerService) {}
 
-  /**
-   * 寄送重設密碼信
-   */
   async sendResetPasswordMail(opts: {
     to: string;
     username: string;

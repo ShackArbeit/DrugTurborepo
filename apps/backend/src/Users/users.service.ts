@@ -89,58 +89,67 @@ export class UsersService {
     }
     return true;
   }
+  // === 忘記密碼：寄送重設連結 ===
+  async forgotPassword(username: string, email: string): Promise<boolean> {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.usersRepository.findOne({
+      where: {
+        username: username.trim(),
+        email: Raw(alias => `LOWER(${alias}) = :email`, { email: normalizedEmail }),
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('找不到符合的使用者名稱或 Email');
+    }
 
-  // 以下為忘記密碼時的設定
-  async forgotPassword(username:string,email:string):Promise<boolean>{
-          const normalizedEmail = email.trim().toLowerCase()
-          const user = await this.usersRepository.findOne({
-              where:{
-                  username : username.trim(),
-                  email : Raw((alias)=>`LOWER(${alias})=:email`,{
-                     email:normalizedEmail
-                  })
-              }
-          })
-          if(!user){
-              throw new NotFoundException('找不到符合的使用者名稱或 Email');
-          }
-          const token = crypto.randomBytes(32).toString('hex')
-          const expireMinutes = Number(this.config.get('RESET_LINK_EXPIRES_MINUTES', '60'));
-          const expiresAt = new Date(Date.now() + expireMinutes * 60 * 1000);
-          user.resetPasswordToken = token 
-          user.resetPasswordExpires = expiresAt
-          await this.usersRepository.save(user)
-          const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
-          const resetUrl = `${frontendUrl}/ResetPassword/${encodeURIComponent(token)}`;
-          await this.mailer.sendResetPasswordMail({
-              to: user.email,
-              username: user.username,
-              resetUrl,
-              expiresMinutes: expireMinutes,
-        });
+    const token = crypto.randomBytes(32).toString('hex');
+    const expireMinutes = Number(this.config.get('RESET_LINK_EXPIRES_MINUTES', '60'));
+    const expiresAt = new Date(Date.now() + expireMinutes * 60 * 1000);
 
-          return true
-  }
-  // 以下為重設密碼的設定
-  async changePassword(newPassword:string,token:string):Promise<boolean>{
-      const nowTime = new Date()
-      const user = await this.usersRepository.findOne({
-          where:{
-               resetPasswordToken:token
-          }
-      })
-      if(!user||!user.resetPasswordExpires|| user.resetPasswordExpires <nowTime ){
-           throw new BadRequestException('重設連結無效或已過期，請重新申請。');
-      }
-      const hashNewPassword = await bcrypt.hash(newPassword,10)
-      user.password = hashNewPassword 
-      user.resetPasswordToken = null
-      user.resetPasswordExpires = null 
-      await this.usersRepository.save(user)
-      return true
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = expiresAt; // ✅ 直接存 Date 物件即可
+    await this.usersRepository.save(user);
 
+    const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
+    const resetUrl = `${frontendUrl}/ResetPassword/${encodeURIComponent(token)}`;
+
+    await this.mailer.sendResetPasswordMail({
+      to: user.email,
+      username: user.username,
+      resetUrl,
+      expiresMinutes: expireMinutes,
+    });
+
+    return true;
   }
 
+  // === 變更密碼：使用 Date 物件比較 ===
+  async changePassword(newPassword: string, token: string): Promise<boolean> {
+    // ✅ 取得資料庫中的使用者
+    const user = await this.usersRepository.findOne({
+      where: { resetPasswordToken: token },
+    });
+
+    if (!user || !user.resetPasswordExpires) {
+      throw new BadRequestException('重設連結無效或已過期，請重新申請。');
+    }
+
+    // ✅ 將 resetPasswordExpires 轉為 Date 後再比較
+    const Eight_Hours_Difference = 8 * 60 * 60 * 1000;
+    const expireDate = new Date(user.resetPasswordExpires);
+    if (expireDate.getTime() + Eight_Hours_Difference< Date.now()) {
+      throw new BadRequestException('重設連結無效或已過期，請重新申請。');
+    }
+
+    // ✅ 加密新密碼
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashNewPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await this.usersRepository.save(user);
+    return true;
+  }
+ 
 }
 
 

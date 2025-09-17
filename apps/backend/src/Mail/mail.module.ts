@@ -11,14 +11,16 @@ import { AppMailService } from './mail.service';
         // host: 'smtp.gmail.com',
         host:'smtp.moj.gov.tw',
         port: 25,
-        secure: true,
+        secure: false,
+        requireTLS: true,
         auth: {
-          user:'g0972222165@gmail.com',
-          pass:'acja tqug jnnw aoif', 
+          user:'shackarbeit@mail.moj.gov.tw',
+          pass:'Wang81191@',
         },
+        tls: { servername: 'smtp.moj.gov.tw',rejectUnauthorized: false, },
       },
       defaults: {
-        from: '"Forensics" <g0972222165@gmail.com>',
+        from: '"Forensics" <shackarbeit@mail.moj.gov.tw>',
       },
       template: {
         dir: join(process.cwd(), 'src', 'mail', 'templates'),
