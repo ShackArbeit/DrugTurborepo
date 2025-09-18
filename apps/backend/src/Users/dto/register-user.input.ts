@@ -9,7 +9,7 @@ export class RegisterUserInput {
 
   @Field()
   @MinLength(6)
-  password: string;
+  password: string
 
   @Field()
   @IsEmail()
@@ -17,23 +17,23 @@ export class RegisterUserInput {
 }
 
 @InputType()
-export class ForgotPasswordInput{
-     @Field()
-     @IsNotEmpty()
-     username: string;
+export class ForgotPasswordInput {
+  @Field()
+  @IsNotEmpty()
+  username: string;
 
-     @Field()
-     @IsEmail()
-     email: string;
+  @Field()
+  @IsEmail()
+  email: string;
 }
 
 @InputType()
-export class ResetPasswordInput{
-      @Field()
-      @IsNotEmpty()
-      token: string;
+export class ResetPasswordInput {
+  @Field()
+  @IsNotEmpty()
+  token: string;
 
-      @Field()
-      @MinLength(6)
-      newPassword: string;
+  @Field()
+  @MinLength(6)
+  newPassword:string;
 }

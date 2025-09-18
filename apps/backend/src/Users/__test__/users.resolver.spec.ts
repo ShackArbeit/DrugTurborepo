@@ -31,6 +31,8 @@ describe('UsersResolver 測試', () => {
     password: 'hashed_password',
     email: 'admin@office.gov.tw',
     role: Role.Admin,
+    resetPasswordToken:'',
+    resetPasswordExpires:null,
   };
 
   beforeEach(async () => {

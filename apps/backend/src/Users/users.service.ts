@@ -1,5 +1,9 @@
-import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
@@ -10,14 +14,13 @@ import { Role } from '../Auth/role/role.enum';
 import { ConfigService } from '@nestjs/config';
 import { AppMailService } from '../Mail/mail.service';
 
-
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private readonly config:ConfigService,
-    private readonly mailer : AppMailService
+    private readonly config: ConfigService,
+    private readonly mailer: AppMailService,
   ) {}
 
   /** 註冊 */
@@ -25,39 +28,28 @@ export class UsersService {
     const username = input.username.trim();
     const email = input.email.trim().toLowerCase();
 
-    // 1) 檢查 username 是否存在
     const existsByUsername = await this.usersRepository.findOne({ where: { username } });
-    if (existsByUsername) {
-      throw new ConflictException('使用者名稱已被註冊');
-    }
+    if (existsByUsername) throw new ConflictException('使用者名稱已被註冊');
 
-    // 2) 檢查 email 是否存在（以小寫比對）
     const existsByEmail = await this.usersRepository.findOne({
-      where: { email: Raw(alias => `LOWER(${alias}) = :email`, { email }) },
+      where: { email: Raw((alias) => `LOWER(${alias}) = :email`, { email }) },
     });
-    if (existsByEmail) {
-      throw new ConflictException('Email 已被註冊');
-    }
+    if (existsByEmail) throw new ConflictException('Email 已被註冊');
 
-    // 3) 確保系統中只能有一個 Admin（當 username === 'admin' 時）
     if (username === 'admin') {
       const adminExists = await this.usersRepository.findOne({ where: { role: Role.Admin } });
-      if (adminExists) {
-        throw new ConflictException('管理者帳號已存在，無法重複註冊');
-      }
+      if (adminExists) throw new ConflictException('管理者帳號已存在，無法重複註冊');
     }
 
-    // 4) 雜湊密碼
     const hashedPassword = await bcrypt.hash(input.password, 10);
 
-    // 5) 建立與儲存
     const user = this.usersRepository.create({
       username,
       password: hashedPassword,
-      email, 
+      email,
       role: username === 'admin' ? Role.Admin : Role.User,
       resetPasswordToken: null,
-      resetPasswordExpires: null,
+      resetPasswordExpires: null, // ← 以毫秒存放
     });
 
     return this.usersRepository.save(user);
@@ -78,19 +70,17 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     const normalized = email.trim().toLowerCase();
     return this.usersRepository.findOne({
-      where: { email: Raw(alias => `LOWER(${alias}) = :email`, { email: normalized }) },
+      where: { email: Raw((alias) => `LOWER(${alias}) = :email`, { email: normalized }) },
     });
   }
 
   async removerUser(id: number): Promise<boolean> {
     const result = await this.usersRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('找不到該使用者');
-    }
+    if (result.affected === 0) throw new NotFoundException('找不到該使用者');
     return true;
   }
-  // === 忘記密碼：寄送重設連結 ===
-  async forgotPassword(username: string, email: string): Promise<boolean> {
+
+    async forgotPassword(username: string, email: string): Promise<boolean> {
     const normalizedEmail = email.trim().toLowerCase();
     const user = await this.usersRepository.findOne({
       where: {
@@ -98,16 +88,13 @@ export class UsersService {
         email: Raw(alias => `LOWER(${alias}) = :email`, { email: normalizedEmail }),
       },
     });
-    if (!user) {
-      throw new NotFoundException('找不到符合的使用者名稱或 Email');
-    }
+    if (!user) throw new NotFoundException('找不到符合的使用者名稱或 Email');
 
     const token = crypto.randomBytes(32).toString('hex');
-    const expireMinutes = Number(this.config.get('RESET_LINK_EXPIRES_MINUTES', '60'));
-    const expiresAt = new Date(Date.now() + expireMinutes * 60 * 1000);
-
+    const expireMinutes = 60
+    // ✅ 直接以毫秒時間戳存放
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = expiresAt; // ✅ 直接存 Date 物件即可
+    user.resetPasswordExpires = Date.now() + expireMinutes * 60 * 1000;
     await this.usersRepository.save(user);
 
     const frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
@@ -123,36 +110,30 @@ export class UsersService {
     return true;
   }
 
-  // === 變更密碼：使用 Date 物件比較 ===
+  
   async changePassword(newPassword: string, token: string): Promise<boolean> {
-    // ✅ 取得資料庫中的使用者
     const user = await this.usersRepository.findOne({
       where: { resetPasswordToken: token },
     });
-
-    if (!user || !user.resetPasswordExpires) {
+    console.log('目前使用者的姓名是:',user?.username)
+    console.log('目前的過期值是:',user?.resetPasswordExpires)
+    if (!user || user.resetPasswordExpires == null) {
+      throw new BadRequestException('重設連結無效或已過期，請重新申請。');
+    }
+    // ✅ 這裡 user.resetPasswordExpires 已經是 number
+    if (user.resetPasswordExpires < Date.now()) {
       throw new BadRequestException('重設連結無效或已過期，請重新申請。');
     }
 
-    // ✅ 將 resetPasswordExpires 轉為 Date 後再比較
-    const Eight_Hours_Difference = 8 * 60 * 60 * 1000;
-    const expireDate = new Date(user.resetPasswordExpires);
-    if (expireDate.getTime() + Eight_Hours_Difference< Date.now()) {
-      throw new BadRequestException('重設連結無效或已過期，請重新申請。');
-    }
-
-    // ✅ 加密新密碼
-    const hashNewPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashNewPassword;
+    user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
     await this.usersRepository.save(user);
     return true;
   }
- 
 }
+  
 
 
 
-    
 

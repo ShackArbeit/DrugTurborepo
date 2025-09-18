@@ -18,7 +18,7 @@ export class UsersResolver {
   async registerUser(
     @Args('data') data: RegisterUserInput,
   ): Promise<User> {
-    return this.usersService.createUser(data);
+    return this.usersService.createUser(data)
   }
 
   /** 查詢自己（需登入） */
@@ -75,9 +75,8 @@ export class UsersResolver {
   @Mutation(() => Boolean, { name: 'resetPassword' })
   async changePassword(@Args('resetPasswordInput', { type: () =>  ResetPasswordInput }) resetPasswordInput: ResetPasswordInput){
         const {token, newPassword} = resetPasswordInput
-        return this.usersService.changePassword(token,newPassword)
+        return this.usersService.changePassword(newPassword,token)
   }
-
 }
 
 

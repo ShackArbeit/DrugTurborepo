@@ -1,34 +1,37 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+// src/Users/user.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ObjectType, Field, ID, HideField, registerEnumType } from '@nestjs/graphql';
 import { Role } from '../Auth/role/role.enum';
 
-@ObjectType()
+registerEnumType(Role, { name: 'Role' });
+
+@ObjectType()      
 @Entity()
-export class User{
-      @Field(() => ID)
-      @PrimaryGeneratedColumn()
-      id:number
+export class User {
+  @Field(() => ID)       
+  @PrimaryGeneratedColumn()
+  id: number;
 
-      @Field()
-      @Column({ unique: true })
-      username: string;
+  @Field()               
+  @Column({ unique: true })
+  username: string;
 
-      
-      @Column()
-      password: string;
+  @HideField()           
+  @Column()
+  password: string;
 
-      @Field()
-      @Column({ unique: true })
-      email: string ;
+  @Field()               
+  @Column({ unique: true })
+  email: string;
 
-      @Field(()=>String)
-      @Column({ type: 'text', default: Role.User })
-      role:Role
+  @Field(() => String)     
+  @Column({ type: 'text', default: Role.User })
+  role: Role;
 
-      //  以下是忘記密碼時的設定
-      @Column({ type: 'varchar', length: 255, nullable: true })
-      resetPasswordToken: string | null;
+  @Column({ type: 'text', nullable: true })
+  resetPasswordToken: string | null;
 
-      @Column({ type: 'datetime', nullable: true })
-      resetPasswordExpires: Date | null;
+
+  @Column({ type: 'integer', nullable: true })
+  resetPasswordExpires: number | null;
 }

@@ -80,10 +80,7 @@ export default function ResetPasswordPage() {
                 required
               />
             </div>
-
-    
-            <input  value={token} readOnly />
-
+            <input type='hidden' value={token} readOnly />
             <Button type="submit" className="w-full" disabled={loading || !token}>
               {loading ? '送出中…' : '送出'}
             </Button>

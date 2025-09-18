@@ -24,6 +24,8 @@ const mockUsers: User[] = [
     password: 'hashed_password',
     email: 'shack@example.com',
     role: Role.User,
+    resetPasswordToken:'',
+    resetPasswordExpires:null,
   },
   {
     id: 2,
@@ -31,6 +33,8 @@ const mockUsers: User[] = [
     password: 'hashed_password',
     email: 'john@example.com',
     role: Role.User,
+    resetPasswordToken:'',
+    resetPasswordExpires:null,
   },
 ];
 
