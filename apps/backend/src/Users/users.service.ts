@@ -131,6 +131,20 @@ export class UsersService {
     await this.usersRepository.save(user);
     return true;
   }
+  // 新增可以更新角色的邏輯 
+  async updateUserRole(
+     userEmail:string,
+     newRole:Role
+  ):Promise<User>{
+       const user = await this.usersRepository.findOne({
+           where:{email:userEmail}
+       })
+       if(!user){
+            throw new NotFoundException(`找不到 Email 為 ${userEmail} 的使用者`);
+       }
+       user.role = newRole
+       return this.usersRepository.save(user)
+  }
 }
   
 

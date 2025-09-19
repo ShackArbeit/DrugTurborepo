@@ -25,7 +25,7 @@ export class UsersResolver {
   @Query(() => User, { name: 'me', nullable: true })
   @UseGuards(GqlAuthGuard)
   async getCurrentUser(@Context() { req }: any): Promise<User | null> {
-    return req.user ? this.usersService.findById(req.user.id) : null;
+    return req.user ? this.usersService.findByUsername(req.user.username) : null;
   }
 
   /** 查詢所有使用者（Admin 專用） */
@@ -66,17 +66,31 @@ export class UsersResolver {
     return this.usersService.removerUser(id);
   }
 
+  // 忘記密碼
   @Mutation(() => Boolean, { name: 'forgotPassword' })
   async forgetPassword(@Args('forgotPasswordInput', { type: () => ForgotPasswordInput }) forgotPasswordInput: ForgotPasswordInput):Promise<boolean>{
           const {username,email} = forgotPasswordInput
           return this.usersService.forgotPassword(username,email)
   }
 
+  // 更改密碼
   @Mutation(() => Boolean, { name: 'resetPassword' })
   async changePassword(@Args('resetPasswordInput', { type: () =>  ResetPasswordInput }) resetPasswordInput: ResetPasswordInput){
         const {token, newPassword} = resetPasswordInput
         return this.usersService.changePassword(newPassword,token)
   }
+
+  // 可更新使用者角色
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Mutation(() => User, { name: 'updateUserRole', description: '由 Admin 修改使用者角色' })
+  async updateUserRole(
+    @Args('userEmail', { type: () => String }) userEmail: string,
+    @Args('newRole', { type: () => Role }) newRole: Role,
+  ): Promise<User> {
+    return this.usersService.updateUserRole(userEmail, newRole);
+  }
+
 }
 
 

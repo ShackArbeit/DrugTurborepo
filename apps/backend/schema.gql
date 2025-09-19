@@ -202,6 +202,9 @@ type Mutation {
     id: Int!
     input: UpdateEvidenceInput!
   ): Evidence!
+
+  """由 Admin 修改使用者角色"""
+  updateUserRole(newRole: Role!, userEmail: String!): User!
 }
 
 type Query {
@@ -232,6 +235,11 @@ input RegisterUserInput {
 input ResetPasswordInput {
   newPassword: String!
   token: String!
+}
+
+enum Role {
+  Admin
+  User
 }
 
 input UpdateCaseInput {
@@ -349,6 +357,6 @@ input UpdateEvidenceInput {
 type User {
   email: String!
   id: ID!
-  role: String!
+  role: Role!
   username: String!
 }

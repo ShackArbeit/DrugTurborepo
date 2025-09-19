@@ -24,7 +24,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Field(() => String)     
+  @Field(() => Role)     
   @Column({ type: 'text', default: Role.User })
   role: Role;
 
