@@ -174,7 +174,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
-                <Link href="/accountAdmin" aria-label="前往管理頁面">
+                <Link href="/accountAdmin/permission" aria-label="前往管理頁面">
                   進入管理頁面
                 </Link>
               </Button>

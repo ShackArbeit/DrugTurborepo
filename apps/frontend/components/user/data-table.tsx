@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+
+import * as React from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,66 +24,68 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown, Search, X } from 'lucide-react';
 
+type DataTableProps<TData, TValue> = {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  /** 以哪個欄位作為快速搜尋（預設：email） */
+  searchColumnKey?: string;
+  /** 搜尋框 placeholder（預設：Filter ...） */
+  searchPlaceholder?: string;
+  className?: string;
+};
 
-type  DataTableProps<TData,TValue>={
-      columns:ColumnDef<TData,TValue>[];
-      data:TData[],
-      searchColumnKey?:string,
-      searchPlaceholder?: string;
-      className?:string
-}
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  searchColumnKey = 'email',
+  searchPlaceholder = 'Filter ...',
+  className,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
-export function DataTable<TData,TValue>({
-      columns,
-      data,
-      searchColumnKey = 'email',
-      searchPlaceholder = 'Filter ...',
-      className,
-}:DataTableProps<TData,TValue>){
-     const [sorting, setSorting] = useState<SortingState>([])
-     const [columnFilters, setColumnFilters] =useState<ColumnFiltersState>([])
-     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-       const table = useReactTable({
-            data,
-            columns,
-            state: {
-                  sorting,
-                  columnFilters,
-                  columnVisibility
-            },
-            onSortingChange:setSorting,
-            onColumnFiltersChange:setColumnFilters,
-            getCoreRowModel: getCoreRowModel(),
-            getFilteredRowModel: getFilteredRowModel(),
-            getSortedRowModel: getSortedRowModel(),
-        })
-        const searchCol = table.getColumn(searchColumnKey)
-        const searchValue = (searchCol?.getFilterValue() as string ) ?? ''
+  const table = useReactTable({
+    data,
+    columns,
+    state: { sorting, columnFilters, columnVisibility },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const searchCol = table.getColumn(searchColumnKey);
+  const searchValue = (searchCol?.getFilterValue() as string) ?? '';
+
   return (
-         <div className={['space-y-4', className].filter(Boolean).join(' ')}>
-                {/* Toolbar */}
-            <div className='flex w-full max-w-md items-center gap-2'>
-              <div className='relative flex-1'>
-                      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                          placeholder={searchPlaceholder}
-                          value={searchValue}
-                          className="pl-9"
-                          onChange={(e)=>searchCol?.setFilterValue(e.target.value)}
-                      />
-                      {searchValue &&(
-                        <button
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        aria-label="Clear"
-                        onClick={()=>searchCol?.setFilterValue('')}
-                        >
-                               <X className="h-4 w-4" />
-                        </button>
-                      )}
-              </div>
-            </div>
-            {/* Body Part */}
-             <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+    <div className={['space-y-4', className].filter(Boolean).join(' ')}>
+      {/* Toolbar */}
+      <div className="flex w-full max-w-md items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchValue}
+            onChange={(e) => searchCol?.setFilterValue(e.target.value)}
+            placeholder={searchPlaceholder}
+            className="pl-9"
+          />
+          {searchValue && (
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              onClick={() => searchCol?.setFilterValue('')}
+              aria-label="Clear"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
         <div className="overflow-auto">
           <Table className="min-w-[640px]">
             <TableHeader className="bg-muted/50">
@@ -90,26 +93,35 @@ export function DataTable<TData,TValue>({
                 <TableRow key={hg.id} className="hover:bg-muted/50">
                   {hg.headers.map((header) => {
                     const canSort = header.column.getCanSort();
-                    const sorted = header.column.getIsSorted();
+                    const isSorted = header.column.getIsSorted();
                     return (
                       <TableHead key={header.id} className="whitespace-nowrap">
                         {header.isPlaceholder ? null : canSort ? (
+                          /* ✅ 只有這裡做按鈕；columns.tsx 的 header 改成純文字 */
                           <Button
+                            type="button"
                             variant="ghost"
                             size="sm"
                             className="h-8 px-2 text-xs"
                             onClick={() =>
-                              header.column.toggleSorting(sorted === 'asc')
+                              header.column.toggleSorting(isSorted === 'asc')
                             }
                           >
+                            <span>
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                            </span>
+                            <ArrowUpDown className="ml-2 h-3.5 w-3.5" />
+                          </Button>
+                        ) : (
+                          <span className="text-xs font-medium text-foreground">
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                            <ArrowUpDown className="ml-2 h-3.5 w-3.5" />
-                          </Button>
-                        ) : (
-                          flexRender(header.column.columnDef.header, header.getContext())
+                          </span>
                         )}
                       </TableHead>
                     );
@@ -147,6 +159,6 @@ export function DataTable<TData,TValue>({
           </Table>
         </div>
       </div>
- </div>
-  )
+    </div>
+  );
 }

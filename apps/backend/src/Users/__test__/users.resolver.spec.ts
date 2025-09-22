@@ -75,7 +75,7 @@ describe('UsersResolver 測試', () => {
 
   describe('getCurrentUser (me)', () => {
     it('應可取得當前登入使用者', async () => {
-      const ctx = { req: { user: { id: 1 } } };
+      const ctx = { req: { user: { username: 'admin' } } };
       const result = await resolver.getCurrentUser(ctx as any);
       expect(service.findById).toHaveBeenCalledWith(1);
       expect(result).toEqual(fakeUser);
