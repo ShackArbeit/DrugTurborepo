@@ -5,7 +5,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Scale, FolderSearch, LogIn, PcCase, UserLock } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -13,16 +19,22 @@ import LogoutButton from '@/components/auth/LogOutButton';
 
 export default function Home() {
   const router = useRouter();
-  const [hasToken, setHasToken] = useState<boolean | null>(null); // null = 尚未讀取（避免 SSR/CSR 不一致）
-  const token = localStorage.getItem('token') 
 
-  // 僅於瀏覽器端讀取 token；並監聽跨分頁登入/登出同步
+  // 只在瀏覽器讀取 localStorage：避免 SSR/Build 時的 ReferenceError
+  const [token, setToken] = useState<string | null>(null);
+  const [hasToken, setHasToken] = useState<boolean | null>(null); // null = 尚未讀取（避免水合不一致）
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     const read = () => {
-      const t = localStorage.getItem('token');
+      const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      setToken(t);
       setHasToken(Boolean(t));
+      setReady(true);
     };
     read();
+
+    // 跨分頁同步登入/登出
     const onStorage = (e: StorageEvent) => {
       if (e.key === 'token') read();
     };
@@ -30,9 +42,8 @@ export default function Home() {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  // 未登入的提醒（想關閉自動提醒可刪除此 useCallback + useEffect）
   const promptLogin = useCallback(async () => {
-    const result = await Swal.fire({
+    const res = await Swal.fire({
       title: '需要登入',
       text: '若未登入將無法使用各項功能',
       icon: 'warning',
@@ -41,16 +52,8 @@ export default function Home() {
       cancelButtonText: '稍後再說',
       confirmButtonColor: '#16a34a',
     });
-    if (result.isConfirmed) {
-      router.push('/login');
-    }
+    if (res.isConfirmed) router.push('/login');
   }, [router]);
-
-  useEffect(() => {
-    if (hasToken === false) {
-      promptLogin();
-    }
-  }, [hasToken, promptLogin]);
 
   const alreadyLogin = useCallback(async () => {
     await Swal.fire({
@@ -61,16 +64,50 @@ export default function Home() {
     });
   }, []);
 
-  // 註冊/登入按鈕點擊：未登入→前往 /register；已登入→提醒
+  // 首頁自動提醒（可移除）
+  useEffect(() => {
+    if (hasToken === false) promptLogin();
+  }, [hasToken, promptLogin]);
+
   const handleRegister = useCallback(() => {
     if (hasToken) {
-      // 已登入，不導頁
       alreadyLogin();
     } else {
-      // 未登入，前往註冊/登入
       router.push('/register');
     }
   }, [hasToken, alreadyLogin, router]);
+
+  // 進入權限管理：以程式導頁，未登入先提示
+  const gotoAdmin = useCallback(async () => {
+    if (!token) {
+      await Swal.fire({
+        title: '需要登入',
+        text: '若未登入將無法進入此頁面',
+        icon: 'warning',
+        confirmButtonText: '前往登入',
+        showCancelButton: true,
+        confirmButtonColor: '#16a34a',
+      }).then((r) => {
+        if (r.isConfirmed) router.push('/login');
+      });
+      return;
+    }
+    router.push('/accountAdmin/permission');
+  }, [router, token]);
+
+  // 尚未讀取 localStorage 時顯示占位
+  if (!ready) {
+    return (
+      <main className="p-6 space-y-4">
+        <div className="h-6 w-40 animate-pulse rounded bg-muted" />
+        <div className="h-10 w-full animate-pulse rounded bg-muted" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="h-40 animate-pulse rounded bg-muted" />
+          <div className="h-40 animate-pulse rounded bg-muted" />
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main
@@ -139,7 +176,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full" variant="secondary">
-                <Link href="/evidence" aria-label="前往案件相關頁">
+                <Link href="/evidence" aria-label="前往證物相關頁">
                   前往證物頁面
                 </Link>
               </Button>
@@ -156,11 +193,13 @@ export default function Home() {
               <CardDescription>以帳號密碼登入（支援 JWT）</CardDescription>
             </CardHeader>
             <CardContent>
-              {token?<LogoutButton
-              className='bg-red-500 w-full'
-              />:  <Button className="w-full" variant="destructive" onClick={handleRegister}>
+              {token ? (
+                <LogoutButton className="w-full bg-red-500" />
+              ) : (
+                <Button className="w-full" variant="destructive" onClick={handleRegister}>
                   註冊/登入
-              </Button>} 
+                </Button>
+              )}
             </CardContent>
           </Card>
 
@@ -174,15 +213,10 @@ export default function Home() {
               <CardDescription>由 Admin 管理者管理</CardDescription>
             </CardHeader>
             <CardContent>
-               <Button asChild className="w-full" >
-                <Link
-                      href="/accountAdmin/permission"
-                      aria-label="前往管理頁面"
-                      
-                    >
-                    進入管理頁面
-                </Link>
-             </Button>
+              {/* 不用 <Link>，改程式導頁，才能在未登入時攔截 */}
+              <Button className="w-full" >
+                <Link href='/accountAdmin/permission'> 進入管理頁面</Link>
+              </Button>
             </CardContent>
           </Card>
         </section>
