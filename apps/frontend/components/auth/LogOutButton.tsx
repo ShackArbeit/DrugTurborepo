@@ -1,6 +1,5 @@
 'use client'
 import { useQuery } from '@apollo/client';
-import { useCallback, useState,useEffect} from 'react';
 import { useRouter } from 'next/navigation';
 import {  useApolloClient } from '@apollo/client';
 import { Button } from '../ui/button';
@@ -25,9 +24,8 @@ export default function LogoutButton({
 }:Props){
      const router = useRouter()
      const client = useApolloClient()
-     const [loggingOut,setLoggingOut] = useState(false)
      const token =typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-     const { data , loading , error , refetch} = useQuery(GET_ME,{
+     const { data , loading , error} = useQuery(GET_ME,{
         skip:!token,
          fetchPolicy: 'network-only',
      })
@@ -36,7 +34,7 @@ export default function LogoutButton({
               <Button asChild variant={variant} size={size} className={className}>
                   <Link href="/login">
                   <LogIn className="mr-2 h-4 w-4" />
-                  登入
+                        登入
                   </Link>
             </Button>
         )

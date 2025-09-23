@@ -124,6 +124,9 @@ const RegisterPage = () => {
                 <Button type="button" variant="destructive" onClick={() => router.push('/Forget')}>
                   忘記密碼 ?
               </Button>
+              <Button type="button" variant="outline" onClick={() => router.push('/')}>
+                  回首頁
+              </Button>
             </CardFooter>
           </form>
         </Form>

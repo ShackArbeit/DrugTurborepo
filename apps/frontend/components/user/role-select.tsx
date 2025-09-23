@@ -12,12 +12,12 @@ type Props = {
   value: 'user' | 'admin';
   disabled?: boolean;
   onChange: (next: 'user' | 'admin') => void;
-  /** 這一列是否為目前登入者自己 */
   isSelf?: boolean;
+  allowed?:Array<'user'|'admin'>
 };
 
 
-export function RoleSelect({ value, disabled, onChange, isSelf = false }: Props) {
+export function RoleSelect({ value, disabled, onChange, isSelf = false, allowed = ['user', 'admin'], }: Props) {
   const effectiveDisabled = disabled || isSelf;
 
   return (
@@ -25,6 +25,7 @@ export function RoleSelect({ value, disabled, onChange, isSelf = false }: Props)
       value={value}
       onValueChange={(v) => {
         if (isSelf) return; 
+        if (!allowed.includes(v as any)) return;
         onChange(v as 'user' | 'admin');
       }}
       disabled={effectiveDisabled}

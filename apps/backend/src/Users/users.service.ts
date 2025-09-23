@@ -3,6 +3,7 @@ import {
   ConflictException,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
@@ -134,13 +135,27 @@ export class UsersService {
   // 新增可以更新角色的邏輯 
   async updateUserRole(
      userEmail:string,
-     newRole:Role
+     newRole:Role,
+     actor:Omit<User,'password'>
   ):Promise<User>{
+      const normalized = userEmail.trim().toLowerCase();
        const user = await this.usersRepository.findOne({
            where:{email:userEmail}
        })
        if(!user){
             throw new NotFoundException(`找不到 Email 為 ${userEmail} 的使用者`);
+       }
+       if(actor?.email.toLowerCase()===normalized){
+           throw new ForbiddenException('不可更改自己的角色');
+       }
+       const actorIsRootAdmin = actor.username==='admin'
+       if(!actorIsRootAdmin){
+          if(newRole===Role.Admin){
+                throw new ForbiddenException('只有原始管理者可以指派 Admin。');
+          }
+          if(user.role===Role.Admin){
+             throw new ForbiddenException('不可變更其他管理者的角色。');
+          }
        }
        user.role = newRole
        return this.usersRepository.save(user)

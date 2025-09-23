@@ -11,9 +11,11 @@ import Link from 'next/link';
 export default function CasesToolbar({
   value,
   onChange,
+  isAdmin
 }: {
   value: string;
   onChange: (v: string) => void;
+  isAdmin:boolean
 }) {
   return (
     <div className="space-y-3 py-2">
@@ -28,7 +30,7 @@ export default function CasesToolbar({
         <div className="ml-auto flex items-center gap-2">
           <span className="text-sm text-muted-foreground">切換主題</span>
           <ModeToggle />
-          <Button asChild variant="destructive">
+          <Button variant="destructive" disabled={!isAdmin}>
             <Link href="/case/new">新增案件</Link>
           </Button>
           <Button asChild variant="secondary">

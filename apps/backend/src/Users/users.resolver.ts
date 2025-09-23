@@ -87,8 +87,9 @@ export class UsersResolver {
   async updateUserRole(
     @Args('userEmail', { type: () => String }) userEmail: string,
     @Args('newRole', { type: () => Role }) newRole: Role,
+    @Context(){req}:any
   ): Promise<User> {
-    return this.usersService.updateUserRole(userEmail, newRole);
+    return this.usersService.updateUserRole(userEmail, newRole,req.user);
   }
 
 }

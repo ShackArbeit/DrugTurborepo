@@ -20,7 +20,7 @@ function LoginForm() {
 
   // 這行需要被 Suspense 包住
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get('returnTo') || '/case';
+  const returnTo = searchParams.get('returnTo') || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

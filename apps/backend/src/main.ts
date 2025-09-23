@@ -9,6 +9,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: false,
   });
-  await app.listen(process.env.PORT ?? 3001);
+  const port = parseInt(process.env.PORT ?? '3001', 10);
+  await app.listen(port); 
 }
 bootstrap();

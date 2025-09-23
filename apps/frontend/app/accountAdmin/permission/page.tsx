@@ -1,15 +1,16 @@
 'use client';
-
 import { useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { DataTable } from '@/components/user/data-table';
 import { getUserColumns, type UserRow } from '@/components/user/columns';
 import { ME_QUERY, USERS_QUERY, UPDATE_USER_ROLE } from '@/lib/graphql/UserGql';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import LogoutButton from '@/components/auth/LogOutButton';
 
 
 const normalizeRole = (v: string | undefined | null): 'admin' | 'user' =>
   String(v).toLowerCase() === 'admin' ? 'admin' : 'user';
-
 
 const toGqlRole = (v: 'admin' | 'user'): 'Admin' | 'User' =>
   v === 'admin' ? 'Admin' : 'User';
@@ -24,6 +25,7 @@ export default function PermissionsPage() {
   const meRaw = meData?.me as UserRow | undefined;
  
   const isAdmin = normalizeRole(meRaw?.role as any) === 'admin';
+  const isRootAdmin = isAdmin && meRaw?.username === 'admin'; 
 
  
   const {
@@ -62,7 +64,7 @@ export default function PermissionsPage() {
     };
 
     updateUserRole({
-      variables: { userEmail: email, newRole: nextEnum }, // <- 重要：送 "Admin"/"User"
+      variables: { userEmail: email, newRole: nextEnum }, 
       optimisticResponse: { updateUserRole: optimistic },
       update(cache, { data }) {
         const updated = data?.updateUserRole;
@@ -75,7 +77,7 @@ export default function PermissionsPage() {
             id: entityId,
             fields: {
               role() {
-                return updated.role; // 這裡仍是 "Admin"/"User"
+                return updated.role; 
               },
             },
           });
@@ -88,6 +90,7 @@ export default function PermissionsPage() {
 
   const columns = getUserColumns({
     isAdmin,
+    isRootAdmin,       
     currentUserEmail: meRaw?.email,
     onRoleChange: handleRoleChange, 
   });
@@ -136,7 +139,7 @@ export default function PermissionsPage() {
           <h1 className="text-xl font-semibold">權限管理</h1>
           <div className="text-sm text-muted-foreground">
             目前身分：
-            <span className="ml-1 inline-block rounded border bg-muted px-2 py-0.5">
+            <span className="ml-1 inline-block rounded border bg-red-200 px-2 py-0.5">
               {normalizeRole(meRaw.role as any) === 'admin' ? 'Admin' : 'User'}
             </span>
           </div>
@@ -152,9 +155,11 @@ export default function PermissionsPage() {
     <main className="p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">權限管理</h1>
+        <Button><Link href='/'>返回首頁</Link></Button>
+        <LogoutButton />
         <div className="text-sm text-muted-foreground">
           目前身分：
-          <span className="ml-1 inline-block rounded border bg-muted px-2 py-0.5">
+          <span className="ml-1 inline-block rounded border bg-red-200  px-2 py-0.5">
             {normalizeRole(meRaw.role as any) === 'admin' ? 'Admin' : 'User'}
           </span>
         </div>
@@ -173,12 +178,12 @@ export default function PermissionsPage() {
         searchPlaceholder="搜尋 email…"
       />
 
-      <details className="rounded-md border bg-card p-4">
+      {/* <details className="rounded-md border bg-card p-4">
         <summary className="cursor-pointer text-sm font-medium">Debug</summary>
         <pre className="mt-2 overflow-auto rounded bg-muted p-3 text-xs">
 {JSON.stringify({ me: meRaw, users: usersData?.users ?? null }, null, 2)}
         </pre>
-      </details>
+      </details> */}
     </main>
   );
 }

@@ -7,7 +7,8 @@ export function middleware(req: NextRequest) {
 
   const needAuth =
     pathname.startsWith('/case') ||
-    pathname.startsWith('/evidence');
+    pathname.startsWith('/evidence') ||
+    pathname.startsWith('/accountAdmin/permission')
 
   if (!needAuth) {
     return NextResponse.next();
@@ -33,5 +34,8 @@ export const config = {
     '/case/:path*',    
     '/evidence',
     '/evidence/:path*',
+    '/accountAdmin/permission',
+    '/accountAdmin/permission/:path*',
+    '/accountAdmin/:path*',
   ],
 };

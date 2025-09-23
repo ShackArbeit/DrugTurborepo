@@ -27,9 +27,7 @@ import { ArrowUpDown, Search, X } from 'lucide-react';
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  /** 以哪個欄位作為快速搜尋（預設：email） */
   searchColumnKey?: string;
-  /** 搜尋框 placeholder（預設：Filter ...） */
   searchPlaceholder?: string;
   className?: string;
 };
@@ -62,7 +60,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className={['space-y-4', className].filter(Boolean).join(' ')}>
-      {/* Toolbar */}
       <div className="flex w-full max-w-md items-center gap-2">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -97,7 +94,6 @@ export function DataTable<TData, TValue>({
                     return (
                       <TableHead key={header.id} className="whitespace-nowrap">
                         {header.isPlaceholder ? null : canSort ? (
-                          /* ✅ 只有這裡做按鈕；columns.tsx 的 header 改成純文字 */
                           <Button
                             type="button"
                             variant="ghost"

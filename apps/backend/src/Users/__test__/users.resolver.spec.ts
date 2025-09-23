@@ -1,4 +1,4 @@
-// src/Users/__tests__/users.resolver.spec.ts
+// src/Users/__test__/users.resolver.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
 
@@ -14,12 +14,8 @@ type MockType<T> = {
   [P in keyof T]?: jest.Mock<any, any[]>;
 };
 
-const mockGqlAuthGuard = {
-  canActivate: jest.fn((context: ExecutionContext) => true),
-};
-const mockRolesGuard = {
-  canActivate: jest.fn((context: ExecutionContext) => true),
-};
+const mockGqlAuthGuard = { canActivate: jest.fn((_: ExecutionContext) => true) };
+const mockRolesGuard   = { canActivate: jest.fn((_: ExecutionContext) => true) };
 
 describe('UsersResolver 測試', () => {
   let resolver: UsersResolver;
@@ -31,25 +27,27 @@ describe('UsersResolver 測試', () => {
     password: 'hashed_password',
     email: 'admin@office.gov.tw',
     role: Role.Admin,
-    resetPasswordToken:'',
-    resetPasswordExpires:null,
+    resetPasswordToken: '',
+    resetPasswordExpires: null,
   };
 
   beforeEach(async () => {
     service = {
-      createUser: jest.fn().mockResolvedValue(fakeUser),
-      findById: jest.fn().mockResolvedValue(fakeUser),
-      findAllUsers: jest.fn().mockResolvedValue([fakeUser]),
-      removerUser: jest.fn().mockResolvedValue(true),
-      findByEmail: jest.fn().mockResolvedValue(fakeUser),
+      createUser:     jest.fn().mockResolvedValue(fakeUser),
+      findById:       jest.fn().mockResolvedValue(fakeUser),
+      findAllUsers:   jest.fn().mockResolvedValue([fakeUser]),
+      removerUser:    jest.fn().mockResolvedValue(true),
+      findByEmail:    jest.fn().mockResolvedValue(fakeUser),
+      // ✅ 新增這個 mock，因為 resolver 已改用 findByUsername
+      findByUsername: jest.fn().mockResolvedValue(fakeUser),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersResolver,
         { provide: UsersService, useValue: service },
-        { provide: GqlAuthGuard, useValue: mockGqlAuthGuard },
-        { provide: RolesGuard, useValue: mockRolesGuard },
+        { provide: GqlAuthGuard,  useValue: mockGqlAuthGuard },
+        { provide: RolesGuard,    useValue: mockRolesGuard },
       ],
     }).compile();
 
@@ -77,7 +75,8 @@ describe('UsersResolver 測試', () => {
     it('應可取得當前登入使用者', async () => {
       const ctx = { req: { user: { username: 'admin' } } };
       const result = await resolver.getCurrentUser(ctx as any);
-      expect(service.findById).toHaveBeenCalledWith(1);
+      // ✅ 斷言也改成 findByUsername
+      expect(service.findByUsername).toHaveBeenCalledWith('admin');
       expect(result).toEqual(fakeUser);
     });
   });

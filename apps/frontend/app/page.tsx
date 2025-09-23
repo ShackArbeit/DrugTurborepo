@@ -9,10 +9,12 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { Scale, FolderSearch, LogIn, PcCase, UserLock } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
+import LogoutButton from '@/components/auth/LogOutButton';
 
 export default function Home() {
   const router = useRouter();
   const [hasToken, setHasToken] = useState<boolean | null>(null); // null = 尚未讀取（避免 SSR/CSR 不一致）
+  const token = localStorage.getItem('token') 
 
   // 僅於瀏覽器端讀取 token；並監聽跨分頁登入/登出同步
   useEffect(() => {
@@ -40,18 +42,16 @@ export default function Home() {
       confirmButtonColor: '#16a34a',
     });
     if (result.isConfirmed) {
-      router.push('/register');
+      router.push('/login');
     }
   }, [router]);
 
   useEffect(() => {
     if (hasToken === false) {
-      // 首次判定未登入才提示（避免每次 render 都跳）
       promptLogin();
     }
   }, [hasToken, promptLogin]);
 
-  // 已登入時點「註冊/登入」的處理：提醒後留在原頁
   const alreadyLogin = useCallback(async () => {
     await Swal.fire({
       title: 'Already Logged In',
@@ -156,10 +156,11 @@ export default function Home() {
               <CardDescription>以帳號密碼登入（支援 JWT）</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* 用純 Button 控制導向／提醒，避免 Link 攔截失效與空 href 的問題 */}
-              <Button className="w-full" variant="destructive" onClick={handleRegister}>
-                註冊/登入
-              </Button>
+              {token?<LogoutButton
+              className='bg-red-500 w-full'
+              />:  <Button className="w-full" variant="destructive" onClick={handleRegister}>
+                  註冊/登入
+              </Button>} 
             </CardContent>
           </Card>
 
@@ -173,11 +174,15 @@ export default function Home() {
               <CardDescription>由 Admin 管理者管理</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/accountAdmin/permission" aria-label="前往管理頁面">
-                  進入管理頁面
+               <Button asChild className="w-full" >
+                <Link
+                      href="/accountAdmin/permission"
+                      aria-label="前往管理頁面"
+                      
+                    >
+                    進入管理頁面
                 </Link>
-              </Button>
+             </Button>
             </CardContent>
           </Card>
         </section>
