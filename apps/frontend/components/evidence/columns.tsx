@@ -17,7 +17,7 @@ export type EvidenceRow={
       is_Pickup:boolean;
 }
 
-export const EvidenceColumns=(onDelete:(id:number)=>void):ColumnDef<EvidenceRow>[]=>{
+export const EvidenceColumns=(isAdmin:boolean,onDelete:(id:number)=>void):ColumnDef<EvidenceRow>[]=>{
       return [
             //  {accessorKey:'deliveryName', header:'證物交付者'},
             //  {accessorKey:'receiverName', header:'接受證物鑑識人員姓名'},
@@ -49,10 +49,10 @@ export const EvidenceColumns=(onDelete:(id:number)=>void):ColumnDef<EvidenceRow>
                                     <Button asChild variant="secondary" size="sm">
                                           <Link href={`/evidence/${id}`}>查看詳細</Link>
                                     </Button>
-                                    <Button asChild variant="outline" size="sm">
+                                    <Button  variant="outline" size="sm" disabled={!isAdmin}>
                                           <Link href={`/evidence/${id}/edit`}>編輯</Link>
                                     </Button>
-                                    <Button variant="destructive" size="sm" onClick={() => onDelete(id)}>
+                                    <Button variant="destructive" size="sm" onClick={() => onDelete(id)} disabled={!isAdmin}>
                                           刪除
                                     </Button>
                                </div>

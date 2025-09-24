@@ -2,8 +2,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import router from 'next/router';
-
+import { useRouter } from 'next/navigation';
 export type EvidenceLite = {
   id: number;
   evidenceNumber?: string | null;
@@ -32,6 +31,7 @@ export const columns = (opts: {
   onDelete: (id: number) => void;
 }): ColumnDef<CaseRow>[] => {
   const { isAdmin, onDelete } = opts;
+  const router = useRouter()
 
   return [
     { accessorKey: 'caseNumber', header: '案件編號' },
@@ -56,14 +56,13 @@ export const columns = (opts: {
                         disabled={!isAdmin}
                         onClick={() => {
                         if (!isAdmin) {
-                              // 這裡可換成 toast / dialog
                               alert('您沒有編輯權限');
                               return;
                         }
                         router.push(`/case/${id}/edit`);
                         }}
-           >
-                 編輯
+                   >
+                       編輯
                   </Button>
 
       {/* 刪除：同理 */}
