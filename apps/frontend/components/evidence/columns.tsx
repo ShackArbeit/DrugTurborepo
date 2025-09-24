@@ -7,8 +7,8 @@ export type EvidenceRow={
       id:number;
       evidenceNumber:string;
       evidenceBrand:string;
-      evidenceSerialNo:string; // 證物序號 (廠牌序號，可選)
-      evidenceOriginalNo:string; // 原始證物編號
+      evidenceSerialNo:string; 
+      evidenceOriginalNo:string; 
       evidenceType:string;
       receiveTime: string;
       deliveryName:string;

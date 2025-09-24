@@ -42,6 +42,7 @@ export class UsersService {
       if (adminExists) throw new ConflictException('管理者帳號已存在，無法重複註冊');
     }
 
+    const rawPassword = input.password;
     const hashedPassword = await bcrypt.hash(input.password, 10);
 
     const user = this.usersRepository.create({
@@ -50,10 +51,19 @@ export class UsersService {
       email,
       role: username === 'admin' ? Role.Admin : Role.User,
       resetPasswordToken: null,
-      resetPasswordExpires: null, // ← 以毫秒存放
+      resetPasswordExpires: null, 
     });
-
-    return this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+    try{
+          await this.mailer.sendSuccessSignUpMail({
+               to:saved.email,
+               username:saved.username,
+               rawPassword
+          })
+    }catch(e:any){
+        console.log('錯誤是:',e)
+    }  
+     return saved
   }
 
   async findAllUsers(): Promise<User[]> {
