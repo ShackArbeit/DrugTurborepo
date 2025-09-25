@@ -124,6 +124,7 @@ describe('開始測試 Evidence Service',()=>{
      describe('建立新的 Evidence 證物',()=>{
           const input:CreateEvidenceInput={
                       caseNumber: 'A001',
+                      caseName:'詐欺',
                       evidenceNumber: 'E002',
                       evidenceType: '手機',
                       evidenceBrand: 'Apple',

@@ -76,6 +76,7 @@ describe("開始測試 Evidence Resolver", () => {
 
   const createInput: CreateEvidenceInput = {
     caseNumber: "A001",
+    caseName:'詐欺',
     evidenceNumber: "E002",
     evidenceType: "手機",
     evidenceBrand: "Samsung",
