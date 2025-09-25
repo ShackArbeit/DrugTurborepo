@@ -6,6 +6,10 @@ export class CreateEvidenceInput{
       //  這是為了配合前端邏輯而更改的，因為一個案件可以有多的證物，所以建立證物資料時
       // 要先在前端輸入相對應的"案件編號"(caseNumber) 以利之後資料庫內的查找關係
       // 對應的案件編號
+
+      @Field(()=>String,{description:'對應案件的名稱',nullable:false})
+      caseName:string
+
       @Field(()=>String,{description:'對應案件的 caseNumber',nullable:false})
       caseNumber:string
 

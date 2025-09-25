@@ -36,7 +36,7 @@ const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 
 function genCaseNumber(now:Date,count:number){
     const yyyy = now.getFullYear().toString()
-    const mm = '0'+now.getMonth().toString()
+    const mm = '0'+(now.getMonth()+1).toString()
     const seq = String(count+1).padStart(3,'0')
     return `${yyyy}${mm}0${seq}`
 }

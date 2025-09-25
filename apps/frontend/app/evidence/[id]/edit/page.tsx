@@ -21,9 +21,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Save, ChevronRight, Loader2, TriangleAlert } from 'lucide-react';
-import {
-  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
-} from '@/components/ui/select';
+
 
 import LiveCameraCapture from '@/lib/LiveCameraCapture';
 import { uploadImage } from '@/lib/uploadImage';
