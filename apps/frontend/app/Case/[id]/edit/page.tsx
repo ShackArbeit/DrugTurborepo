@@ -1,17 +1,21 @@
 'use client';
 
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_CASE_BY_ID, UPDATE_CASE } from '@/lib/graphql/CaseGql';
-import { useRouter } from 'next/navigation';
-import { use, useEffect } from 'react';
+import {use, useEffect} from 'react';
+import {useRouter} from 'next/navigation';
+import {useQuery, useMutation} from '@apollo/client';
+import {GET_CASE_BY_ID, UPDATE_CASE} from '@/lib/graphql/CaseGql';
+
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
+
+import Link from 'next/link';
+import {useTranslations} from 'next-intl';
 
 // shadcn/ui
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {
   Form,
   FormField,
@@ -19,7 +23,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
+  FormDescription
 } from '@/components/ui/form';
 import {
   Card,
@@ -27,11 +31,11 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
+  CardFooter
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ModeToggle } from '@/components/mode-toggle';
+import {Separator} from '@/components/ui/separator';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {ModeToggle} from '@/components/mode-toggle';
 import {
   Save,
   Undo2,
@@ -43,9 +47,8 @@ import {
   UserRound,
   CalendarClock,
   Gauge,
-  Phone,
+  Phone
 } from 'lucide-react';
-import Link from 'next/link';
 
 // Select
 import {
@@ -53,54 +56,61 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
+
+import LangSwitcher from '../../../../components/LangSwitcher'
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 
-const schema = z.object({
-  caseNumber: z.string().min(1, '案件編號為必填'),
-  caseType: z.string().min(1, '案件類型為必填'),
-  caseName: z.string().min(1, '案件摘要為必填'),
-  submitUnit: z.string().min(1, '送件單位為必填'),
-  submitterName: z.string().min(1, '送件人姓名為必填'),
-  submitterPhone: z
-    .string()
-    .min(1, '手機為必填')
-    .regex(phoneRegex, '手機格式不正確（僅允許數字、+、-、空白，至少 8 碼）'),
-  submitterTel: z
-    .string()
-    .min(1, '市話為必填')
-    .regex(phoneRegex, '市話格式不正確（僅允許數字、+、-、空白，至少 8 碼）'),
-  createdAt: z
-    .string()
-    .refine((v) => !Number.isNaN(Date.parse(v)), '建立時間需為可被解析的日期字串（例如 ISO）'),
-  year: z.coerce
-    .number()
-    .int('年度需為整數')
-    .min(1900, '年度不可小於 1900')
-    .max(2100, '年度不可大於 2100'),
-  prefixLetter: z.string().optional(),
-  satisfaction_levelOne: z.string().optional(),
-  satisfaction_levelTwo: z.string().optional(),
-  satisfaction_levelThree: z.string().optional(),
-  satisfaction_levelFour: z.string().optional(),
-  section: z.string().optional(),
-});
+// 依照 t 產生 Zod Schema（把所有驗證訊息放到多語）
+function buildSchema(t: (k: string, v?: any) => string) {
+  return z.object({
+    caseNumber: z.string().min(1, t('validation.caseNumberRequired')),
+    caseType: z.string().min(1, t('validation.caseTypeRequired')),
+    caseName: z.string().min(1, t('validation.caseNameRequired')),
+    submitUnit: z.string().min(1, t('validation.submitUnitRequired')),
+    submitterName: z.string().min(1, t('validation.submitterNameRequired')),
+    submitterPhone: z
+      .string()
+      .min(1, t('validation.phoneRequired'))
+      .regex(phoneRegex, t('validation.phoneInvalid')),
+    submitterTel: z
+      .string()
+      .min(1, t('validation.telRequired'))
+      .regex(phoneRegex, t('validation.telInvalid')),
+    createdAt: z
+      .string()
+      .refine((v) => !Number.isNaN(Date.parse(v)), t('validation.createdAtInvalid')),
+    year: z.coerce
+      .number()
+      .int(t('validation.yearInt'))
+      .min(1900, t('validation.yearMin'))
+      .max(2100, t('validation.yearMax')),
+    prefixLetter: z.string().optional(),
+    satisfaction_levelOne: z.string().optional(),
+    satisfaction_levelTwo: z.string().optional(),
+    satisfaction_levelThree: z.string().optional(),
+    satisfaction_levelFour: z.string().optional(),
+    section: z.string().optional()
+  });
+}
 
-export type FormValues = z.infer<typeof schema>;
+export type FormValues = z.infer<ReturnType<typeof buildSchema>>;
 
-export default function EditCasePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EditCasePage({params}: {params: Promise<{id: string}>}) {
+  const {id} = use(params);
   const numericId = Number(id);
   const router = useRouter();
+  const t = useTranslations('CaseEdit');
 
-  const { data, loading: qLoading, error } = useQuery(GET_CASE_BY_ID, {
-    variables: { id: numericId },
+  const schema = buildSchema(t);
+
+  const {data, loading: qLoading, error} = useQuery(GET_CASE_BY_ID, {
+    variables: {id: numericId}
   });
-  const [updateCase, { loading: mLoading }] = useMutation(UPDATE_CASE);
+  const [updateCase, {loading: mLoading}] = useMutation(UPDATE_CASE);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -119,9 +129,9 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
       createdAt: '',
       year: new Date().getFullYear(),
       prefixLetter: '',
-      section: '',
+      section: ''
     },
-    mode: 'onBlur',
+    mode: 'onBlur'
   });
 
   const c = data?.case;
@@ -143,7 +153,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
         createdAt: c.createdAt ?? '',
         year: Number(c.year ?? new Date().getFullYear()),
         prefixLetter: c.prefixLetter ?? '',
-        section: c.section ?? '',
+        section: c.section ?? ''
       });
     }
   }, [c, form]);
@@ -151,56 +161,59 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
   const onSubmit = async (v: FormValues) => {
     try {
       await updateCase({
-        variables: { id: numericId, input: { ...v } },
-        refetchQueries: [{ query: GET_CASE_BY_ID, variables: { id: numericId } }],
-        awaitRefetchQueries: true,
+        variables: {id: numericId, input: {...v}},
+        refetchQueries: [{query: GET_CASE_BY_ID, variables: {id: numericId}}],
+        awaitRefetchQueries: true
       });
       router.push(`/case/${id}`);
     } catch (err: any) {
       console.error(err);
-      alert(err?.message ?? '更新失敗，請稍後再試');
+      alert(err?.message ?? 'Update failed');
     }
   };
 
-  // 共用：輸入/選擇器的漂亮樣式
+  // 共用：輸入/選擇器樣式
   const inputClass =
     'h-10 rounded-2xl border border-input bg-background/60 dark:bg-slate-900/60 shadow-inner shadow-black/[0.03] focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:outline-none transition-colors';
-
   const selectTriggerClass = 'w-full rounded-2xl ';
 
   return (
     <>
-      {/* 頂部工具列：半透明 + 模糊 + 細邊線 */}
+      {/* 頂部工具列 */}
       <div className="sticky top-0 z-20 w-full border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
-          {/* Breadcrumbs */}
+          {/* 麵包屑 */}
           <nav className="flex items-center text-sm text-muted-foreground">
             <Link href="/case" className="transition-colors hover:text-foreground hover:underline">
-              案件列表
+              {t('breadcrumb.list')}
             </Link>
             <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
-            <Link href={`/case/${id}`} className="transition-colors hover:text-foreground hover:underline">
-              案件詳情
+            <Link
+              href={`/case/${id}`}
+              className="transition-colors hover:text-foreground hover:underline"
+            >
+              {t('breadcrumb.detail')}
             </Link>
             <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
-            <span className="font-medium text-foreground">編輯</span>
+            <span className="font-medium text-foreground">{t('breadcrumb.edit')}</span>
           </nav>
 
           <div className="flex items-center gap-2">
+            <LangSwitcher/>
             <ModeToggle />
             <Button asChild variant="outline" className="rounded-xl">
-              <Link href="/case">返回案件列表</Link>
+              <Link href="/case">{t('actions.backToList')}</Link>
             </Button>
-            {/* 直接提交表單（關聯 form id） */}
+            {/* 直接提交表單 */}
             <Button type="submit" form="edit-case-form" disabled={mLoading} className="gap-2 rounded-xl">
               <Save className="h-4 w-4" />
-              {mLoading ? '儲存中…' : '儲存'}
+              {mLoading ? t('actions.saving') : t('actions.save')}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* 內容區 */}
+      {/* 內容 */}
       <div className="mx-auto w-full max-w-5xl px-4 py-6">
         {qLoading && (
           <Card className="rounded-3xl border border-border/60 bg-card/60 p-6 shadow-sm backdrop-blur">
@@ -220,7 +233,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
         {error && (
           <Alert variant="destructive" className="mb-6 rounded-2xl">
             <TriangleAlert className="h-4 w-4" />
-            <AlertTitle>載入失敗</AlertTitle>
+            <AlertTitle>{t('alerts.loadFailedTitle')}</AlertTitle>
             <AlertDescription className="break-words">
               {String(error.message)}
             </AlertDescription>
@@ -232,10 +245,10 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
             <CardHeader className="space-y-1">
               <CardTitle className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                 <FileText className="h-5 w-5 opacity-80" />
-                編輯案件
+                {t('title')}
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                更新案件基本資訊與送件人資料。標示 <span className="font-semibold text-foreground">*</span> 為必填。
+                {t('descriptions.formIntro')}
               </CardDescription>
             </CardHeader>
 
@@ -246,19 +259,19 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                   <section className="space-y-6">
                     <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                       <UserRound className="h-4 w-4" />
-                      基本識別
+                      {t('sections.basicId')}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="caseNumber"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>案件編號 *</FormLabel>
+                            <FormLabel>{t('fields.caseNumber')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：113-北-000123"
+                                placeholder={t('placeholders.caseNumberExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -271,12 +284,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="caseType"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>案件類型 *</FormLabel>
+                            <FormLabel>{t('fields.caseType')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：毒品、詐欺、車禍…"
+                                placeholder={t('placeholders.caseTypeExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -289,12 +302,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="caseName"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem className="md:col-span-2">
-                            <FormLabel>案件摘要 *</FormLabel>
+                            <FormLabel>{t('fields.caseName')} *</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="輸入案件摘要/描述…"
+                                placeholder={t('placeholders.caseNameExample')}
                                 {...field}
                                 className="min-h-28 rounded-2xl border border-input bg-background/60 dark:bg-slate-900/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:outline-none shadow-inner shadow-black/[0.03] transition-colors"
                               />
@@ -312,20 +325,20 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                   <section className="space-y-6">
                     <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                       <Hash className="h-4 w-4" />
-                      編號屬性
+                      {t('sections.numbering')}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                       <FormField
                         control={form.control}
                         name="year"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>年度 *</FormLabel>
+                            <FormLabel>{t('fields.year')} *</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
-                                placeholder="例：2025"
+                                placeholder={t('placeholders.yearExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -338,12 +351,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="prefixLetter"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>冠字（可選）</FormLabel>
+                            <FormLabel>{t('fields.prefixLetter')}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：北、桃、刑…"
+                                placeholder={t('placeholders.prefixLetterExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -356,12 +369,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="section"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>股別（可選）</FormLabel>
+                            <FormLabel>{t('fields.section')}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：偵二、鑑識股…"
+                                placeholder={t('placeholders.sectionExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -379,24 +392,26 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                   <section className="space-y-6">
                     <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                       <CalendarClock className="h-4 w-4" />
-                      類型與時間
+                      {t('sections.typeAndTime')}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="createdAt"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>建立時間（ISO）*</FormLabel>
+                            <FormLabel>{t('fields.createdAt')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例如 2025-08-14T10:00:00.000Z"
+                                placeholder={t('placeholders.createdAtExample')}
                                 {...field}
                                 className={inputClass}
                               />
                             </FormControl>
-                            <FormDescription>請使用可被 Date.parse 解析的格式</FormDescription>
+                            <FormDescription>
+                              {t('descriptions.createdAtFormat')}
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -410,19 +425,19 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                   <section className="space-y-6">
                     <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                       <Building2 className="h-4 w-4" />
-                      送件資訊
+                      {t('sections.submitInfo')}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="submitUnit"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>送件單位 *</FormLabel>
+                            <FormLabel>{t('fields.submitUnit')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：某某分局偵查隊"
+                                placeholder={t('placeholders.submitUnitExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -435,12 +450,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="submitterName"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>送件人姓名 *</FormLabel>
+                            <FormLabel>{t('fields.submitterName')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：王小明"
+                                placeholder={t('placeholders.submitterNameExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -453,15 +468,15 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="submitterPhone"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
                             <FormLabel className="inline-flex items-center gap-1">
                               <Phone className="h-3.5 w-3.5 opacity-70" />
-                              手機 *
+                              {t('fields.submitterPhone')} *
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：0912-345-678"
+                                placeholder={t('placeholders.submitterPhoneExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -474,12 +489,12 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="submitterTel"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>市話 *</FormLabel>
+                            <FormLabel>{t('fields.submitterTel')} *</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="例：02-1234-5678"
+                                placeholder={t('placeholders.submitterTelExample')}
                                 {...field}
                                 className={inputClass}
                               />
@@ -495,7 +510,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                   <section className="space-y-6">
                     <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                       <Gauge className="h-4 w-4" />
-                      服務滿意度
+                      {t('sections.satisfaction')}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -503,20 +518,20 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="satisfaction_levelOne"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>案件承辦速度</FormLabel>
+                            <FormLabel>{t('fields.sat1')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
                               <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇…" />
+                                <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
                                 <SelectGroup>
-                                  <SelectItem value="很滿意">很滿意</SelectItem>
-                                  <SelectItem value="滿意">滿意</SelectItem>
-                                  <SelectItem value="普通">普通</SelectItem>
-                                  <SelectItem value="有點不滿意">有點不滿意</SelectItem>
-                                  <SelectItem value="非常不滿意">非常不滿意</SelectItem>
+                                  <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
+                                  <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
+                                  <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
+                                  <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                  <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -529,19 +544,19 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="satisfaction_levelTwo"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>證物處理準確性</FormLabel>
+                            <FormLabel>{t('fields.sat2')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
                               <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇…" />
+                                <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">很滿意</SelectItem>
-                                <SelectItem value="滿意">滿意</SelectItem>
-                                <SelectItem value="普通">普通</SelectItem>
-                                <SelectItem value="有點不滿意">有點不滿意</SelectItem>
-                                <SelectItem value="非常不滿意">非常不滿意</SelectItem>
+                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -553,19 +568,19 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="satisfaction_levelThree"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>行政人員服務態度</FormLabel>
+                            <FormLabel>{t('fields.sat3')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
                               <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇…" />
+                                <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">很滿意</SelectItem>
-                                <SelectItem value="滿意">滿意</SelectItem>
-                                <SelectItem value="普通">普通</SelectItem>
-                                <SelectItem value="有點不滿意">有點不滿意</SelectItem>
-                                <SelectItem value="非常不滿意">非常不滿意</SelectItem>
+                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -577,19 +592,19 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                       <FormField
                         control={form.control}
                         name="satisfaction_levelFour"
-                        render={({ field }) => (
+                        render={({field}) => (
                           <FormItem>
-                            <FormLabel>符合貴單位要求</FormLabel>
+                            <FormLabel>{t('fields.sat4')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
                               <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇…" />
+                                <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">很滿意</SelectItem>
-                                <SelectItem value="滿意">滿意</SelectItem>
-                                <SelectItem value="普通">普通</SelectItem>
-                                <SelectItem value="有點不滿意">有點不滿意</SelectItem>
-                                <SelectItem value="非常不滿意">非常不滿意</SelectItem>
+                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -605,7 +620,7 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                 <CardFooter className="flex flex-col gap-2 border-t bg-muted/40 p-4 sm:flex-row sm:justify-center dark:bg-slate-900/40 rounded-b-3xl">
                   <Button type="submit" disabled={mLoading} className="gap-2 rounded-xl">
                     <Save className="h-4 w-4" />
-                    {mLoading ? '儲存中…' : '儲存'}
+                    {mLoading ? t('actions.saving') : t('actions.save')}
                   </Button>
 
                   <Button
@@ -628,14 +643,14 @@ export default function EditCasePage({ params }: { params: Promise<{ id: string 
                         createdAt: c.createdAt ?? '',
                         year: Number(c.year ?? new Date().getFullYear()),
                         prefixLetter: c.prefixLetter ?? '',
-                        section: c.section ?? '',
+                        section: c.section ?? ''
                       })
                     }
                     disabled={mLoading}
                     className="gap-2 rounded-xl"
                   >
                     <Undo2 className="h-4 w-4" />
-                    還原成資料值
+                    {t('actions.resetToServer')}
                   </Button>
                 </CardFooter>
               </form>

@@ -1,18 +1,20 @@
 'use client';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useMutation,useQuery } from '@apollo/client';
-import { CREATE_CASE,GET_ALL_CAESE } from '@/lib/graphql/CaseGql';
-import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/input';
+
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
+import {useMutation, useQuery} from '@apollo/client';
+import {CREATE_CASE, GET_ALL_CAESE} from '@/lib/graphql/CaseGql';
+import {useRouter} from 'next/navigation';
+
+import {Input} from '@/components/ui/input';
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import {
   Select,
@@ -20,133 +22,138 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
+import {ScrollArea} from '@/components/ui/scroll-area';
+import {Button} from '@/components/ui/button';
 import Link from 'next/link';
-import { ModeToggle } from '@/components/mode-toggle';
-import { Separator } from '@/components/ui/separator';
-import {useEffect} from 'react'
+import {ModeToggle} from '@/components/mode-toggle';
+import {Separator} from '@/components/ui/separator';
+import {useEffect, useMemo} from 'react';
+import {useTranslations} from 'next-intl';
+import LangSwitcher from '../../../components/LangSwitcher'
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
+const selectTriggerClass = 'w-full rounded-2xl ';
 
- const selectTriggerClass = 'w-full rounded-2xl ';
-
-
-function genCaseNumber(now:Date,count:number){
-    const yyyy = now.getFullYear().toString()
-    const mm = '0'+(now.getMonth()+1).toString()
-    const seq = String(count+1).padStart(3,'0')
-    return `${yyyy}${mm}0${seq}`
+function genCaseNumber(now: Date, count: number) {
+  const yyyy = now.getFullYear().toString();
+  const mm = '0' + (now.getMonth() + 1).toString();
+  const seq = String(count + 1).padStart(3, '0');
+  return `${yyyy}${mm}0${seq}`;
 }
 
-const ProsecutorList01 = [
-  '臺灣高等檢察署',
-  '臺灣高等法院',
-  '最高檢察署',
-  '最高法院',
-  '臺灣高等檢察署智慧財產分署',
-  '智慧財產法院',
-  '臺灣基隆地方檢察署',
-  '臺灣基隆地方法院',
-  '臺灣宜蘭地方檢察署',
-  '臺灣宜蘭地方法院',
-  '臺灣臺北地方檢察署',
-  '臺灣臺北地方法院',
-  '臺灣士林地方檢察署',
-  '臺灣士林地方法院',
-  '臺灣新北地方檢察署',
-  '臺灣新北地方法院',
-  '臺灣桃園地方檢察署',
-  '臺灣桃園地方法院',
-  '臺灣新竹地方檢察署',
-  '臺灣新竹地方法院',
-  '臺灣苗栗地方檢察署',
-  '臺灣苗栗地方法院',
-  '臺灣臺中地方檢察署',
-  '臺灣高等檢察署臺中檢察分署',
-  '臺灣臺中地方法院',
-  '臺灣高等法院臺中分院',
-  '臺灣彰化地方檢察署',
-  '臺灣彰化地方法院',
-  '臺灣南投地方檢察署',
-  '臺灣南投地方法院',
-  '臺灣雲林地方檢察署',
-  '臺灣雲林地方法院',
-  '臺灣嘉義地方檢察署',
-  '臺灣嘉義地方法院',
-  '臺灣臺南地方檢察署',
-  '臺灣高等檢察署臺南檢察分署',
-  '臺灣臺南地方法院',
-  '臺灣高等法院臺南分院',
-  '臺灣高雄地方檢察署',
-  '臺灣高等檢察署高雄檢察分署',
-  '臺灣高雄地方法院',
-  '臺灣高等法院高雄分院',
-  '臺灣高雄少年及家事法院',
-  '臺灣橋頭地方檢察署',
-  '臺灣橋頭地方法院',
-  '臺灣屏東地方檢察署',
-  '臺灣屏東地方法院',
-  '臺灣澎湖地方檢察署',
-  '臺灣澎湖地方法院',
-  '臺灣花蓮地方檢察署',
-  '臺灣高等檢察署花蓮檢察分署',
-  '臺灣花蓮地方法院',
-  '臺灣高等法院花蓮分院',
-  '臺灣臺東地方檢察署',
-  '臺灣臺東地方法院',
-  '福建連江地方檢察署',
-  '福建連江地方法院',
-  '福建金門地方檢察署',
-  '福建高等檢察署金門檢察分署',
-  '福建金門地方法院',
-  '福建高等法院金門分院',
+/** 穩定鍵值 + 中文原文（送後端仍用中文 value） */
+const prosecutorItems: {id: string; zh: string}[] = [
+  {id: 'HPROS_TAIWAN', zh: '臺灣高等檢察署'},
+  {id: 'HCOURT_TAIWAN', zh: '臺灣高等法院'},
+  {id: 'SPC_PROS', zh: '最高檢察署'},
+  {id: 'SPC_COURT', zh: '最高法院'},
+  {id: 'HPROS_IP_BRANCH', zh: '臺灣高等檢察署智慧財產分署'},
+  {id: 'IP_COURT', zh: '智慧財產法院'},
+  {id: 'PROS_KEELUNG', zh: '臺灣基隆地方檢察署'},
+  {id: 'COURT_KEELUNG', zh: '臺灣基隆地方法院'},
+  {id: 'PROS_YILAN', zh: '臺灣宜蘭地方檢察署'},
+  {id: 'COURT_YILAN', zh: '臺灣宜蘭地方法院'},
+  {id: 'PROS_TAIPEI', zh: '臺灣臺北地方檢察署'},
+  {id: 'COURT_TAIPEI', zh: '臺灣臺北地方法院'},
+  {id: 'PROS_SHILIN', zh: '臺灣士林地方檢察署'},
+  {id: 'COURT_SHILIN', zh: '臺灣士林地方法院'},
+  {id: 'PROS_NEWTAIPEI', zh: '臺灣新北地方檢察署'},
+  {id: 'COURT_NEWTAIPEI', zh: '臺灣新北地方法院'},
+  {id: 'PROS_TAOYUAN', zh: '臺灣桃園地方檢察署'},
+  {id: 'COURT_TAOYUAN', zh: '臺灣桃園地方法院'},
+  {id: 'PROS_HSINCHU', zh: '臺灣新竹地方檢察署'},
+  {id: 'COURT_HSINCHU', zh: '臺灣新竹地方法院'},
+  {id: 'PROS_MIAOLI', zh: '臺灣苗栗地方檢察署'},
+  {id: 'COURT_MIAOLI', zh: '臺灣苗栗地方法院'},
+  {id: 'PROS_TAICHUNG', zh: '臺灣臺中地方檢察署'},
+  {id: 'HPROS_TAICHUNG_BRANCH', zh: '臺灣高等檢察署臺中檢察分署'},
+  {id: 'COURT_TAICHUNG', zh: '臺灣臺中地方法院'},
+  {id: 'HCOURT_TAICHUNG_BRANCH', zh: '臺灣高等法院臺中分院'},
+  {id: 'PROS_CHANGHUA', zh: '臺灣彰化地方檢察署'},
+  {id: 'COURT_CHANGHUA', zh: '臺灣彰化地方法院'},
+  {id: 'PROS_NANTOU', zh: '臺灣南投地方檢察署'},
+  {id: 'COURT_NANTOU', zh: '臺灣南投地方法院'},
+  {id: 'PROS_YUNLIN', zh: '臺灣雲林地方檢察署'},
+  {id: 'COURT_YUNLIN', zh: '臺灣雲林地方法院'},
+  {id: 'PROS_CHIAYI', zh: '臺灣嘉義地方檢察署'},
+  {id: 'COURT_CHIAYI', zh: '臺灣嘉義地方法院'},
+  {id: 'PROS_TAINAN', zh: '臺灣臺南地方檢察署'},
+  {id: 'HPROS_TAINAN_BRANCH', zh: '臺灣高等檢察署臺南檢察分署'},
+  {id: 'COURT_TAINAN', zh: '臺灣臺南地方法院'},
+  {id: 'HCOURT_TAINAN_BRANCH', zh: '臺灣高等法院臺南分院'},
+  {id: 'PROS_KAOHSIUNG', zh: '臺灣高雄地方檢察署'},
+  {id: 'HPROS_KAOHSIUNG_BRANCH', zh: '臺灣高等檢察署高雄檢察分署'},
+  {id: 'COURT_KAOHSIUNG', zh: '臺灣高雄地方法院'},
+  {id: 'HCOURT_KAOHSIUNG_BRANCH', zh: '臺灣高等法院高雄分院'},
+  {id: 'KAOHSIUNG_JUV_FAMILY_COURT', zh: '臺灣高雄少年及家事法院'},
+  {id: 'PROS_QIAOTOU', zh: '臺灣橋頭地方檢察署'},
+  {id: 'COURT_QIAOTOU', zh: '臺灣橋頭地方法院'},
+  {id: 'PROS_PINGTUNG', zh: '臺灣屏東地方檢察署'},
+  {id: 'COURT_PINGTUNG', zh: '臺灣屏東地方法院'},
+  {id: 'PROS_PENGHU', zh: '臺灣澎湖地方檢察署'},
+  {id: 'COURT_PENGHU', zh: '臺灣澎湖地方法院'},
+  {id: 'PROS_HUALIEN', zh: '臺灣花蓮地方檢察署'},
+  {id: 'HPROS_HUALIEN_BRANCH', zh: '臺灣高等檢察署花蓮檢察分署'},
+  {id: 'COURT_HUALIEN', zh: '臺灣花蓮地方法院'},
+  {id: 'HCOURT_HUALIEN_BRANCH', zh: '臺灣高等法院花蓮分院'},
+  {id: 'PROS_TAITUNG', zh: '臺灣臺東地方檢察署'},
+  {id: 'COURT_TAITUNG', zh: '臺灣臺東地方法院'},
+  {id: 'PROS_LIENCHIANG', zh: '福建連江地方檢察署'},
+  {id: 'COURT_LIENCHIANG', zh: '福建連江地方法院'},
+  {id: 'PROS_KINMEN', zh: '福建金門地方檢察署'},
+  {id: 'HPROS_KINMEN_BRANCH', zh: '福建高等檢察署金門檢察分署'},
+  {id: 'COURT_KINMEN', zh: '福建金門地方法院'},
+  {id: 'HCOURT_KINMEN_BRANCH', zh: '福建高等法院金門分院'}
 ];
-const prosecutorOptions = Array.from(new Set(ProsecutorList01))
-    .sort((a, b) => a.localeCompare(b, 'zh-Hant-TW'));
 
+// ---- i18n-aware Zod schema (messages from i18n) ----
+function buildSchema(t: (k: string) => string) {
+  return z.object({
+    caseNumber: z.string().min(1, t('validation.caseNumberRequired')),
+    caseType: z.string().min(1, t('validation.caseTypeRequired')),
+    caseName: z.string().min(1, t('validation.caseNameRequired')),
+    submitUnit: z.string().min(1, t('validation.submitUnitRequired')),
+    submitterName: z.string().min(1, t('validation.submitterNameRequired')),
+    submitterPhone: z
+      .string()
+      .min(1, t('validation.phoneRequired'))
+      .regex(phoneRegex, t('validation.phoneInvalid')),
+    submitterTel: z
+      .string()
+      .min(1, t('validation.telRequired'))
+      .regex(phoneRegex, t('validation.telInvalid')),
+    Creator_Name: z.string().min(1, t('validation.creatorMin')),
+    createdAt: z
+      .string()
+      .refine((v) => !Number.isNaN(Date.parse(v)), t('validation.createdAtInvalid')),
+    year: z.coerce
+      .number()
+      .int(t('validation.yearInt'))
+      .min(1900, t('validation.yearMin'))
+      .max(2100, t('validation.yearMax')),
+    prefixLetter: z.string().optional(),
+    section: z.string().optional(),
+    satisfaction_levelOne: z.string().optional(),
+    satisfaction_levelTwo: z.string().optional(),
+    satisfaction_levelThree: z.string().optional(),
+    satisfaction_levelFour: z.string().optional()
+  });
+}
 
-
-const schema = z.object({
-  caseNumber: z.string().min(1, '案件編號為必填'),
-  caseType: z.string().min(1, '案件類型為必填'),
-  caseName: z.string().min(1, '案件摘要為必填'),
-  submitUnit: z.string().min(1, '送件單位為必填'),
-  submitterName: z.string().min(1, '送件人姓名為必填'),
-  submitterPhone: z
-    .string()
-    .min(1, '手機為必填')
-    .regex(phoneRegex, '手機格式不正確（僅允許數字、+、-、空白，至少 8 碼）'),
-  submitterTel: z
-    .string()
-    .min(1, '市話為必填')
-    .regex(phoneRegex, '市話格式不正確（僅允許數字、+、-、空白，至少 8 碼）'),
-  Creator_Name: z.string().min(1, '至少輸入三個文字以上'),
-  createdAt: z
-    .string()
-    .refine((v) => !Number.isNaN(Date.parse(v)), '建立時間格式需為 ISO 或可被解析的日期字串'),
-  year: z.coerce
-    .number()
-    .int('年度需為整數')
-    .min(1900, '年度不可小於 1900')
-    .max(2100, '年度不可大於 2100'),
-  prefixLetter: z.string().optional(),
-  section: z.string().optional(),
-  satisfaction_levelOne: z.string().optional(),
-  satisfaction_levelTwo: z.string().optional(),
-  satisfaction_levelThree: z.string().optional(),
-  satisfaction_levelFour: z.string().optional()
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<ReturnType<typeof buildSchema>>;
 
 export default function NewCasePage() {
   const router = useRouter();
-  const [createCase, { loading }] = useMutation(CREATE_CASE);
-  const {data, loading:allLoading}= useQuery(GET_ALL_CAESE)
+  const t = useTranslations('CreateCase');
+  const tc = useTranslations('Common');
+
+  const [createCase, {loading}] = useMutation(CREATE_CASE);
+  const {data, loading: allLoading} = useQuery(GET_ALL_CAESE);
   const totalCount = data?.cases?.length ?? 0;
+
+  const schema = buildSchema(t);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -166,69 +173,75 @@ export default function NewCasePage() {
       satisfaction_levelFour: '',
       year: new Date().getFullYear(),
       prefixLetter: '',
-      section: '',
+      section: ''
     },
-    mode: 'onBlur',
+    mode: 'onBlur'
   });
 
-  useEffect(()=>{
-        if(allLoading)return 
-        const state = form.getFieldState('caseNumber')
-        const alreadyHas = form.getValues('caseNumber');
-         if( !state.isDirty && (!alreadyHas || alreadyHas.trim()==='')){
-             const auto = genCaseNumber(new Date,totalCount)
-             form.setValue('caseNumber',auto,{shouldValidate: true, shouldDirty: false })
-         }
-           
-  },[allLoading,totalCount,form])
+  useEffect(() => {
+    if (allLoading) return;
+    const state = form.getFieldState('caseNumber');
+    const alreadyHas = form.getValues('caseNumber');
+    if (!state.isDirty && (!alreadyHas || alreadyHas.trim() === '')) {
+      const auto = genCaseNumber(new Date(), totalCount);
+      form.setValue('caseNumber', auto, {shouldValidate: true, shouldDirty: false});
+    }
+  }, [allLoading, totalCount, form]);
+
+  /** 依目前語系產出顯示用 label，但送出 value 仍是中文 */
+  const submitUnitOptions = useMemo(() => {
+    return prosecutorItems
+      .map(({id, zh}) => ({value: zh, label: t(`options.submitUnit.${id}`)}))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [t]);
 
   const onSubmit = async (v: FormValues) => {
     try {
-      const { data } = await createCase({ variables: { input: v } });
+      const {data} = await createCase({variables: {input: v}});
       const id = data?.createCase?.id;
       if (id) router.push(`/case/${id}`);
       else router.push('/case');
     } catch (err: any) {
-      alert(err?.message ?? '建立失敗，請稍後再試');
+      alert(err?.message ?? t('alerts.createFailed'));
     }
   };
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6">
-      {/* 頂部工具列 */}
+      {/* Top toolbar */}
       <div className="sticky top-0 z-10 -mx-4 mb-6 border-b bg-white/90 px-4 py-3 backdrop-blur dark:bg-gray-900/80 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">新增案件</h1>
-            <p className="text-sm text-muted-foreground">請填寫下列案件資訊並提交。</p>
+            <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+            <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">切換主題</span>
+            <span className="text-sm text-muted-foreground">{tc('theme')}</span>
+            <LangSwitcher/>
             <ModeToggle />
             <Button asChild variant="outline">
-              <Link href="/case">返回列表</Link>
+              <Link href="/case">{t('toolbar.back')}</Link>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* 表單卡片 */}
+      {/* Form card */}
       <div className="rounded-2xl border bg-white dark:bg-gray-900 p-6 shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            
-            {/* 區塊：基本識別 */}
+            {/* Section: Basic ID */}
             <section className="space-y-4">
-              <h2 className="text-lg font-semibold">基本識別</h2>
+              <h2 className="text-lg font-semibold">{t('sections.basicId')}</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="caseNumber"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>案件編號 *</FormLabel>
+                      <FormLabel>{t('fields.caseNumber')} *</FormLabel>
                       <FormControl>
-                         <Input placeholder="例：113-北-000123" {...field} />
+                        <Input placeholder={t('placeholders.caseNumberExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -237,32 +250,51 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="caseType"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>案件類型 *</FormLabel>
+                      <FormLabel>{t('fields.caseType')} *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value ?? ''}>
-                              <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇案件類型…" />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-xl">
-                                <SelectGroup>
-                                  <SelectItem value="詐欺">詐欺</SelectItem>
-                                  <SelectItem value="毒品">毒品</SelectItem>
-                                  <SelectItem value="殺人">殺人</SelectItem>
-                                  <SelectItem value="竊盜">竊盜</SelectItem>
-                                  <SelectItem value="強盜">強盜</SelectItem>
-                                  <SelectItem value="傷害">傷害</SelectItem>
-                                  <SelectItem value="侵害性自主">侵害性自主</SelectItem>
-                                  <SelectItem value="妨害公共秩序">妨害公共秩序</SelectItem>
-                                  <SelectItem value="槍砲彈藥刀械管制">槍砲彈藥刀械管制</SelectItem>
-                                  <SelectItem value="洗錢">洗錢</SelectItem>
-                                  <SelectItem value="其他">其他</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                      {/* <FormControl>
-                        <Input placeholder="例：毒品、詐欺、車禍…" {...field} />
-                      </FormControl> */}
+                        <SelectTrigger className={selectTriggerClass}>
+                          <SelectValue placeholder={t('placeholders.selectCaseType')} />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectItem value={t('options.caseType.fraud')}>
+                              {t('options.caseType.fraud')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.drugs')}>
+                              {t('options.caseType.drugs')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.murder')}>
+                              {t('options.caseType.murder')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.theft')}>
+                              {t('options.caseType.theft')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.robbery')}>
+                              {t('options.caseType.robbery')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.assault')}>
+                              {t('options.caseType.assault')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.sexual')}>
+                              {t('options.caseType.sexual')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.publicOrder')}>
+                              {t('options.caseType.publicOrder')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.firearms')}>
+                              {t('options.caseType.firearms')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.moneyLaundering')}>
+                              {t('options.caseType.moneyLaundering')}
+                            </SelectItem>
+                            <SelectItem value={t('options.caseType.other')}>
+                              {t('options.caseType.other')}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
@@ -270,11 +302,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="createdAt"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>建立時間（ISO）*</FormLabel>
+                      <FormLabel>{t('fields.createdAt')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="例如 2025-08-14T10:00:00.000Z" {...field} />
+                        <Input placeholder={t('placeholders.createdAtExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -283,11 +315,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="caseName"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>案件摘要 *</FormLabel>
+                      <FormLabel>{t('fields.caseName')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="輸入案件摘要/描述…" {...field} />
+                        <Input placeholder={t('placeholders.caseNameExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -298,18 +330,18 @@ export default function NewCasePage() {
 
             <Separator />
 
-            {/* 區塊：編號屬性 */}
+            {/* Section: Numbering */}
             <section className="space-y-4">
-              <h2 className="text-lg font-semibold">編號屬性</h2>
+              <h2 className="text-lg font-semibold">{t('sections.numbering')}</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <FormField
                   control={form.control}
                   name="year"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>年度 *</FormLabel>
+                      <FormLabel>{t('fields.year')} *</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="例：2025" {...field} />
+                        <Input type="number" placeholder={t('placeholders.yearExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -318,11 +350,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="prefixLetter"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>冠字（可選）</FormLabel>
+                      <FormLabel>{t('fields.prefixLetter')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：北、桃、刑…" {...field} />
+                        <Input placeholder={t('placeholders.prefixLetterExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -331,11 +363,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="section"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>股別（可選）</FormLabel>
+                      <FormLabel>{t('fields.section')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：偵二、鑑識股…" {...field} />
+                        <Input placeholder={t('placeholders.sectionExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -346,33 +378,32 @@ export default function NewCasePage() {
 
             <Separator />
 
-            {/* 區塊：送件資訊 */}
+            {/* Section: Submit Info */}
             <section className="space-y-4">
-              <h2 className="text-lg font-semibold">送件資訊</h2>
+              <h2 className="text-lg font-semibold">{t('sections.submitInfo')}</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="submitUnit"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>送件單位 *</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value ?? ''}>
-                              <SelectTrigger className={selectTriggerClass}>
-                                <SelectValue placeholder="請選擇送件單位…" />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-xl">
-                                <SelectGroup>
-                                 <ScrollArea>
-                                    {prosecutorOptions.map((name)=>(
-                                       <SelectItem key={name} value={name}>{name}</SelectItem>
-                                    ))}
-                                 </ScrollArea>                   
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                      {/* <FormControl>
-                        <Input placeholder="例：某某分局偵查隊" {...field} />
-                      </FormControl> */}
+                      <FormLabel>{t('fields.submitUnit')} *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                        <SelectTrigger className={selectTriggerClass}>
+                          <SelectValue placeholder={t('placeholders.selectSubmitUnit')} />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <ScrollArea>
+                              {submitUnitOptions.map((opt) => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                  {opt.label}
+                                </SelectItem>
+                              ))}
+                            </ScrollArea>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
@@ -380,11 +411,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="submitterName"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>送件人姓名 *</FormLabel>
+                      <FormLabel>{t('fields.submitterName')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：王小明" {...field} />
+                        <Input placeholder={t('placeholders.submitterNameExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -393,11 +424,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="submitterPhone"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>手機 *</FormLabel>
+                      <FormLabel>{t('fields.submitterPhone')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：0912-345-678" {...field} />
+                        <Input placeholder={t('placeholders.submitterPhoneExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -406,11 +437,11 @@ export default function NewCasePage() {
                 <FormField
                   control={form.control}
                   name="submitterTel"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>市話 *</FormLabel>
+                      <FormLabel>{t('fields.submitterTel')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="例：02-1234-5678" {...field} />
+                        <Input placeholder={t('placeholders.submitterTelExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
@@ -421,32 +452,34 @@ export default function NewCasePage() {
 
             <Separator />
 
-            {/* 區塊：其他 */}
+            {/* Section: Others */}
             <section className="space-y-4">
-              <h2 className="text-lg font-semibold">其他</h2>
+              <h2 className="text-lg font-semibold">{t('sections.others')}</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="Creator_Name"
-                  render={({ field }) => (
+                  render={({field}) => (
                     <FormItem>
-                      <FormLabel>建立資料者姓名 *</FormLabel>
+                      <FormLabel>{t('fields.creatorName')} *</FormLabel>
                       <FormControl>
-                        <Input placeholder="姓名..." {...field} />
+                        <Input placeholder={t('placeholders.creatorNameExample')} {...field} />
                       </FormControl>
                       <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
               </div>
-
-            
             </section>
 
-            {/* 提交列 */}
+            {/* Submit row */}
             <div className="flex items-center justify-center gap-3 pt-2">
-              <Button type="submit" disabled={loading} className="min-w-28 bg-gradient-to-r from-teal-500 to-blue-500 text-white hover:opacity-90">
-                送出
+              <Button
+                type="submit"
+                disabled={loading}
+                className="min-w-28 bg-gradient-to-r from-teal-500 to-blue-500 text-white hover:opacity-90"
+              >
+                {t('buttons.submit')}
               </Button>
               <Button
                 type="button"
@@ -455,7 +488,7 @@ export default function NewCasePage() {
                 disabled={loading}
                 className="min-w-28"
               >
-                清除
+                {t('buttons.reset')}
               </Button>
             </div>
           </form>

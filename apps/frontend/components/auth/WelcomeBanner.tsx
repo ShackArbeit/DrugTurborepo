@@ -2,10 +2,11 @@
 import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ME } from '@/lib/graphql/AuthGql';
+import {useTranslations} from 'next-intl';
 
 export default function WelcomeBanner() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
+  const tCommon = useTranslations('Common');
   const { data, loading, error, refetch } = useQuery(GET_ME, {
     skip: !token,
     fetchPolicy: 'network-only',
@@ -25,7 +26,7 @@ export default function WelcomeBanner() {
       <div className="flex items-center gap-2 text-sm md:text-base">
         <span>👋</span>
         <span>
-          嗨，<span className="font-semibold text-primary">{username}</span>，歡迎回來！
+          Hi，<span className="font-semibold text-primary">{username}</span>，  {tCommon('WelcomeBack')}！
         </span>
       </div>
     </div>

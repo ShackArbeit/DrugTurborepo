@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { LogOut ,LogIn} from 'lucide-react';
 import Link from 'next/link';
 import { GET_ME } from '@/lib/graphql/AuthGql';
+import {useTranslations} from 'next-intl';
 
 
 type Props = {
@@ -20,10 +21,10 @@ export default function LogoutButton({
       className,
       variant = 'outline',
       size = 'lg',
-      label = '登出'
 }:Props){
      const router = useRouter()
      const client = useApolloClient()
+     const tCommon = useTranslations('Common');
      const token =typeof window !== 'undefined' ? localStorage.getItem('token') : null;
      const { data , loading , error} = useQuery(GET_ME,{
         skip:!token,
@@ -34,7 +35,7 @@ export default function LogoutButton({
               <Button asChild variant={variant} size={size} className={className}>
                   <Link href="/login">
                   <LogIn className="mr-2 h-4 w-4" />
-                        登入
+                        {tCommon('login')}
                   </Link>
             </Button>
         )
@@ -62,7 +63,7 @@ export default function LogoutButton({
             aria-label={username ? `登出 ${username}` : '登出'}
     >
          <LogOut className="mr-2 h-4 w-4" />
-            登出
+            {tCommon('logout')}
         </Button>
       )
 
