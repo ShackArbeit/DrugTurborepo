@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
@@ -43,6 +43,8 @@ import { Loader2, TriangleAlert, Save, ChevronRight } from 'lucide-react';
 import { uploadImage } from '@/lib/uploadImage';
 import LiveCameraCapture from '@/lib/LiveCameraCapture';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+
 
 /** 只保留最近 300 天案件，並依建立時間新→舊排序 */
 function filterRecentCases(cases: any[] = []) {
@@ -56,36 +58,61 @@ function filterRecentCases(cases: any[] = []) {
     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 }
 
-/** 表單驗證 */
-const schema = z.object({
-  caseNumber: z.string().min(1, '請選擇對應案件'),
-  evidenceNumber: z.string().min(1, '證物編號為必填'),
-  evidenceType: z.string().min(1, '證物類型為必填'),
-  evidenceBrand: z.string().min(1, '證物廠牌為必填'),
-  evidenceSerialNo: z.string().optional(),
-  evidenceOriginalNo: z.string().optional(),
-  deliveryName: z.string().min(1, '交付證物人姓名為必填'),
-  receiverName: z.string().min(1, '接受證物鑑識人員姓名為必填'),
-  deliveryName2: z.string().min(1, '返回證物者為必填'),
-  receiverName2: z.string().min(1, '原單位領回者為必填'),
-  createdAt: z
-    .string()
-    .refine((v) => !Number.isNaN(Date.parse(v)), '建立時間格式需為 ISO 或可被解析的日期字串'),
-  is_Pickup: z.boolean().default(false),
-  is_rejected: z.boolean().default(false),
-  is_beyond_scope: z.boolean().default(false),
-  is_lab_related: z.boolean().default(false),
-  is_info_complete: z.boolean().default(false),
-  photoFront: z.any(),
-  photoBack: z.any(),
-  photoFront2: z.any(),
-  photoBack2: z.any(),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  caseNumber: string;
+  evidenceNumber: string;
+  evidenceType: string;
+  evidenceBrand: string;
+  evidenceSerialNo?: string;
+  evidenceOriginalNo?: string;
+  deliveryName: string;
+  receiverName: string;
+  deliveryName2: string;
+  receiverName2: string;
+  createdAt: string;
+  is_Pickup: boolean;
+  is_rejected: boolean;
+  is_beyond_scope: boolean;
+  is_lab_related: boolean;
+  is_info_complete: boolean;
+  photoFront: any;
+  photoBack: any;
+  photoFront2: any;
+  photoBack2: any;
+};
 
 export default function EvidenceNewPage() {
+  const t = useTranslations('EvidenceNew');
   const router = useRouter();
+
+  /** 用 t 產生 zod schema（驗證訊息可雙語） */
+  const schema = useMemo(() => {
+    return z.object({
+      caseNumber: z.string().min(1, t('validation.caseNumberRequired')),
+      evidenceNumber: z.string().min(1, t('validation.evidenceNumberRequired')),
+      evidenceType: z.string().min(1, t('validation.evidenceTypeRequired')),
+      evidenceBrand: z.string().min(1, t('validation.evidenceBrandRequired')),
+      evidenceSerialNo: z.string().optional(),
+      evidenceOriginalNo: z.string().optional(),
+      deliveryName: z.string().min(1, t('validation.deliveryNameRequired')),
+      receiverName: z.string().min(1, t('validation.receiverNameRequired')),
+      deliveryName2: z.string().min(1, t('validation.deliveryName2Required')),
+      receiverName2: z.string().min(1, t('validation.receiverName2Required')),
+      createdAt: z
+        .string()
+        .refine((v) => !Number.isNaN(Date.parse(v)), t('validation.createdAtInvalid')),
+      is_Pickup: z.boolean().default(false),
+      is_rejected: z.boolean().default(false),
+      is_beyond_scope: z.boolean().default(false),
+      is_lab_related: z.boolean().default(false),
+      is_info_complete: z.boolean().default(false),
+      photoFront: z.any(),
+      photoBack: z.any(),
+      photoFront2: z.any(),
+      photoBack2: z.any(),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t('validation.createdAtInvalid')]);
 
   /** 1) 案件清單（下拉選） */
   const {
@@ -132,13 +159,11 @@ export default function EvidenceNewPage() {
     mode: 'onBlur',
   });
 
-
   const selectedCaseNumber = form.watch('caseNumber');
   useEffect(() => {
     if (!selectedCaseNumber) return;
     fetchCaseByCaseNumber({ variables: { caseNumber: selectedCaseNumber } });
   }, [selectedCaseNumber, fetchCaseByCaseNumber]);
-
 
   useEffect(() => {
     const cn = selectedCaseNumber;
@@ -159,7 +184,6 @@ export default function EvidenceNewPage() {
     return '';
   };
 
-
   const onSubmit = async (v: FormValues) => {
     try {
       const [pf, pb, pf2, pb2] = await Promise.all([
@@ -170,7 +194,7 @@ export default function EvidenceNewPage() {
       ]);
 
       if (!pf || !pb || !pf2 || !pb2) {
-        alert('四張照片皆為必填');
+        alert(t('alerts.fourPhotosRequired'));
         return;
       }
 
@@ -204,7 +228,7 @@ export default function EvidenceNewPage() {
       const id = data?.createEvidence?.id;
       router.push(id ? `/evidence/${id}` : '/evidence');
     } catch (err: any) {
-      alert(err?.message ?? '建立失敗，請稍後再試');
+      alert(err?.message ?? t('alerts.createFailed'));
     }
   };
 
@@ -215,19 +239,19 @@ export default function EvidenceNewPage() {
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
           <nav className="flex items-center text-sm text-muted-foreground">
             <Link href="/evidence" className="hover:underline">
-              證物列表
+              {t('breadcrumb.list')}
             </Link>
             <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
-            <span className="font-medium text-foreground">新增證物</span>
+            <span className="font-medium text-foreground">{t('breadcrumb.new')}</span>
           </nav>
           <div className="flex items-center gap-2">
             <ModeToggle />
             <Button asChild variant="outline">
-              <Link href="/evidence">返回列表</Link>
+              <Link href="/evidence">{t('actions.backToList')}</Link>
             </Button>
             <Button type="submit" form="evidence-new-form" disabled={creating} className="gap-2">
               {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {creating ? '送出中…' : '送出'}
+              {creating ? t('actions.submitting') : t('actions.submit')}
             </Button>
           </div>
         </div>
@@ -238,15 +262,15 @@ export default function EvidenceNewPage() {
         {casesError && (
           <Alert variant="destructive" className="mb-6">
             <TriangleAlert className="h-4 w-4" />
-            <AlertTitle>無法取得案件清單</AlertTitle>
+            <AlertTitle>{t('alerts.casesLoadFailedTitle')}</AlertTitle>
             <AlertDescription className="break-words">{String(casesError.message)}</AlertDescription>
           </Alert>
         )}
 
         <Card className="rounded-2xl border">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold">新增證物</CardTitle>
-            <CardDescription>選擇案件後自動產生證物編號；相機擷取即時預覽，上傳成功回傳 URL。</CardDescription>
+            <CardTitle className="text-2xl font-semibold">{t('title')}</CardTitle>
+            <CardDescription>{t('descriptions.intro')}</CardDescription>
           </CardHeader>
 
           <Form {...form}>
@@ -254,13 +278,13 @@ export default function EvidenceNewPage() {
               <CardContent className="space-y-10">
                 {/* 區塊一：對應案件 */}
                 <section className="space-y-4">
-                  <h3 className="text-lg font-semibold">對應案件</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.linkCase')}</h3>
                   <FormField
                     control={form.control}
                     name="caseNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>對應案件 *</FormLabel>
+                        <FormLabel>{t('fields.linkCaseReq')}</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
@@ -268,7 +292,7 @@ export default function EvidenceNewPage() {
                             disabled={casesLoading || selectableCases.length === 0}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="請選擇（僅顯示 300 天內）" />
+                              <SelectValue placeholder={t('placeholders.selectCase')} />
                             </SelectTrigger>
                             <SelectContent>
                               {selectableCases.map((c: any) => (
@@ -289,9 +313,9 @@ export default function EvidenceNewPage() {
 
                 <Separator />
 
-                {/* 區塊二：基本資訊（四個欄位，明確寫出，不用 map） */}
+                {/* 區塊二：基本資訊 */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">基本資訊</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.basic')}</h3>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {/* 1. 證物編號（自動帶入） */}
@@ -300,16 +324,18 @@ export default function EvidenceNewPage() {
                       name="evidenceNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>證物編號 *</FormLabel>
+                          <FormLabel>{t('fields.evidenceNumberReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="EVID-2025xxxx-1" {...field} />
+                            <Input placeholder={t('placeholders.evidenceNumber')} {...field} />
                           </FormControl>
                           <p className="text-xs text-muted-foreground">
                             {oneLoading
-                              ? '計算編號中…'
+                              ? t('hints.autoNumber.loading')
                               : selectedCaseNumber && caseOneData?.caseByCaseNumber
-                              ? `將預設為：EVID-${selectedCaseNumber}-${(caseOneData.caseByCaseNumber.evidenceCount ?? 0) + 1}`
-                              : '請先選擇對應案件，系統會自動生成編號'}
+                              ? t('hints.autoNumber.value', {
+                                  value: `EVID-${selectedCaseNumber}-${(caseOneData.caseByCaseNumber.evidenceCount ?? 0) + 1}`,
+                                })
+                              : t('hints.autoNumber.waitSelect')}
                           </p>
                           <FormMessage />
                         </FormItem>
@@ -322,30 +348,27 @@ export default function EvidenceNewPage() {
                       name="evidenceType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>證物類型 *</FormLabel>
+                          <FormLabel>{t('fields.evidenceTypeReq')}</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
                               <SelectTrigger>
-                                <SelectValue placeholder="請選擇案件類型…" />
+                                <SelectValue placeholder={t('placeholders.selectEvidenceType')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="個人桌上型電腦">個人桌上型電腦</SelectItem>
-                                <SelectItem value="筆記型電腦">筆記型電腦</SelectItem>
-                                <SelectItem value="硬碟">硬碟</SelectItem>
-                                <SelectItem value="隨身碟">隨身碟</SelectItem>
-                                <SelectItem value="蘋果手機">蘋果手機</SelectItem>
-                                <SelectItem value="安卓手機">安卓手機</SelectItem>
-                                <SelectItem value="記憶卡">記憶卡</SelectItem>
-                                <SelectItem value="光碟">光碟</SelectItem>
-                                <SelectItem value="平板電腦">平板電腦</SelectItem>
-                                <SelectItem value="其他">其他</SelectItem>
+                                <SelectItem value="desktop">{t('options.evidenceType.desktop')}</SelectItem>
+                                <SelectItem value="laptop">{t('options.evidenceType.laptop')}</SelectItem>
+                                <SelectItem value="hdd">{t('options.evidenceType.hdd')}</SelectItem>
+                                <SelectItem value="usb">{t('options.evidenceType.usb')}</SelectItem>
+                                <SelectItem value="iphone">{t('options.evidenceType.iphone')}</SelectItem>
+                                <SelectItem value="android">{t('options.evidenceType.android')}</SelectItem>
+                                <SelectItem value="sdcard">{t('options.evidenceType.sdcard')}</SelectItem>
+                                <SelectItem value="optical">{t('options.evidenceType.optical')}</SelectItem>
+                                <SelectItem value="tablet">{t('options.evidenceType.tablet')}</SelectItem>
+                                <SelectItem value="other">{t('options.evidenceType.other')}</SelectItem>
                               </SelectContent>
                             </Select>
-                          
                           </FormControl>
-                          <FormMessage className="text-xs text-muted-foreground" >    
-                               請選擇證物類型
-                            </FormMessage>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -356,9 +379,9 @@ export default function EvidenceNewPage() {
                       name="evidenceBrand"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>證物廠牌 *</FormLabel>
+                          <FormLabel>{t('fields.evidenceBrandReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Apple / ASUS / SanDisk…" {...field} />
+                            <Input placeholder={t('placeholders.evidenceBrand')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -371,9 +394,9 @@ export default function EvidenceNewPage() {
                       name="evidenceSerialNo"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>廠牌序號（可選）</FormLabel>
+                          <FormLabel>{t('fields.evidenceSerialNoOpt')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="SN-XXXX-01" {...field} />
+                            <Input placeholder={t('placeholders.evidenceSerialNo')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -386,9 +409,9 @@ export default function EvidenceNewPage() {
                       name="evidenceOriginalNo"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                          <FormLabel>原始標籤編號（可選）</FormLabel>
+                          <FormLabel>{t('fields.evidenceOriginalNoOpt')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="TAG-A001-01" {...field} />
+                            <Input placeholder={t('placeholders.evidenceOriginalNo')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -401,16 +424,16 @@ export default function EvidenceNewPage() {
 
                 {/* 區塊三：交付與接收（四個必填） */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">交付與接收</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.delivery')}</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="deliveryName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>交付人 *</FormLabel>
+                          <FormLabel>{t('fields.deliveryNameReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="王小明" {...field} />
+                            <Input placeholder={t('placeholders.deliveryName')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -421,9 +444,9 @@ export default function EvidenceNewPage() {
                       name="receiverName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>接收人 *</FormLabel>
+                          <FormLabel>{t('fields.receiverNameReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="趙技佐" {...field} />
+                            <Input placeholder={t('placeholders.receiverName')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -434,9 +457,9 @@ export default function EvidenceNewPage() {
                       name="deliveryName2"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>返回證物者 *</FormLabel>
+                          <FormLabel>{t('fields.deliveryName2Req')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="李大華" {...field} />
+                            <Input placeholder={t('placeholders.deliveryName2')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -447,9 +470,9 @@ export default function EvidenceNewPage() {
                       name="receiverName2"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>原單位領回者 *</FormLabel>
+                          <FormLabel>{t('fields.receiverName2Req')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="林技士" {...field} />
+                            <Input placeholder={t('placeholders.receiverName2')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -462,7 +485,7 @@ export default function EvidenceNewPage() {
 
                 {/* 區塊四：照片（相機擷取） */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">照片（相機擷取）</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.photosCapture')}</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Controller
@@ -470,7 +493,7 @@ export default function EvidenceNewPage() {
                       name="photoFront"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>正面 *</FormLabel>
+                          <FormLabel>{t('photos.frontReq')}</FormLabel>
                           <FormControl>
                             <LiveCameraCapture onCaptured={(file) => field.onChange(file)} />
                           </FormControl>
@@ -483,7 +506,7 @@ export default function EvidenceNewPage() {
                       name="photoBack"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>反面 *</FormLabel>
+                          <FormLabel>{t('photos.backReq')}</FormLabel>
                           <FormControl>
                             <LiveCameraCapture onCaptured={(file) => field.onChange(file)} />
                           </FormControl>
@@ -499,7 +522,7 @@ export default function EvidenceNewPage() {
                       name="photoFront2"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>正面 2（領回）*</FormLabel>
+                          <FormLabel>{t('photos.front2Req')}</FormLabel>
                           <FormControl>
                             <LiveCameraCapture onCaptured={(file) => field.onChange(file)} />
                           </FormControl>
@@ -512,7 +535,7 @@ export default function EvidenceNewPage() {
                       name="photoBack2"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>反面 2（領回）*</FormLabel>
+                          <FormLabel>{t('photos.back2Req')}</FormLabel>
                           <FormControl>
                             <LiveCameraCapture onCaptured={(file) => field.onChange(file)} />
                           </FormControl>
@@ -527,15 +550,15 @@ export default function EvidenceNewPage() {
 
                 {/* 區塊五：時間與狀態（示例僅 createdAt） */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">時間與狀態</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.timeStatus')}</h3>
                   <FormField
                     control={form.control}
                     name="createdAt"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>建立時間（ISO）*</FormLabel>
+                        <FormLabel>{t('fields.createdAtReq')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="2025-08-20T10:00:00.000Z" {...field} />
+                          <Input placeholder={t('placeholders.createdAt')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -547,7 +570,7 @@ export default function EvidenceNewPage() {
               <CardFooter className="flex gap-2 border-t p-4">
                 <Button type="submit" disabled={creating} className="gap-2">
                   {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                  {creating ? '送出中…' : '送出'}
+                  {creating ? t('actions.submitting') : t('actions.submit')}
                 </Button>
               </CardFooter>
             </form>

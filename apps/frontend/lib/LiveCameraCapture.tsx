@@ -1,7 +1,9 @@
 'use client' 
 
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button' // shadcn/ui Button
+import { Button } from '@/components/ui/button' 
+import { useTranslations } from 'next-intl';
+
 
 // ---- 元件 Props 型別 ----
 type CaptureProps = {
@@ -17,6 +19,7 @@ export default function LiveCameraCapture({
   quality = 0.92,                          
 }: CaptureProps) {
 
+  const t = useTranslations('Common')
   // 參考到 <video> DOM，用來掛上 MediaStream
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -168,13 +171,13 @@ export default function LiveCameraCapture({
         />
       ) : (
         <div className="flex h-48 w-full items-center justify-center rounded-xl border bg-black/5 text-sm text-muted-foreground">
-             相機尚未啟用
+             {t('CameraNotYet')}
         </div>
       )}
       <div className="flex gap-2">
         {!isRunning && (
           <Button type="button" onClick={startCamera} className="rounded-xl">
-            啟用相機
+                {t('ActivateCamera')}
           </Button>
         )}
         {isRunning && (
@@ -185,7 +188,7 @@ export default function LiveCameraCapture({
               disabled={!isReady}   
               className="rounded-xl"
             >
-              {isReady ? '擷取照片' : '相機啟動中…'}
+              {isReady ? t('CapturePhoto') : t('StartingCamera')} 
             </Button>
             <Button
               type="button"
@@ -193,7 +196,7 @@ export default function LiveCameraCapture({
               onClick={stopCamera}
               className="rounded-xl"
             >
-              停止相機
+               {t('StopCamera')}
             </Button>
           </>
         )}

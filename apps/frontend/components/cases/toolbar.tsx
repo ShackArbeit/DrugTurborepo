@@ -5,7 +5,7 @@ import {Button} from '@/components/ui/button';
 import {ModeToggle} from '../mode-toggle';
 import LogoutButton from '../auth/LogOutButton';
 import WelcomeBanner from '../auth/WelcomeBanner';
-import LangSwitcher from '../../components/LangSwitcher'
+
 import Link from 'next/link';
 import {useTranslations} from 'next-intl';
 
@@ -26,7 +26,6 @@ export default function CasesToolbar({
           className="max-w-xl"
         />
         <div className="ml-auto flex items-center gap-2">
-          <LangSwitcher />
           <span className="text-sm text-muted-foreground">{tCommon('theme')}</span>
           <ModeToggle />
 

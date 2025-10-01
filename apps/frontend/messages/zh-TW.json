@@ -1,4 +1,22 @@
 {
+  "Home": {
+    "Title": "臺灣高等檢察署數位鑑識首頁",
+    "subcontent": "提供案件資料、鑑識結果及權限式登入入口",
+    "changemode": "模式變更",
+    "caseRelate": "案件相關",
+    "caseContent": "新增、更新、刪除、查詢案件資料",
+    "goCase": "前往案件頁面",
+    "evidRelate": "證物相關",
+    "evidContent": "新增、更新、刪除、查詢證物資料",
+    "goEvid": "前往證物頁面",
+    "authRelate": "使用者註冊 / 登入",
+    "authContent": "以帳號密碼登入（支援 JWT）",
+    "authButton": "註冊/登入",
+    "adminRelte": "使用者帳密管理",
+    "adminCotent": "由 Admin 管理者管理",
+    "goAdmin": "進入管理頁面",
+    "footerContent": "©  臺灣高等檢察署 · 數位鑑識系統"
+  },
   "Common": {
     "home": "返回首頁",
     "search": "搜尋",
@@ -6,7 +24,28 @@
     "login": "登入",
     "logout": "登出",
     "CreateCase": "建立案件",
-    "WelcomeBack": "歡迎回來"
+    "WelcomeBack": "歡迎回來",
+    "ActivateCamera": "啟用相機",
+    "CameraNotYet": "相機尚未啟用",
+    "StopCamera": "停止相機",
+    "CapturePhoto": "擷取相片",
+    "StartingCamera": "相機啟用中...",
+    "PreviousPage": "上一頁",
+    "NextPage": "下一頁",
+    "PageDisplay": "第 {currentPage} / {totalPage} 頁",
+    "username": "使用者名稱",
+    "email": "電子信箱",
+    "role": "角色",
+    "PermissionManagement": "權限管理",
+    "CurrentRole": "目前身分",
+    "pleaseLogin": "請先登入。",
+    "noUsersFound": "找不到可顯示的使用者資料。",
+    "normalUserTip": "您是一般使用者，只能檢視自己的權限。",
+    "searchEmailPlaceholder": "搜尋 email…",
+    "MEQueryFailed": "ME_QUERY 失敗：{message}",
+    "USERSQueryFailed": "USERS_QUERY 失敗：{message}",
+    "roleAdmin": "管理者",
+    "roleUser": "一般使用者"
   },
   "Cases": {
     "title": "案件列表",
@@ -58,7 +97,8 @@
       "sat3": "行政人員服務態度滿意度",
       "sat4": "符合貴單位要求滿意度",
       "evidenceNumber": "證物編號",
-      "evidenceType": "證物類型"
+      "evidenceType": "證物類型",
+      "ForensicOfficer": "鑑識人員"
     },
     "evidence": {
       "headerRight": "{caseNumber}（共 {count} 件）",
@@ -181,84 +221,84 @@
       "submitterTelExample": "例：02-1234-5678",
       "creatorNameExample": "姓名…"
     },
-    "options": {
-      "caseType": {
-        "fraud": "詐欺",
-        "drugs": "毒品",
-        "murder": "殺人",
-        "theft": "竊盜",
-        "robbery": "強盜",
-        "assault": "傷害",
-        "sexual": "侵害性自主",
-        "publicOrder": "妨害公共秩序",
-        "firearms": "槍砲彈藥刀械管制",
-        "moneyLaundering": "洗錢",
-        "other": "其他"
-      },
-      "submitUnit": {
-        "HPROS_TAIWAN": "臺灣高等檢察署",
-        "HCOURT_TAIWAN": "臺灣高等法院",
-        "SPC_PROS": "最高檢察署",
-        "SPC_COURT": "最高法院",
-        "HPROS_IP_BRANCH": "臺灣高等檢察署智慧財產分署",
-        "IP_COURT": "智慧財產法院",
-        "PROS_KEELUNG": "臺灣基隆地方檢察署",
-        "COURT_KEELUNG": "臺灣基隆地方法院",
-        "PROS_YILAN": "臺灣宜蘭地方檢察署",
-        "COURT_YILAN": "臺灣宜蘭地方法院",
-        "PROS_TAIPEI": "臺灣臺北地方檢察署",
-        "COURT_TAIPEI": "臺灣臺北地方法院",
-        "PROS_SHILIN": "臺灣士林地方檢察署",
-        "COURT_SHILIN": "臺灣士林地方法院",
-        "PROS_NEWTAIPEI": "臺灣新北地方檢察署",
-        "COURT_NEWTAIPEI": "臺灣新北地方法院",
-        "PROS_TAOYUAN": "臺灣桃園地方檢察署",
-        "COURT_TAOYUAN": "臺灣桃園地方法院",
-        "PROS_HSINCHU": "臺灣新竹地方檢察署",
-        "COURT_HSINCHU": "臺灣新竹地方法院",
-        "PROS_MIAOLI": "臺灣苗栗地方檢察署",
-        "COURT_MIAOLI": "臺灣苗栗地方法院",
-        "PROS_TAICHUNG": "臺灣臺中地方檢察署",
-        "HPROS_TAICHUNG_BRANCH": "臺灣高等檢察署臺中檢察分署",
-        "COURT_TAICHUNG": "臺灣臺中地方法院",
-        "HCOURT_TAICHUNG_BRANCH": "臺灣高等法院臺中分院",
-        "PROS_CHANGHUA": "臺灣彰化地方檢察署",
-        "COURT_CHANGHUA": "臺灣彰化地方法院",
-        "PROS_NANTOU": "臺灣南投地方檢察署",
-        "COURT_NANTOU": "臺灣南投地方法院",
-        "PROS_YUNLIN": "臺灣雲林地方檢察署",
-        "COURT_YUNLIN": "臺灣雲林地方法院",
-        "PROS_CHIAYI": "臺灣嘉義地方檢察署",
-        "COURT_CHIAYI": "臺灣嘉義地方法院",
-        "PROS_TAINAN": "臺灣臺南地方檢察署",
-        "HPROS_TAINAN_BRANCH": "臺灣高等檢察署臺南檢察分署",
-        "COURT_TAINAN": "臺灣臺南地方法院",
-        "HCOURT_TAINAN_BRANCH": "臺灣高等法院臺南分院",
-        "PROS_KAOHSIUNG": "臺灣高雄地方檢察署",
-        "HPROS_KAOHSIUNG_BRANCH": "臺灣高等檢察署高雄檢察分署",
-        "COURT_KAOHSIUNG": "臺灣高雄地方法院",
-        "HCOURT_KAOHSIUNG_BRANCH": "臺灣高等法院高雄分院",
-        "KAOHSIUNG_JUV_FAMILY_COURT": "臺灣高雄少年及家事法院",
-        "PROS_QIAOTOU": "臺灣橋頭地方檢察署",
-        "COURT_QIAOTOU": "臺灣橋頭地方法院",
-        "PROS_PINGTUNG": "臺灣屏東地方檢察署",
-        "COURT_PINGTUNG": "臺灣屏東地方法院",
-        "PROS_PENGHU": "臺灣澎湖地方檢察署",
-        "COURT_PENGHU": "臺灣澎湖地方法院",
-        "PROS_HUALIEN": "臺灣花蓮地方檢察署",
-        "HPROS_HUALIEN_BRANCH": "臺灣高等檢察署花蓮檢察分署",
-        "COURT_HUALIEN": "臺灣花蓮地方法院",
-        "HCOURT_HUALIEN_BRANCH": "臺灣高等法院花蓮分院",
-        "PROS_TAITUNG": "臺灣臺東地方檢察署",
-        "COURT_TAITUNG": "臺灣臺東地方法院",
-        "PROS_LIENCHIANG": "福建連江地方檢察署",
-        "COURT_LIENCHIANG": "福建連江地方法院",
-        "PROS_KINMEN": "福建金門地方檢察署",
-        "HPROS_KINMEN_BRANCH": "福建高等檢察署金門檢察分署",
-        "COURT_KINMEN": "福建金門地方法院",
-        "HCOURT_KINMEN_BRANCH": "福建高等法院金門分院"
-      }
+     "options": {
+    "caseType": {
+      "fraud": "詐欺",
+      "drugs": "毒品",
+      "murder": "殺人",
+      "theft": "竊盜",
+      "robbery": "搶劫",
+      "assault": "傷害",
+      "sexual": "性犯罪",
+      "publicOrder": "妨害公共秩序罪",
+      "firearms": "槍砲／武器",
+      "moneyLaundering": "洗錢",
+      "other": "其他"
     },
+    "submitUnit": {
+      "HPROS_TAIWAN": "臺灣高等檢察署",
+      "HCOURT_TAIWAN": "臺灣高等法院",
+      "SPC_PROS": "最高檢察署",
+      "SPC_COURT": "最高法院",
+      "HPROS_IP_BRANCH": "臺灣高等檢察署智慧財產分署",
+      "IP_COURT": "智慧財產法院",
+      "PROS_KEELUNG": "基隆地方法院檢察署",
+      "COURT_KEELUNG": "基隆地方法院",
+      "PROS_YILAN": "宜蘭地方法院檢察署",
+      "COURT_YILAN": "宜蘭地方法院",
+      "PROS_TAIPEI": "臺北地方法院檢察署",
+      "COURT_TAIPEI": "臺北地方法院",
+      "PROS_SHILIN": "士林地方法院檢察署",
+      "COURT_SHILIN": "士林地方法院",
+      "PROS_NEWTAIPEI": "新北地方法院檢察署",
+      "COURT_NEWTAIPEI": "新北地方法院",
+      "PROS_TAOYUAN": "桃園地方法院檢察署",
+      "COURT_TAOYUAN": "桃園地方法院",
+      "PROS_HSINCHU": "新竹地方法院檢察署",
+      "COURT_HSINCHU": "新竹地方法院",
+      "PROS_MIAOLI": "苗栗地方法院檢察署",
+      "COURT_MIAOLI": "苗栗地方法院",
+      "PROS_TAICHUNG": "臺中地方法院檢察署",
+      "HPROS_TAICHUNG_BRANCH": "臺灣高等檢察署臺中分署",
+      "COURT_TAICHUNG": "臺中地方法院",
+      "HCOURT_TAICHUNG_BRANCH": "臺灣高等法院臺中分院",
+      "PROS_CHANGHUA": "彰化地方法院檢察署",
+      "COURT_CHANGHUA": "彰化地方法院",
+      "PROS_NANTOU": "南投地方法院檢察署",
+      "COURT_NANTOU": "南投地方法院",
+      "PROS_YUNLIN": "雲林地方法院檢察署",
+      "COURT_YUNLIN": "雲林地方法院",
+      "PROS_CHIAYI": "嘉義地方法院檢察署",
+      "COURT_CHIAYI": "嘉義地方法院",
+      "PROS_TAINAN": "臺南地方法院檢察署",
+      "HPROS_TAINAN_BRANCH": "臺灣高等檢察署臺南分署",
+      "COURT_TAINAN": "臺南地方法院",
+      "HCOURT_TAINAN_BRANCH": "臺灣高等法院臺南分院",
+      "PROS_KAOHSIUNG": "高雄地方法院檢察署",
+      "HPROS_KAOHSIUNG_BRANCH": "臺灣高等檢察署高雄分署",
+      "COURT_KAOHSIUNG": "高雄地方法院",
+      "HCOURT_KAOHSIUNG_BRANCH": "臺灣高等法院高雄分院",
+      "KAOHSIUNG_JUV_FAMILY_COURT": "高雄少年及家事法院",
+      "PROS_QIAOTOU": "橋頭地方法院檢察署",
+      "COURT_QIAOTOU": "橋頭地方法院",
+      "PROS_PINGTUNG": "屏東地方法院檢察署",
+      "COURT_PINGTUNG": "屏東地方法院",
+      "PROS_PENGHU": "澎湖地方法院檢察署",
+      "COURT_PENGHU": "澎湖地方法院",
+      "PROS_HUALIEN": "花蓮地方法院檢察署",
+      "HPROS_HUALIEN_BRANCH": "臺灣高等檢察署花蓮分署",
+      "COURT_HUALIEN": "花蓮地方法院",
+      "HCOURT_HUALIEN_BRANCH": "臺灣高等法院花蓮分院",
+      "PROS_TAITUNG": "臺東地方法院檢察署",
+      "COURT_TAITUNG": "臺東地方法院",
+      "PROS_LIENCHIANG": "連江地方法院檢察署",
+      "COURT_LIENCHIANG": "連江地方法院",
+      "PROS_KINMEN": "金門地方法院檢察署",
+      "HPROS_KINMEN_BRANCH": "臺灣高等檢察署金門分署",
+      "COURT_KINMEN": "金門地方法院",
+      "HCOURT_KINMEN_BRANCH": "臺灣高等法院金門分院"
+    }
+  },
     "buttons": { "submit": "送出", "reset": "清除" },
     "alerts": { "createFailed": "建立失敗，請稍後再試" },
     "validation": {
@@ -277,5 +317,284 @@
       "yearMin": "年度不可小於 1900",
       "yearMax": "年度不可大於 2100"
     }
+  },
+  "Evidences": {
+    "title": "證物列表",
+    "columns": {
+      "evidenceNumber": "證物編號",
+      "evidenceType": "證物類型",
+      "evidenceBrand": "證物廠牌名稱",
+      "evidenceSerialNo": "證物廠牌序號",
+      "evidenceOriginalNo": "原始證物編號",
+      "isPickedUp": "鑑識後是否已領回",
+      "createdAt": "資料建立時間",
+      "actions": "操作"
+    },
+    "cells": {
+      "picked": "已領回",
+      "unpicked": "尚未領回"
+    },
+    "actions": {
+      "view": "查看詳細",
+      "edit": "編輯",
+      "delete": "刪除"
+    },
+    "toolbar": {
+      "searchPlaceholder": "搜尋證物編號 / 證物類型 / 證物交付人 / 證物接受鑑識人員",
+      "toggleLabel": "點擊轉換模式",
+      "create": "新增證物",
+      "backHome": "返回首頁"
+    },
+    "new": "新增"
+  },
+  "EvidenceDetail": {
+    "error": { "generic": "錯誤" },
+    "header": { "title": "證物編號：{number}" },
+    "toolbar": { "toggleLabel": "點擊轉換模式" },
+    "actions": {
+      "edit": "編輯",
+      "backToCase": "返回對應案件",
+      "backToList": "返回證物列表",
+      "print": "列印"
+    },
+    "sections": {
+      "caseInfo": "案件資訊",
+      "basic": "基本資訊（交付證物給鑑識人員）",
+      "photos": "照片（接收與領回）",
+      "status": "鑑識與退件狀態（返回證物給原單位）",
+      "chain": "證物監管鏈紀錄表",
+      "created": "建立資訊"
+    },
+    "badges": {
+      "ordinal": "此證物為此案件的第 {ordinal} 件"
+    },
+    "fields": {
+      "caseNumber": "案件編號",
+      "caseName": "案件名稱",
+      "evidenceNumber": "證物編號",
+      "evidenceType": "證物類型",
+      "evidenceBrand": "證物廠牌",
+      "evidenceSerialNo": "證物廠牌序號",
+      "evidenceOriginalNo": "原始證物編號",
+      "deliveryName": "證物交付者",
+      "receiverName": "接收證物鑑識人員",
+      "is_beyond_scope": "是否超出鑑識能力範圍",
+      "is_lab_related": "是否屬於實驗室鑑識項目",
+      "is_info_complete": "案件資訊是否完整",
+      "is_rejected": "是否應退件",
+      "deliveryName2": "返回證物者（行政人員）",
+      "receiverName2": "原單位領回證物者（送件單位）",
+      "is_Pickup": "鑑識後是否已領回",
+      "createdAt": "建立時間"
+    },
+    "cells": {
+      "picked": "已領回",
+      "unpicked": "尚未領回"
+    },
+    "photos": {
+      "empty": "尚無照片",
+      "frontReceive": "正面（接收）",
+      "backReceive": "反面（接收）",
+      "frontReturn": "正面 2（領回）",
+      "backReturn": "反面 2（領回）",
+      "frontAlt": "正面",
+      "backAlt": "反面",
+      "front2Alt": "正面 2",
+      "back2Alt": "反面 2"
+    }
+  },
+  "EvidenceEdit": {
+    "title": "編輯證物",
+    "breadcrumb": { "list": "證物列表", "detail": "證物詳細內容", "edit": "編輯" },
+    "actions": {
+      "backToDetail": "返回詳細",
+      "save": "儲存",
+      "saving": "儲存中…"
+    },
+    "alerts": {
+      "loadFailedTitle": "載入失敗",
+      "updateFailed": "更新失敗，請稍後再試"
+    },
+    "descriptions": {
+      "photoOverwrite": "如未重新拍攝，將保留原有照片；重新拍攝則於儲存後覆蓋。"
+    },
+    "sections": {
+      "caseInfo": "案件資訊",
+      "basic": "基本資訊",
+      "forensics": "鑑識結果",
+      "delivery": "交付與接收",
+      "photosCapture": "照片（相機擷取）",
+      "timeStatus": "時間與狀態"
+    },
+    "fields": {
+      "linkedCaseNumber": "所對應案件編號",
+      "caseName": "案件名稱",
+      "evidenceNumber": "證物編號 *",
+      "evidenceType": "證物類型 *",
+      "evidenceBrand": "證物廠牌 *",
+      "evidenceSerialNoOpt": "廠牌序號（可選）",
+      "evidenceOriginalNoOpt": "原始標籤編號（可選）",
+      "deliveryNameReq": "交付人姓名（行政人員）*",
+      "receiverNameReq": "接收人姓名（送件單位）*",
+      "deliveryName2": "返回證物者（行政人員）",
+      "receiverName2": "原單位領回者（送件單位）",
+      "is_pickup": "是否已領回",
+      "is_rejected": "是否應退件",
+      "is_beyond_scope": "是否超出鑑識能力範圍",
+      "is_lab_related": "是否屬於實驗室鑑識項目",
+      "is_info_complete": "案件資訊是否完整",
+      "createdAtReq": "建立時間（ISO）*"
+    },
+    "placeholders": {
+      "evidenceNumber": "A-001-E03",
+      "evidenceType": "手機 / 筆電",
+      "evidenceBrand": "Apple / ASUS",
+      "evidenceSerialNo": "SN-A001-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "王小明",
+      "receiverName": "趙技佐",
+      "deliveryName2": "李大華",
+      "receiverName2": "林技士",
+      "createdAt": "例如 2025-08-14T10:00:00.000Z"
+    },
+    "photos": {
+      "currentFront": "目前：正面",
+      "currentBack": "目前：反面",
+      "currentFront2": "目前：正面 2",
+      "currentBack2": "目前：反面 2",
+      "hintRetake": "重新拍攝：按「啟用相機 → 擷取照片」。不重拍將沿用上方目前照片。",
+      "front": "正面",
+      "back": "反面",
+      "front2Opt": "正面 2（可選）",
+      "back2Opt": "反面 2（可選）",
+      "frontAlt": "正面",
+      "backAlt": "反面",
+      "front2Alt": "正面 2",
+      "back2Alt": "反面 2"
+    },
+    "validation": {
+      "caseNumberRequired": "所對應案件編號為必填",
+      "caseNameRequired": "案件名稱為必填",
+      "evidenceNumberRequired": "證物編號為必填",
+      "evidenceTypeRequired": "證物類型為必填",
+      "evidenceBrandRequired": "證物廠牌為必填",
+      "deliveryNameRequired": "交付人姓名為必填",
+      "receiverNameRequired": "接收人姓名為必填",
+      "createdAtInvalid": "建立時間需為可被解析的日期字串（例如 ISO）"
+    }
+  },
+  "EvidenceNew": {
+    "title": "新增證物",
+    "breadcrumb": { "list": "證物列表", "new": "新增證物" },
+    "actions": {
+      "backToList": "返回列表",
+      "submit": "送出",
+      "submitting": "送出中…"
+    },
+    "alerts": {
+      "casesLoadFailedTitle": "無法取得案件清單",
+      "createFailed": "建立失敗，請稍後再試",
+      "fourPhotosRequired": "四張照片皆為必填"
+    },
+    "descriptions": {
+      "intro": "選擇案件後自動產生證物編號；相機擷取即時預覽，上傳成功回傳 URL。"
+    },
+    "sections": {
+      "linkCase": "對應案件",
+      "basic": "基本資訊",
+      "delivery": "交付與接收",
+      "photosCapture": "照片（相機擷取）",
+      "timeStatus": "時間與狀態"
+    },
+    "fields": {
+      "linkCaseReq": "對應案件 *",
+      "evidenceNumberReq": "證物編號 *",
+      "evidenceTypeReq": "證物類型 *",
+      "evidenceBrandReq": "證物廠牌 *",
+      "evidenceSerialNoOpt": "廠牌序號（可選）",
+      "evidenceOriginalNoOpt": "原始標籤編號（可選）",
+      "deliveryNameReq": "交付人 *",
+      "receiverNameReq": "接收人 *",
+      "deliveryName2Req": "返回證物者 *",
+      "receiverName2Req": "原單位領回者 *",
+      "createdAtReq": "建立時間（ISO）*"
+    },
+    "placeholders": {
+      "selectCase": "請選擇（僅顯示 300 天內）",
+      "evidenceNumber": "EVID-2025xxxx-1",
+      "selectEvidenceType": "請選擇證物類型…",
+      "evidenceBrand": "Apple / ASUS / SanDisk…",
+      "evidenceSerialNo": "SN-XXXX-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "王小明",
+      "receiverName": "趙技佐",
+      "deliveryName2": "李大華",
+      "receiverName2": "林技士",
+      "createdAt": "例如 2025-08-20T10:00:00.000Z"
+    },
+    "hints": {
+      "autoNumber": {
+        "loading": "計算編號中…",
+        "value": "將預設為：{value}",
+        "waitSelect": "請先選擇對應案件，系統會自動生成編號"
+      }
+    },
+    "photos": {
+      "frontReq": "正面 *",
+      "backReq": "反面 *",
+      "front2Req": "正面 2（領回）*",
+      "back2Req": "反面 2（領回）*"
+    },
+    "validation": {
+      "caseNumberRequired": "請選擇對應案件",
+      "evidenceNumberRequired": "請填寫證物編號",
+      "evidenceTypeRequired": "請選擇證物類型",
+      "evidenceBrandRequired": "請填寫證物廠牌",
+      "deliveryNameRequired": "請填寫交付人姓名",
+      "receiverNameRequired": "請填寫接收人姓名",
+      "deliveryName2Required": "請填寫返回證物者",
+      "receiverName2Required": "請填寫原單位領回者",
+      "createdAtInvalid": "建立時間格式需為 ISO 或可被解析的日期字串"
+    },
+    "options": {
+      "evidenceType": {
+        "desktop": "個人桌上型電腦",
+        "laptop": "筆記型電腦",
+        "hdd": "硬碟",
+        "usb": "隨身碟",
+        "iphone": "蘋果手機",
+        "android": "安卓手機",
+        "sdcard": "記憶卡",
+        "optical": "光碟",
+        "tablet": "平板電腦",
+        "other": "其他"
+      }
+    }
+  },
+  "EvidencePrint": {
+    "loading": "載入中…",
+    "error": "錯誤：{message}",
+    "toolbar": {
+      "backToEvidence": "返回證物頁",
+      "printAgain": "再次列印"
+    },
+    "title": "證物監管鏈紀錄表",
+    "info": {
+      "evidenceNumber": "證物編號",
+      "caseNumber": "案件編號",
+      "caseName": "案件名稱"
+    },
+    "table": {
+      "headers": {
+        "datetime": "日期時間",
+        "deliverer": "交付人員",
+        "receiver": "接收人員",
+        "reasonNote": "移轉原因／備註（出／入／簽證）"
+      }
+    },
+    "rows": {
+      "receiveReason": "收件"
+    },
+    "footnote": "表單編號：{code}"
   }
 }

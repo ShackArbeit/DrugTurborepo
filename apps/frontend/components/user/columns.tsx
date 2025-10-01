@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { RoleBadge } from './role-badge';
 import { RoleSelect } from './role-select';
+import {useTranslations} from 'next-intl';
 
 export type UserRow = {
   id: string | number;
@@ -18,15 +19,16 @@ export function getUserColumns(opts: {
   onRoleChange: (email: string, nextRole: 'user' | 'admin') => void;
 }): ColumnDef<UserRow>[] {
   const { isAdmin, isRootAdmin = false, onRoleChange, currentUserEmail } = opts;
+  const t = useTranslations('Common')
 
   return [
-    { accessorKey: 'username', header: '使用者名稱',
+    { accessorKey: 'username', header:t('username'),
       cell: ({ row }) => <span className="font-medium">{row.original.username}</span> },
-    { accessorKey: 'email', header: '電子信箱',
+    { accessorKey: 'email', header: t('email'),
       cell: ({ row }) => <span className="text-sm">{row.original.email}</span> },
     {
       accessorKey: 'role',
-      header: '角色',
+      header: t('role'),
       cell: ({ row }) => {
         const u = row.original;
         const isSelf = !!currentUserEmail && u.email === currentUserEmail;

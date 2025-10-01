@@ -35,7 +35,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        
           <ApolloClientProvider>
           <ThemeProvider
             attribute="class"
@@ -43,11 +43,11 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-             
-               {children}   
+            <NextIntlClientProvider locale={locale} messages={messages}>         
+               {children} 
+              </NextIntlClientProvider>  
           </ThemeProvider>
-          </ApolloClientProvider>
-          </NextIntlClientProvider>
+          </ApolloClientProvider>    
       </body>
     </html>
   );

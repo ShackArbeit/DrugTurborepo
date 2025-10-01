@@ -19,7 +19,6 @@ import {
   Gauge,
   PackageSearch
 } from 'lucide-react';
-import LangSwitcher from '../../../components/LangSwitcher'
 import {useTranslations} from 'next-intl';
 
 /** 小資訊卡塊 */
@@ -149,7 +148,6 @@ export default function CaseDetailPage({
           {/* 動作按鈕 */}
           <div className="flex items-center gap-2">
             <ModeToggle />
-            <LangSwitcher/>
             <Button asChild variant="outline">
               <Link href="/case">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -273,6 +271,10 @@ export default function CaseDetailPage({
                         <div className="space-y-1">
                           <div className="text-xs text-muted-foreground">{t('fields.evidenceType')}</div>
                           <div className="text-base font-semibold tracking-tight">{e.evidenceType}</div>
+                        </div>
+                         <div className="space-y-1">
+                          <div className="text-xs text-muted-foreground">{t('fields.ForensicOfficer')}</div>
+                          <div className="text-base font-semibold tracking-tight">{e.receiverName}</div>
                         </div>
                         <div className="text-base font-semibold tracking-tight">
                           {picked ? t('evidence.picked') : t('evidence.unpicked')}

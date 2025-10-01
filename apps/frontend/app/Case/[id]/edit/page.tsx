@@ -60,7 +60,6 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
-import LangSwitcher from '../../../../components/LangSwitcher'
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 
@@ -199,7 +198,6 @@ export default function EditCasePage({params}: {params: Promise<{id: string}>}) 
           </nav>
 
           <div className="flex items-center gap-2">
-            <LangSwitcher/>
             <ModeToggle />
             <Button asChild variant="outline" className="rounded-xl">
               <Link href="/case">{t('actions.backToList')}</Link>

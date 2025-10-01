@@ -1,0 +1,600 @@
+{
+  "Home": {
+    "Title": "Taiwan High Prosecutors Office · Startseite Digitale Forensik",
+    "subcontent": "Stellt Falldaten, Forensikergebnisse und ein rollenbasiertes Anmeldeportal bereit",
+    "changemode": "Modus wechseln",
+    "caseRelate": "Fallbezogen",
+    "caseContent": "Falldaten erstellen, aktualisieren, löschen und suchen",
+    "goCase": "Zur Fallseite",
+    "evidRelate": "Beweisbezogen",
+    "evidContent": "Beweisdaten erstellen, aktualisieren, löschen und suchen",
+    "goEvid": "Zur Beweis-Seite",
+    "authRelate": "Benutzerregistrierung / Anmeldung",
+    "authContent": "Anmeldung mit Konto & Passwort (JWT unterstützt)",
+    "authButton": "Registrieren / Anmelden",
+    "adminRelte": "Verwaltung von Benutzerkonten & Passwörtern",
+    "adminCotent": "Vom Admin verwaltet",
+    "goAdmin": "Zur Admin-Seite",
+    "footerContent": "©  Taiwan High Prosecutors Office · System für digitale Forensik"
+  },
+  "Common": {
+    "home": "Startseite",
+    "search": "Suchen",
+    "theme": "Thema",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "CreateCase": "Fall erstellen",
+    "WelcomeBack": "Willkommen zurück",
+    "ActivateCamera": "Kamera aktivieren",
+    "CameraNotYet": "Kamera wurde noch nicht aktiviert",
+    "StopCamera": "Kamera stoppen",
+    "CapturePhoto": "Foto aufnehmen",
+    "StartingCamera": "Kamera wird gestartet...",
+    "PreviousPage": "Vorherige Seite",
+    "NextPage": "Nächste Seite",
+    "PageDisplay": "Seite {currentPage} von {totalPage}",
+    "username": "Nutzername",
+    "email": "email",
+    "role": "Rolle",
+    "PermissionManagement": "Berechtigungsverwaltung",
+    "CurrentRole": "Aktuelle Rolle",
+    "pleaseLogin": "Bitte melden Sie sich zuerst an.",
+    "noUsersFound": "Es wurden keine anzuzeigenden Benutzer gefunden.",
+    "normalUserTip": "Sie sind ein normaler Benutzer und können nur Ihre eigenen Berechtigungen ansehen.",
+    "searchEmailPlaceholder": "E-Mail suchen…",
+    "MEQueryFailed": "ME_QUERY fehlgeschlagen: {message}",
+    "USERSQueryFailed": "USERS_QUERY fehlgeschlagen: {message}",
+    "roleAdmin": "Admin",
+    "roleUser": "Benutzer"
+  },
+  "Cases": {
+    "title": "Fälle",
+    "columns": {
+      "caseNumber": "Fall-Nr.",
+      "caseType": "Falltyp",
+      "submitUnit": "Einsendereinheit",
+      "submitterName": "Einreicher",
+      "creator": "Ersteller",
+      "createdAt": "Erstellt am",
+      "CaseSummary": "Fallzusammenfassung"
+    },
+    "view": "Ansehen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirmDelete": "Das Löschen entfernt auch zugehörige Beweise. Fortfahren?",
+    "noPermissionEdit": "Keine Bearbeitungsrechte",
+    "noPermissionDelete": "Keine Löschrechte"
+  },
+  "CaseDetail": {
+    "breadcrumb": { "list": "Fälle", "detail": "Falldetails" },
+    "error": { "title": "Laden fehlgeschlagen", "backToList": "Fälle" },
+    "header": {
+      "caseNumberLabel": "Fall-Nr.: ",
+      "backCases": "Zurück zu Fällen",
+      "backEvidences": "Zurück zu Beweisen",
+      "edit": "Bearbeiten"
+    },
+    "sections": {
+      "info": "Fallinfo",
+      "basic": "Grunddaten",
+      "contact": "Kontakt & Einheit",
+      "satisfaction": "Zufriedenheit & Meta",
+      "evidence": "Beweise"
+    },
+    "fields": {
+      "creator": "Ersteller",
+      "year": "Jahr",
+      "caseType": "Falltyp",
+      "prefixLetter": "Präfix",
+      "createdAt": "Erstellt am",
+      "submitUnit": "Einsendereinheit",
+      "section": "Abteilung",
+      "submitterName": "Einreicher",
+      "submitterPhone": "Handy",
+      "submitterTel": "Telefon",
+      "sat1": "Bearbeitungsgeschwindigkeit",
+      "sat2": "Genauigkeit der Beweisbearbeitung",
+      "sat3": "Servicefreundlichkeit",
+      "sat4": "Erfüllt Ihre Anforderungen",
+      "evidenceNumber": "Beweis-Nr.",
+      "evidenceType": "Beweisart",
+      "ForensicOfficer": "Forensiker"
+    },
+    "evidence": {
+      "headerRight": "{caseNumber} ({count} Stück)",
+      "picked": "Abgeholt",
+      "unpicked": "Nicht abgeholt",
+      "detail": "Details",
+      "empty": "Keine Beweise"
+    }
+  },
+  "CaseEdit": {
+    "title": "Fall bearbeiten",
+    "breadcrumb": { "list": "Fälle", "detail": "Falldetails", "edit": "Bearbeiten" },
+    "actions": {
+      "backToList": "Zurück zu Fällen",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "resetToServer": "Auf Serverwerte zurücksetzen"
+    },
+    "alerts": { "loadFailedTitle": "Laden fehlgeschlagen" },
+    "descriptions": {
+      "formIntro": "Aktualisieren Sie die Falldaten. Mit * markierte Felder sind Pflichtfelder.",
+      "createdAtFormat": "Bitte ein Format verwenden, das von Date.parse erkannt wird"
+    },
+    "sections": {
+      "basicId": "Grundidentität",
+      "numbering": "Nummerierung",
+      "typeAndTime": "Typ & Zeit",
+      "submitInfo": "Einreichung",
+      "satisfaction": "Zufriedenheit"
+    },
+    "fields": {
+      "caseNumber": "Fall-Nr.",
+      "caseType": "Falltyp",
+      "caseName": "Fallzusammenfassung",
+      "year": "Jahr",
+      "prefixLetter": "Präfix (optional)",
+      "section": "Abteilung (optional)",
+      "createdAt": "Erstellt am (ISO)",
+      "submitUnit": "Einsendereinheit",
+      "submitterName": "Einreicher",
+      "submitterPhone": "Handy",
+      "submitterTel": "Telefon",
+      "sat1": "Geschwindigkeit",
+      "sat2": "Genauigkeit",
+      "sat3": "Service",
+      "sat4": "Anforderungen erfüllt"
+    },
+    "placeholders": {
+      "caseNumberExample": "z. B. 113-N-TPE-000123",
+      "caseTypeExample": "z. B. Drogen, Betrug, Unfall…",
+      "caseNameExample": "Zusammenfassung eingeben…",
+      "yearExample": "z. B. 2025",
+      "prefixLetterExample": "z. B. TPE, TY, Kriminal…",
+      "sectionExample": "z. B. Abt. B, Forensik…",
+      "createdAtExample": "z. B. 2025-08-14T10:00:00.000Z",
+      "submitUnitExample": "z. B. Polizeiteam",
+      "submitterNameExample": "z. B. Max Mustermann",
+      "submitterPhoneExample": "z. B. 0912-345-678",
+      "submitterTelExample": "z. B. 02-1234-5678",
+      "selectPlaceholder": "Auswählen…"
+    },
+    "selectOptions": {
+      "verySatisfied": "Sehr zufrieden",
+      "satisfied": "Zufrieden",
+      "neutral": "Neutral",
+      "slightlyDissatisfied": "Etwas unzufrieden",
+      "veryDissatisfied": "Sehr unzufrieden"
+    },
+    "validation": {
+      "caseNumberRequired": "Fallnummer ist erforderlich",
+      "caseTypeRequired": "Falltyp ist erforderlich",
+      "caseNameRequired": "Zusammenfassung ist erforderlich",
+      "submitUnitRequired": "Einheit ist erforderlich",
+      "submitterNameRequired": "Einreicher ist erforderlich",
+      "phoneRequired": "Handynummer ist erforderlich",
+      "phoneInvalid": "Ungültiges Handynummernformat (Ziffern, +, -, Leerzeichen; mind. 8 Zeichen)",
+      "telRequired": "Telefonnummer ist erforderlich",
+      "telInvalid": "Ungültiges Telefonnummernformat (Ziffern, +, -, Leerzeichen; mind. 8 Zeichen)",
+      "createdAtInvalid": "Erstellzeit muss ein gültiges Datum sein (z. B. ISO)",
+      "yearInt": "Jahr muss eine ganze Zahl sein",
+      "yearMin": "Jahr darf nicht kleiner als 1900 sein",
+      "yearMax": "Jahr darf nicht größer als 2100 sein"
+    }
+  },
+  "CreateCase": {
+    "title": "Fall erstellen",
+    "subtitle": "Bitte Fallinformationen ausfüllen und absenden.",
+    "toolbar": { "back": "Zurück zur Liste" },
+    "sections": {
+      "basicId": "Grundidentität",
+      "numbering": "Nummerierung",
+      "submitInfo": "Einreichung",
+      "others": "Sonstiges"
+    },
+    "fields": {
+      "caseNumber": "Fall-Nr.",
+      "caseType": "Falltyp",
+      "createdAt": "Erstellt am (ISO)",
+      "caseName": "Fallzusammenfassung",
+      "year": "Jahr",
+      "prefixLetter": "Präfix (optional)",
+      "section": "Abteilung (optional)",
+      "submitUnit": "Einsendereinheit",
+      "submitterName": "Einreicher",
+      "submitterPhone": "Handy",
+      "submitterTel": "Telefon",
+      "creatorName": "Name des Erstellers"
+    },
+    "placeholders": {
+      "caseNumberExample": "z. B. 113-N-TPE-000123",
+      "selectCaseType": "Falltyp auswählen…",
+      "createdAtExample": "z. B. 2025-08-14T10:00:00.000Z",
+      "caseNameExample": "Zusammenfassung/Beschreibung eingeben…",
+      "yearExample": "z. B. 2025",
+      "prefixLetterExample": "z. B. TPE, TY, Kriminal…",
+      "sectionExample": "z. B. Abt. B, Forensik…",
+      "selectSubmitUnit": "Einsendereinheit auswählen…",
+      "submitterNameExample": "z. B. Max Mustermann",
+      "submitterPhoneExample": "z. B. 0912-345-678",
+      "submitterTelExample": "z. B. 02-1234-5678",
+      "creatorNameExample": "Vollständiger Name…"
+    },
+    "options": {
+          "caseType": {
+        "fraud": "Betrug",
+        "drugs": "Drogen",
+        "murder": "Tötungsdelikt",
+        "theft": "Diebstahl",
+        "robbery": "Raub",
+        "assault": "Körperverletzung",
+        "sexual": "Sexualdelikte",
+        "publicOrder": "Öffentliche Ordnung",
+        "firearms": "Schusswaffen / Waffen",
+        "moneyLaundering": "Geldwäsche",
+        "other": "Sonstiges"
+      },
+      "submitUnit": {
+        "HPROS_TAIWAN": "Hohe Staatsanwaltschaft Taiwan",
+        "HCOURT_TAIWAN": "Oberstes Gericht Taiwan",
+        "SPC_PROS": "Oberste Staatsanwaltschaft",
+        "SPC_COURT": "Oberster Gerichtshof",
+        "HPROS_IP_BRANCH": "Hohe Staatsanwaltschaft Taiwan – IP Zweigstelle",
+        "IP_COURT": "Gericht für Geistiges Eigentum",
+        "PROS_KEELUNG": "Staatsanwaltschaft Keelung",
+        "COURT_KEELUNG": "Bezirksgericht Keelung",
+        "PROS_YILAN": "Staatsanwaltschaft Yilan",
+        "COURT_YILAN": "Bezirksgericht Yilan",
+        "PROS_TAIPEI": "Staatsanwaltschaft Taipeh",
+        "COURT_TAIPEI": "Bezirksgericht Taipeh",
+        "PROS_SHILIN": "Staatsanwaltschaft Shilin",
+        "COURT_SHILIN": "Bezirksgericht Shilin",
+        "PROS_NEWTAIPEI": "Staatsanwaltschaft Neu-Taipeh",
+        "COURT_NEWTAIPEI": "Bezirksgericht Neu-Taipeh",
+        "PROS_TAOYUAN": "Staatsanwaltschaft Taoyuan",
+        "COURT_TAOYUAN": "Bezirksgericht Taoyuan",
+        "PROS_HSINCHU": "Staatsanwaltschaft Hsinchu",
+        "COURT_HSINCHU": "Bezirksgericht Hsinchu",
+        "PROS_MIAOLI": "Staatsanwaltschaft Miaoli",
+        "COURT_MIAOLI": "Bezirksgericht Miaoli",
+        "PROS_TAICHUNG": "Staatsanwaltschaft Taichung",
+        "HPROS_TAICHUNG_BRANCH": "Hohe Staatsanwaltschaft Taiwan – Zweigstelle Taichung",
+        "COURT_TAICHUNG": "Bezirksgericht Taichung",
+        "HCOURT_TAICHUNG_BRANCH": "Oberstes Gericht Taiwan – Zweigstelle Taichung",
+        "PROS_CHANGHUA": "Staatsanwaltschaft Changhua",
+        "COURT_CHANGHUA": "Bezirksgericht Changhua",
+        "PROS_NANTOU": "Staatsanwaltschaft Nantou",
+        "COURT_NANTOU": "Bezirksgericht Nantou",
+        "PROS_YUNLIN": "Staatsanwaltschaft Yunlin",
+        "COURT_YUNLIN": "Bezirksgericht Yunlin",
+        "PROS_CHIAYI": "Staatsanwaltschaft Chiayi",
+        "COURT_CHIAYI": "Bezirksgericht Chiayi",
+        "PROS_TAINAN": "Staatsanwaltschaft Tainan",
+        "HPROS_TAINAN_BRANCH": "Hohe Staatsanwaltschaft Taiwan – Zweigstelle Tainan",
+        "COURT_TAINAN": "Bezirksgericht Tainan",
+        "HCOURT_TAINAN_BRANCH": "Oberstes Gericht Taiwan – Zweigstelle Tainan",
+        "PROS_KAOHSIUNG": "Staatsanwaltschaft Kaohsiung",
+        "HPROS_KAOHSIUNG_BRANCH": "Hohe Staatsanwaltschaft Taiwan – Zweigstelle Kaohsiung",
+        "COURT_KAOHSIUNG": "Bezirksgericht Kaohsiung",
+        "HCOURT_KAOHSIUNG_BRANCH": "Oberstes Gericht Taiwan – Zweigstelle Kaohsiung",
+        "KAOHSIUNG_JUV_FAMILY_COURT": "Jugend- und Familiengericht Kaohsiung",
+        "PROS_QIAOTOU": "Staatsanwaltschaft Qiaotou",
+        "COURT_QIAOTOU": "Bezirksgericht Qiaotou",
+        "PROS_PINGTUNG": "Staatsanwaltschaft Pingtung",
+        "COURT_PINGTUNG": "Bezirksgericht Pingtung",
+        "PROS_PENGHU": "Staatsanwaltschaft Penghu",
+        "COURT_PENGHU": "Bezirksgericht Penghu",
+        "PROS_HUALIEN": "Staatsanwaltschaft Hualien",
+        "HPROS_HUALIEN_BRANCH": "Hohe Staatsanwaltschaft Taiwan – Zweigstelle Hualien",
+        "COURT_HUALIEN": "Bezirksgericht Hualien",
+        "HCOURT_HUALIEN_BRANCH": "Oberstes Gericht Taiwan – Zweigstelle Hualien",
+        "PROS_TAITUNG": "Staatsanwaltschaft Taitung",
+        "COURT_TAITUNG": "Bezirksgericht Taitung",
+        "PROS_LIENCHIANG": "Staatsanwaltschaft Lienchiang",
+        "COURT_LIENCHIANG": "Bezirksgericht Lienchiang",
+        "PROS_KINMEN": "Staatsanwaltschaft Kinmen",
+        "HPROS_KINMEN_BRANCH": "Hohe Staatsanwaltschaft Taiwan – Zweigstelle Kinmen",
+        "COURT_KINMEN": "Bezirksgericht Kinmen",
+        "HCOURT_KINMEN_BRANCH": "Oberstes Gericht Taiwan – Zweigstelle Kinmen"
+      }
+    },
+    "buttons": { "submit": "Absenden", "reset": "Zurücksetzen" },
+    "alerts": { "createFailed": "Erstellung fehlgeschlagen, bitte später erneut versuchen" },
+    "validation": {
+      "caseNumberRequired": "Fallnummer ist erforderlich",
+      "caseTypeRequired": "Falltyp ist erforderlich",
+      "caseNameRequired": "Fallzusammenfassung ist erforderlich",
+      "submitUnitRequired": "Einsendereinheit ist erforderlich",
+      "submitterNameRequired": "Einreicher ist erforderlich",
+      "phoneRequired": "Handynummer ist erforderlich",
+      "phoneInvalid": "Ungültiges Handynummernformat (Ziffern, +, -, Leerzeichen; mind. 8 Zeichen)",
+      "telRequired": "Telefonnummer ist erforderlich",
+      "telInvalid": "Ungültiges Telefonnummernformat (Ziffern, +, -, Leerzeichen; mind. 8 Zeichen)",
+      "creatorMin": "Bitte mindestens 3 Zeichen eingeben",
+      "createdAtInvalid": "Erstellzeit muss ISO sein oder ein gültiges Datum",
+      "yearInt": "Jahr muss eine ganze Zahl sein",
+      "yearMin": "Jahr darf nicht kleiner als 1900 sein",
+      "yearMax": "Jahr darf nicht größer als 2100 sein"
+    }
+  },
+  "Evidences": {
+    "title": "Beweise",
+    "columns": {
+      "evidenceNumber": "Beweis-Nr.",
+      "evidenceType": "Beweisart",
+      "evidenceBrand": "Marke",
+      "evidenceSerialNo": "Seriennr.",
+      "evidenceOriginalNo": "Original-Beweisnr.",
+      "isPickedUp": "Nach Forensik abgeholt",
+      "createdAt": "Erstellt am",
+      "actions": "Aktionen"
+    },
+    "cells": {
+      "picked": "Abgeholt",
+      "unpicked": "Nicht abgeholt"
+    },
+    "actions": {
+      "view": "Ansehen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen"
+    },
+    "toolbar": {
+      "searchPlaceholder": "Suche nach Nummer / Typ / Abgeber / Empfänger",
+      "toggleLabel": "Thema umschalten",
+      "create": "Neuer Beweis",
+      "backHome": "Zurück zur Startseite"
+    },
+    "new": "Neu"
+  },
+  "EvidenceDetail": {
+    "error": { "generic": "Fehler" },
+    "header": { "title": "Beweis-Nr.: {number}" },
+    "toolbar": { "toggleLabel": "Thema umschalten" },
+    "actions": {
+      "edit": "Bearbeiten",
+      "backToCase": "Zurück zum Fall",
+      "backToList": "Zurück zu Beweisen",
+      "print": "Drucken"
+    },
+    "sections": {
+      "caseInfo": "Fallinfo",
+      "basic": "Grundinfo (Übergabe an Forensik-Personal)",
+      "photos": "Fotos (bei Erhalt & bei Rückgabe)",
+      "status": "Forensik- & Rückgabestatus (zurück an Originaleinheit)",
+      "chain": "Chain of Custody",
+      "created": "Erstellt-Info"
+    },
+    "badges": {
+      "ordinal": "Dies ist das {ordinal}. Beweisstück in diesem Fall"
+    },
+    "fields": {
+      "caseNumber": "Fall-Nr.",
+      "caseName": "Fallzusammenfassung",
+      "evidenceNumber": "Beweis-Nr.",
+      "evidenceType": "Beweisart",
+      "evidenceBrand": "Marke",
+      "evidenceSerialNo": "Seriennr.",
+      "evidenceOriginalNo": "Original-Beweisnr.",
+      "deliveryName": "Abgeber",
+      "receiverName": "Forensik-Empfänger",
+      "is_beyond_scope": "Außerhalb der forensischen Möglichkeiten",
+      "is_lab_related": "Laborbezogen",
+      "is_info_complete": "Fallinfo vollständig",
+      "is_rejected": "Sollte abgelehnt werden",
+      "deliveryName2": "Zurückgegeben von (Verwaltung)",
+      "receiverName2": "Abgeholt von (einsendende Einheit)",
+      "is_Pickup": "Nach Forensik abgeholt",
+      "createdAt": "Erstellt am"
+    },
+    "cells": {
+      "picked": "Abgeholt",
+      "unpicked": "Nicht abgeholt"
+    },
+    "photos": {
+      "empty": "Keine Fotos",
+      "frontReceive": "Vorderseite (bei Erhalt)",
+      "backReceive": "Rückseite (bei Erhalt)",
+      "frontReturn": "Vorderseite 2 (bei Rückgabe)",
+      "backReturn": "Rückseite 2 (bei Rückgabe)",
+      "frontAlt": "Vorderseite",
+      "backAlt": "Rückseite",
+      "front2Alt": "Vorderseite 2",
+      "back2Alt": "Rückseite 2"
+    }
+  },
+  "EvidenceEdit": {
+    "title": "Beweis bearbeiten",
+    "breadcrumb": { "list": "Beweise", "detail": "Beweisdetails", "edit": "Bearbeiten" },
+    "actions": {
+      "backToDetail": "Zurück zu Details",
+      "save": "Speichern",
+      "saving": "Speichern…"
+    },
+    "alerts": {
+      "loadFailedTitle": "Laden fehlgeschlagen",
+      "updateFailed": "Aktualisierung fehlgeschlagen, bitte später erneut versuchen"
+    },
+    "descriptions": {
+      "photoOverwrite": "Wenn Sie nicht erneut aufnehmen, bleiben die Originalfotos erhalten; neue Aufnahmen überschreiben beim Speichern."
+    },
+    "sections": {
+      "caseInfo": "Fallinfo",
+      "basic": "Grundinfo",
+      "forensics": "Forensikergebnis",
+      "delivery": "Übergabe & Empfang",
+      "photosCapture": "Fotos (Kameraaufnahme)",
+      "timeStatus": "Zeit & Status"
+    },
+    "fields": {
+      "linkedCaseNumber": "Verknüpfte Fall-Nr.",
+      "caseName": "Fallname",
+      "evidenceNumber": "Beweis-Nr. *",
+      "evidenceType": "Beweisart *",
+      "evidenceBrand": "Marke *",
+      "evidenceSerialNoOpt": "Seriennr. (optional)",
+      "evidenceOriginalNoOpt": "Original-Tag-Nr. (optional)",
+      "deliveryNameReq": "Abgeber (Verwaltung) *",
+      "receiverNameReq": "Empfänger (einsendende Einheit) *",
+      "deliveryName2": "Zurückgegeben von (Verwaltung)",
+      "receiverName2": "Abgeholt von (einsendende Einheit)",
+      "is_pickup": "Abgeholt?",
+      "is_rejected": "Sollte abgelehnt werden",
+      "is_beyond_scope": "Außerhalb der Möglichkeiten",
+      "is_lab_related": "Laborbezogen",
+      "is_info_complete": "Info vollständig",
+      "createdAtReq": "Erstellt am (ISO) *"
+    },
+    "placeholders": {
+      "evidenceNumber": "A-001-E03",
+      "evidenceType": "Telefon / Laptop",
+      "evidenceBrand": "Apple / ASUS",
+      "evidenceSerialNo": "SN-A001-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "Max Mustermann",
+      "receiverName": "Inspektor Zhao",
+      "deliveryName2": "Alex Müller",
+      "receiverName2": "Lin",
+      "createdAt": "z. B. 2025-08-14T10:00:00.000Z"
+    },
+    "photos": {
+      "currentFront": "Aktuell: Vorderseite",
+      "currentBack": "Aktuell: Rückseite",
+      "currentFront2": "Aktuell: Vorderseite 2",
+      "currentBack2": "Aktuell: Rückseite 2",
+      "hintRetake": "Neuaufnahme: „Kamera aktivieren → Foto aufnehmen“. Ohne Neuaufnahme bleiben die aktuellen Fotos erhalten.",
+      "front": "Vorderseite",
+      "back": "Rückseite",
+      "front2Opt": "Vorderseite 2 (optional)",
+      "back2Opt": "Rückseite 2 (optional)",
+      "frontAlt": "Vorderseite",
+      "backAlt": "Rückseite",
+      "front2Alt": "Vorderseite 2",
+      "back2Alt": "Rückseite 2"
+    },
+    "validation": {
+      "caseNumberRequired": "Verknüpfte Fallnummer ist erforderlich",
+      "caseNameRequired": "Fallname ist erforderlich",
+      "evidenceNumberRequired": "Beweisnummer ist erforderlich",
+      "evidenceTypeRequired": "Beweisart ist erforderlich",
+      "evidenceBrandRequired": "Marke ist erforderlich",
+      "deliveryNameRequired": "Abgeber ist erforderlich",
+      "receiverNameRequired": "Empfänger ist erforderlich",
+      "createdAtInvalid": "Erstellzeit muss ein gültiges Datum sein (z. B. ISO)"
+    }
+  },
+  "EvidenceNew": {
+    "title": "Neuer Beweis",
+    "breadcrumb": { "list": "Beweise", "new": "Neuer Beweis" },
+    "actions": {
+      "backToList": "Zurück zur Liste",
+      "submit": "Absenden",
+      "submitting": "Wird gesendet…"
+    },
+    "alerts": {
+      "casesLoadFailedTitle": "Fälle konnten nicht geladen werden",
+      "createFailed": "Erstellung fehlgeschlagen, bitte später erneut versuchen",
+      "fourPhotosRequired": "Alle vier Fotos sind erforderlich"
+    },
+    "descriptions": {
+      "intro": "Nach Auswahl eines Falls wird die Beweisnummer automatisch generiert. Kameraaufnahmen zeigen eine Vorschau in Echtzeit; der Upload liefert eine URL."
+    },
+    "sections": {
+      "linkCase": "Verknüpfter Fall",
+      "basic": "Grundinfo",
+      "delivery": "Übergabe & Empfang",
+      "photosCapture": "Fotos (Kameraaufnahme)",
+      "timeStatus": "Zeit & Status"
+    },
+    "fields": {
+      "linkCaseReq": "Verknüpfter Fall *",
+      "evidenceNumberReq": "Beweis-Nr. *",
+      "evidenceTypeReq": "Beweisart *",
+      "evidenceBrandReq": "Marke *",
+      "evidenceSerialNoOpt": "Seriennr. (optional)",
+      "evidenceOriginalNoOpt": "Original-Tag-Nr. (optional)",
+      "deliveryNameReq": "Abgeber *",
+      "receiverNameReq": "Empfänger *",
+      "deliveryName2Req": "Zurückgegeben von *",
+      "receiverName2Req": "Abgeholt von *",
+      "createdAtReq": "Erstellt am (ISO) *"
+    },
+    "placeholders": {
+      "selectCase": "Auswählen (nur Fälle innerhalb von 300 Tagen)",
+      "evidenceNumber": "EVID-2025xxxx-1",
+      "selectEvidenceType": "Beweisart auswählen…",
+      "evidenceBrand": "Apple / ASUS / SanDisk…",
+      "evidenceSerialNo": "SN-XXXX-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "Max Mustermann",
+      "receiverName": "Inspektor Zhao",
+      "deliveryName2": "Alex Müller",
+      "receiverName2": "Lin",
+      "createdAt": "z. B. 2025-08-20T10:00:00.000Z"
+    },
+    "hints": {
+      "autoNumber": {
+        "loading": "Nummer wird berechnet…",
+        "value": "Standardwert wird sein: {value}",
+        "waitSelect": "Bitte zuerst einen verknüpften Fall wählen; die Nummer wird automatisch generiert."
+      }
+    },
+    "photos": {
+      "frontReq": "Vorderseite *",
+      "backReq": "Rückseite *",
+      "front2Req": "Vorderseite 2 (bei Rückgabe) *",
+      "back2Req": "Rückseite 2 (bei Rückgabe) *"
+    },
+    "validation": {
+      "caseNumberRequired": "Bitte einen verknüpften Fall auswählen",
+      "evidenceNumberRequired": "Beweisnummer ist erforderlich",
+      "evidenceTypeRequired": "Beweisart ist erforderlich",
+      "evidenceBrandRequired": "Marke ist erforderlich",
+      "deliveryNameRequired": "Abgeber ist erforderlich",
+      "receiverNameRequired": "Empfänger ist erforderlich",
+      "deliveryName2Required": "„Zurückgegeben von“ ist erforderlich",
+      "receiverName2Required": "„Abgeholt von“ ist erforderlich",
+      "createdAtInvalid": "Erstellzeit muss ISO sein oder ein gültiges Datum"
+    },
+    "options": {
+      "evidenceType": {
+        "desktop": "Desktop-PC",
+        "laptop": "Laptop",
+        "hdd": "Festplatte",
+        "usb": "USB-Stick",
+        "iphone": "iPhone",
+        "android": "Android-Telefon",
+        "sdcard": "Speicherkarte",
+        "optical": "Optischer Datenträger",
+        "tablet": "Tablet",
+        "other": "Sonstiges"
+      }
+    }
+  },
+  "EvidencePrint": {
+    "loading": "Wird geladen…",
+    "error": "Fehler: {message}",
+    "toolbar": {
+      "backToEvidence": "Zurück zur Beweis-Seite",
+      "printAgain": "Erneut drucken"
+    },
+    "title": "Chain of Custody – Protokoll",
+    "info": {
+      "evidenceNumber": "Beweis-Nr.",
+      "caseNumber": "Fall-Nr.",
+      "caseName": "Fallname"
+    },
+    "table": {
+      "headers": {
+        "datetime": "Datum & Uhrzeit",
+        "deliverer": "Abgeber",
+        "receiver": "Empfänger",
+        "reasonNote": "Grund / Notizen (Aus / Ein / Bestätigung)"
+      }
+    },
+    "rows": {
+      "receiveReason": "Bei Erhalt"
+    },
+    "footnote": "Formular-Nr.: {code}"
+  }
+}

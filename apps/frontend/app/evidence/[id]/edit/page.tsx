@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect } from 'react';
+import { use, useEffect, useMemo } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -21,54 +21,18 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Save, ChevronRight, Loader2, TriangleAlert } from 'lucide-react';
-
+import { useTranslations } from 'next-intl';
 
 import LiveCameraCapture from '@/lib/LiveCameraCapture';
 import { uploadImage } from '@/lib/uploadImage';
 
-const schema = z.object({
-  caseNumber: z.string().min(1),
-  caseName:z.string().min(1),
-  evidenceNumber: z.string().min(1),
-  evidenceType: z.string().min(1),
-  evidenceBrand: z.string().min(1),
-  evidenceOriginalNo: z.string().optional(),
-  evidenceSerialNo: z.string().optional(),
-  deliveryName: z.string().min(1),
-  receiverName: z.string().min(1),
-  deliveryName2: z.string().optional(),
-  receiverName2: z.string().optional(),
-  createdAt: z.string().refine((v) => !Number.isNaN(Date.parse(v)), '時間格式錯誤'),
-  is_Pickup: z.boolean().default(false),
-  is_rejected: z.boolean().default(false),
-  is_beyond_scope: z.boolean().default(false),
-  is_lab_related: z.boolean().default(false),
-  is_info_complete: z.boolean().default(false),
 
-  // 照片欄位：用 any 讓 RHF 接 File 或 string
-  photoFront: z.any().optional(),
-  photoBack: z.any().optional(),
-  photoFront2: z.any().optional(),
-  photoBack2: z.any().optional(),
-});
-type FormValues = z.infer<typeof schema>;
-
-// function filterRecentCases(cases: any[] = []) {
-//   const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 45);
-//   return cases
-//     .filter((c) => {
-//       const t = Date.parse(c.createdAt);
-//       return !Number.isNaN(t) && new Date(t) >= cutoff;
-//     })
-//     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-// }
-
+/** 顯示字串 Normalize */
 function normalizeDisplay(value?: string | boolean | Date | null): string {
   if (value === null || value === undefined) return '-';
   if (value instanceof Date) return value.toLocaleString();
   if (typeof value === 'boolean') return value ? '是' : '否';
   if (typeof value === 'string') {
-    // ISO 字串日期處理
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
       const d = new Date(value);
       return isNaN(d.getTime()) ? value : d.toLocaleString();
@@ -83,8 +47,7 @@ function normalizeDisplay(value?: string | boolean | Date | null): string {
   }
 }
 
-
-
+/** 案件摘要卡片（頂部） */
 function CaseSummaryCard({
   caseNumber,
   caseName,
@@ -92,15 +55,16 @@ function CaseSummaryCard({
   caseNumber?: string | null;
   caseName?: string | null;
 }) {
+  const t = useTranslations('EvidenceEdit');
+
   return (
     <div className="w-full rounded-3xl border overflow-hidden shadow-sm dark:border-zinc-800">
-      {/* 漸層標頭，與徽章 */}
       <div className="relative">
         <div className="h-20 md:h-24 bg-gradient-to-r from-sky-200 via-teal-200 to-emerald-200 dark:from-sky-900/40 dark:via-teal-900/30 dark:to-emerald-900/30" />
         <div className="absolute inset-0 flex items-end">
           <div className="w-full px-6 pb-4 md:pb-5 flex items-center justify-between">
             <h2 className="text-xl md:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              案件資訊
+              {t('sections.caseInfo')}
             </h2>
           </div>
         </div>
@@ -110,7 +74,7 @@ function CaseSummaryCard({
         <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-12">
           <div className="sm:col-span-3">
             <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
-              所對應案件編號
+              {t('fields.linkedCaseNumber')}
             </dt>
             <dd className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 break-words">
               {normalizeDisplay(caseNumber ?? '')}
@@ -119,7 +83,7 @@ function CaseSummaryCard({
 
           <div className="sm:col-span-9">
             <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
-              案件名稱
+              {t('fields.caseName')}
             </dt>
             <dd className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 break-words">
               {normalizeDisplay(caseName ?? '')}
@@ -133,25 +97,71 @@ function CaseSummaryCard({
   );
 }
 
-
+type FormValues = {
+  caseNumber: string;
+  caseName: string;
+  evidenceNumber: string;
+  evidenceType: string;
+  evidenceBrand: string;
+  evidenceOriginalNo?: string;
+  evidenceSerialNo?: string;
+  deliveryName: string;
+  receiverName: string;
+  deliveryName2?: string;
+  receiverName2?: string;
+  createdAt: string;
+  is_Pickup: boolean;
+  is_rejected: boolean;
+  is_beyond_scope: boolean;
+  is_lab_related: boolean;
+  is_info_complete: boolean;
+  photoFront?: any;
+  photoBack?: any;
+  photoFront2?: any;
+  photoBack2?: any;
+};
 
 export default function EditEvidencePage({ params }: { params: Promise<{ id: string }> }) {
+  const t = useTranslations('EvidenceEdit');
   const { id } = use(params);
   const numericId = Number(id);
   const router = useRouter();
 
+  /** 用 t 產生 zod schema（讓錯誤訊息可雙語） */
+  const schema = useMemo(() => {
+    return z.object({
+      caseNumber: z.string().min(1, t('validation.caseNumberRequired')),
+      caseName: z.string().min(1, t('validation.caseNameRequired')),
+      evidenceNumber: z.string().min(1, t('validation.evidenceNumberRequired')),
+      evidenceType: z.string().min(1, t('validation.evidenceTypeRequired')),
+      evidenceBrand: z.string().min(1, t('validation.evidenceBrandRequired')),
+      evidenceOriginalNo: z.string().optional(),
+      evidenceSerialNo: z.string().optional(),
+      deliveryName: z.string().min(1, t('validation.deliveryNameRequired')),
+      receiverName: z.string().min(1, t('validation.receiverNameRequired')),
+      deliveryName2: z.string().optional(),
+      receiverName2: z.string().optional(),
+      createdAt: z
+        .string()
+        .refine((v) => !Number.isNaN(Date.parse(v)), t('validation.createdAtInvalid')),
+      is_Pickup: z.boolean().default(false),
+      is_rejected: z.boolean().default(false),
+      is_beyond_scope: z.boolean().default(false),
+      is_lab_related: z.boolean().default(false),
+      is_info_complete: z.boolean().default(false),
+      photoFront: z.any().optional(),
+      photoBack: z.any().optional(),
+      photoFront2: z.any().optional(),
+      photoBack2: z.any().optional(),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t('validation.createdAtInvalid')]); // 依賴其中一個 key 避免 ESLint 抱怨
 
   // 1) 單一證物
   const { data, loading: qLoading, error } = useQuery(GET_EVIDENCE_BY_ID, {
     variables: { id: numericId },
     fetchPolicy: 'cache-and-network',
   });
-
-  // 2) 案件清單（45 天內）
-  // const { data: casesData, loading: casesLoading, error: casesError } = useQuery(GET_ALL_CAESE, {
-  //   fetchPolicy: 'cache-and-network',
-  // });
-  // const selectableCases = filterRecentCases(casesData?.cases ?? []);
 
   // 3) 更新 mutation
   const [updateEvidence, { loading: mLoading }] = useMutation(UPDATE_EVIDENCE);
@@ -161,7 +171,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     resolver: zodResolver(schema),
     defaultValues: {
       caseNumber: '',
-      caseName:'',
+      caseName: '',
       evidenceNumber: '',
       evidenceType: '',
       evidenceBrand: '',
@@ -177,7 +187,6 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
       is_beyond_scope: false,
       is_lab_related: false,
       is_info_complete: false,
-
       photoFront: undefined,
       photoBack: undefined,
       photoFront2: undefined,
@@ -192,7 +201,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     if (!e || form.formState.isDirty) return;
     form.reset({
       caseNumber: e.case?.caseNumber ?? '',
-      caseName: e.case?.caseName??'',
+      caseName: e.case?.caseName ?? '',
       evidenceNumber: e.evidenceNumber ?? '',
       evidenceType: e.evidenceType ?? '',
       evidenceBrand: e.evidenceBrand ?? '',
@@ -208,21 +217,18 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
       is_beyond_scope: !!e.is_beyond_scope,
       is_lab_related: !!e.is_lab_related,
       is_info_complete: !!e.is_info_complete,
-
-      // 相片欄位預設不放舊 URL，避免一載入就覆蓋；若不重拍就沿用舊值
       photoFront: undefined,
       photoBack: undefined,
       photoFront2: undefined,
       photoBack2: undefined,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [e]);
 
-  // File 或 string 轉最終 URL；若沒新檔案就回傳 fallback（沿用舊圖）
+ 
   const ensureUrl = async (v: any, fallback?: string) => {
     if (!v) return fallback ?? '';
     if (typeof v === 'string') return v.trim();
-    if (v instanceof File) return uploadImage(v); // 上傳到 /api/upload/image
+    if (v instanceof File) return uploadImage(v);
     return fallback ?? '';
   };
 
@@ -230,7 +236,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
     try {
       const payload = {
         caseNumber: v.caseNumber,
-        caseName:v.caseName,
+        caseName: v.caseName,
         evidenceNumber: v.evidenceNumber,
         evidenceType: v.evidenceType,
         evidenceBrand: v.evidenceBrand,
@@ -246,7 +252,6 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
         is_beyond_scope: v.is_beyond_scope,
         is_lab_related: v.is_lab_related,
         is_info_complete: v.is_info_complete,
-
         photoFront: await ensureUrl(v.photoFront, e?.photoFront),
         photoBack: await ensureUrl(v.photoBack, e?.photoBack),
         photoFront2: await ensureUrl(v.photoFront2, e?.photoFront2),
@@ -261,7 +266,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
 
       router.push(`/evidence/${id}`);
     } catch (err: any) {
-      alert(err?.message ?? '更新失敗，請稍後再試');
+      alert(err?.message ?? t('alerts.updateFailed'));
     }
   };
 
@@ -279,7 +284,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
       <div className="mx-auto w-full max-w-5xl px-4 py-6">
         <Alert variant="destructive" className="rounded-2xl">
           <TriangleAlert className="h-4 w-4" />
-          <AlertTitle>載入失敗</AlertTitle>
+          <AlertTitle>{t('alerts.loadFailedTitle')}</AlertTitle>
           <AlertDescription className="break-words">{String(error.message)}</AlertDescription>
         </Alert>
       </div>
@@ -292,20 +297,21 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
       <div className="sticky top-0 z-20 w-full border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
           <nav className="flex items-center text-sm text-muted-foreground">
-            <Link href="/evidence" className="hover:underline">證物列表</Link>
+            <Link href="/evidence" className="hover:underline">{t('breadcrumb.list')}</Link>
             <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
-            <Link href={`/evidence/${id}`} className="hover:underline">證物詳細內容</Link>
+            <Link href={`/evidence/${id}`} className="hover:underline">{t('breadcrumb.detail')}</Link>
             <ChevronRight className="mx-1 h-4 w-4 opacity-60" />
-            <span className="font-medium text-foreground">編輯</span>
+            <span className="font-medium text-foreground">{t('breadcrumb.edit')}</span>
           </nav>
           <div className="flex items-center gap-2">
             <ModeToggle />
+    
             <Button asChild variant="outline">
-              <Link href={`/evidence/${id}`}>返回詳細</Link>
+              <Link href={`/evidence/${id}`}>{t('actions.backToDetail')}</Link>
             </Button>
             <Button type="submit" form="edit-evidence-form" disabled={mLoading} className="gap-2">
               {mLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {mLoading ? '儲存中…' : '儲存'}
+              {mLoading ? t('actions.saving') : t('actions.save')}
             </Button>
           </div>
         </div>
@@ -313,54 +319,42 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
 
       {/* 內容 */}
       <div className="mx-auto w-full max-w-5xl px-4 py-6">
-        {/* {casesError && (
-          <Alert variant="destructive" className="mb-6 rounded-2xl">
-            <TriangleAlert className="h-4 w-4" />
-            <AlertTitle>無法取得案件清單</AlertTitle>
-            <AlertDescription className="break-words">{String(casesError.message)}</AlertDescription>
-          </Alert>
-        )} */}
-
         <Card className="rounded-3xl border shadow-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-semibold">編輯證物</CardTitle>
-            <CardDescription>如未重新拍攝，將保留原有照片；重新拍攝則於儲存後覆蓋。</CardDescription>
+            <CardTitle className="text-2xl font-semibold">{t('title')}</CardTitle>
+            <CardDescription>{t('descriptions.photoOverwrite')}</CardDescription>
           </CardHeader>
 
           <Form {...form}>
             <form id="edit-evidence-form" onSubmit={form.handleSubmit(onSubmit)}>
               <CardContent className="space-y-10">
                 {/* 對應案件 */}
-                   <CaseSummaryCard
-                    caseNumber={e.case?.caseNumber}
-                     caseName={e.case?.caseName}
-            />
-                 
+                <CaseSummaryCard caseNumber={e.case?.caseNumber} caseName={e.case?.caseName} />
 
-              <Separator />
+                <Separator />
 
                 {/* 基本資訊 */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">基本資訊</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.basic')}</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {[
-                      ['evidenceNumber', '證物編號 *', 'A-001-E03'],
-                      ['evidenceType', '證物類型 *', '手機/筆電'],
-                      ['evidenceBrand', '證物廠牌 *', 'Apple / ASUS'],
-                      ['evidenceSerialNo', '廠牌序號（可選）', 'SN-A001-01'],
-                    ].map(([name, label, ph]) => (
-                      <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
+                    {([
+                      ['evidenceNumber', t('fields.evidenceNumber'), t('placeholders.evidenceNumber')],
+                      ['evidenceType', t('fields.evidenceType'), t('placeholders.evidenceType')],
+                      ['evidenceBrand', t('fields.evidenceBrand'), t('placeholders.evidenceBrand')],
+                      ['evidenceSerialNo', t('fields.evidenceSerialNoOpt'), t('placeholders.evidenceSerialNo')],
+                    ] as const).map(([name, label, ph]) => (
+                      <FormField key={name} control={form.control} name={name} render={({ field }) => (
                         <FormItem>
                           <FormLabel>{label}</FormLabel>
-                          <FormControl><Input placeholder={String(ph)} {...field} /></FormControl>
+                          <FormControl><Input placeholder={ph} {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}/>
                     ))}
                     <FormField control={form.control} name="evidenceOriginalNo" render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>原始標籤編號（可選）</FormLabel>
-                        <FormControl><Input placeholder="TAG-A001-01" {...field} /></FormControl>
+                        <FormLabel>{t('fields.evidenceOriginalNoOpt')}</FormLabel>
+                        <FormControl><Input placeholder={t('placeholders.evidenceOriginalNo')} {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}/>
@@ -368,25 +362,24 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                 </section>
 
                 <Separator />
-                 {/* 鑑識結果範圍 */}
+
+                {/* 鑑識結果 */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">鑑識結果</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.forensics')}</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {[
-                      ['is_rejected', '是否應退件'],
-                      ['is_beyond_scope', '是否超出鑑識能力範圍'],
-                      ['is_lab_related', '是否屬於實驗室鑑識項目'],
-                      ['is_info_complete', ' 案件資訊是否完整'],
-                    ].map(([name, label]) => (
+                    {([
+                      ['is_Pickup',t('fields.is_pickup')],
+                      ['is_rejected', t('fields.is_rejected')],
+                      ['is_beyond_scope', t('fields.is_beyond_scope')],
+                      ['is_lab_related', t('fields.is_lab_related')],
+                      ['is_info_complete', t('fields.is_info_complete')],
+                    ] as const).map(([name, label]) => (
                       <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
-                        <FormItem className='mb-4'>
-                          <FormLabel className='mb-4'>{label}</FormLabel>
-                             <FormControl>
-                                 <Switch
-                                     checked={!!field.value}
-                                     onCheckedChange={field.onChange}
-                                 />              
-                             </FormControl> 
+                        <FormItem className="mb-4">
+                          <FormLabel className="mb-4">{label}</FormLabel>
+                          <FormControl>
+                            <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}/>
@@ -394,21 +387,20 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                   </div>
                 </section>
 
-
                 {/* 交付與接收 */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">交付與接收</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.delivery')}</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {[
-                      ['deliveryName', '交付人姓名 ( 行政人員 ) *', '王小明'],
-                      ['receiverName', '接收人姓名 ( 送件單位 ) *', '趙技佐'],
-                      ['deliveryName2', '返回證物者（ 行政人員 ）', '李大華'],
-                      ['receiverName2', '原單位領回者（ 送件單位 ）', '林技士'],
-                    ].map(([name, label, ph]) => (
+                    {([
+                      ['deliveryName', t('fields.deliveryNameReq'), t('placeholders.deliveryName')],
+                      ['receiverName', t('fields.receiverNameReq'), t('placeholders.receiverName')],
+                      ['deliveryName2', t('fields.deliveryName2'), t('placeholders.deliveryName2')],
+                      ['receiverName2', t('fields.receiverName2'), t('placeholders.receiverName2')],
+                    ] as const).map(([name, label, ph]) => (
                       <FormField key={name} control={form.control} name={name as any} render={({ field }) => (
-                        <FormItem className='mb-4'>
-                          <FormLabel className='mb-4'>{label}</FormLabel>
-                          <FormControl><Input placeholder={String(ph)} {...field} /></FormControl>
+                        <FormItem className="mb-4">
+                          <FormLabel className="mb-4">{label}</FormLabel>
+                          <FormControl><Input placeholder={ph} {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}/>
@@ -420,44 +412,43 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
 
                 {/* 照片（相機擷取） */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">照片（相機擷取）</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.photosCapture')}</h3>
 
-                  {/* 目前已儲存的照片（若有） */}
                   {e && (e.photoFront || e.photoBack || e.photoFront2 || e.photoBack2) && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border p-4">
                       {e.photoFront && (
                         <div>
-                          <div className="text-sm mb-1 text-muted-foreground">目前：正面</div>
-                          <img src={e.photoFront} alt="正面" className="w-full rounded-lg object-contain bg-black/5" />
+                          <div className="text-sm mb-1 text-muted-foreground">{t('photos.currentFront')}</div>
+                          <img src={e.photoFront} alt={t('photos.frontAlt')} className="w-full rounded-lg object-contain bg-black/5" />
                         </div>
                       )}
                       {e.photoBack && (
                         <div>
-                          <div className="text-sm mb-1 text-muted-foreground">目前：反面</div>
-                          <img src={e.photoBack} alt="反面" className="w-full rounded-lg object-contain bg-black/5" />
+                          <div className="text-sm mb-1 text-muted-foreground">{t('photos.currentBack')}</div>
+                          <img src={e.photoBack} alt={t('photos.backAlt')} className="w-full rounded-lg object-contain bg-black/5" />
                         </div>
                       )}
                       {e.photoFront2 && (
                         <div>
-                          <div className="text-sm mb-1 text-muted-foreground">目前：正面 2</div>
-                          <img src={e.photoFront2} alt="正面 2" className="w-full rounded-lg object-contain bg-black/5" />
+                          <div className="text-sm mb-1 text-muted-foreground">{t('photos.currentFront2')}</div>
+                          <img src={e.photoFront2} alt={t('photos.front2Alt')} className="w-full rounded-lg object-contain bg-black/5" />
                         </div>
                       )}
                       {e.photoBack2 && (
                         <div>
-                          <div className="text-sm mb-1 text-muted-foreground">目前：反面 2</div>
-                          <img src={e.photoBack2} alt="反面 2" className="w-full rounded-lg object-contain bg-black/5" />
+                          <div className="text-sm mb-1 text-muted-foreground">{t('photos.currentBack2')}</div>
+                          <img src={e.photoBack2} alt={t('photos.back2Alt')} className="w-full rounded-lg object-contain bg-black/5" />
                         </div>
                       )}
                     </div>
                   )}
 
-                  <p className="text-sm text-muted-foreground">重新拍攝：按「啟用相機 → 擷取照片」。不重拍將沿用上方「目前照片」。</p>
+                  <p className="text-sm text-muted-foreground">{t('photos.hintRetake')}</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Controller control={form.control} name="photoFront" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>正面</FormLabel>
+                        <FormLabel>{t('photos.front')}</FormLabel>
                         <FormControl>
                           <LiveCameraCapture
                             facingMode="environment"
@@ -469,7 +460,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                     )}/>
                     <Controller control={form.control} name="photoBack" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>反面</FormLabel>
+                        <FormLabel>{t('photos.back')}</FormLabel>
                         <FormControl>
                           <LiveCameraCapture
                             facingMode="environment"
@@ -481,7 +472,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                     )}/>
                     <Controller control={form.control} name="photoFront2" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>正面 2（可選）</FormLabel>
+                        <FormLabel>{t('photos.front2Opt')}</FormLabel>
                         <FormControl>
                           <LiveCameraCapture
                             facingMode="environment"
@@ -493,7 +484,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
                     )}/>
                     <Controller control={form.control} name="photoBack2" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>反面 2（可選）</FormLabel>
+                        <FormLabel>{t('photos.back2Opt')}</FormLabel>
                         <FormControl>
                           <LiveCameraCapture
                             facingMode="environment"
@@ -508,13 +499,13 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
 
                 <Separator />
 
-                {/* 時間與狀態（示範 createdAt；其他布林欄位可照你的原 UI） */}
+                {/* 時間與狀態 */}
                 <section className="space-y-6">
-                  <h3 className="text-lg font-semibold">時間與狀態</h3>
+                  <h3 className="text-lg font-semibold">{t('sections.timeStatus')}</h3>
                   <FormField control={form.control} name="createdAt" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>建立時間（ISO）*</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormLabel>{t('fields.createdAtReq')}</FormLabel>
+                      <FormControl><Input placeholder={t('placeholders.createdAt')} {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}/>
@@ -524,7 +515,7 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
               <CardFooter className="flex gap-2 border-t p-4">
                 <Button type="submit" disabled={mLoading} className="gap-2">
                   {mLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                  {mLoading ? '儲存中…' : '儲存'}
+                  {mLoading ? t('actions.saving') : t('actions.save')}
                 </Button>
               </CardFooter>
             </form>

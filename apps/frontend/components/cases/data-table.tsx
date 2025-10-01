@@ -20,6 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table'; 
 import { Button } from '@/components/ui/button'; 
+import { useTranslations } from 'next-intl';
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
 }: Props<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const t = useTranslations('Common')
 
   const table = useReactTable({
     data,
@@ -141,7 +143,7 @@ export function DataTable<TData, TValue>({
             disabled:opacity-50 disabled:cursor-not-allowed
           "
         >
-          上一頁
+           {t('PreviousPage')}
         </Button>
         <Button
           variant="outline"
@@ -160,10 +162,13 @@ export function DataTable<TData, TValue>({
             disabled:opacity-50 disabled:cursor-not-allowed
           "
         >
-          下一頁
+           {t('NextPage')}
         </Button>
         <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
-          第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount()} 頁
+            {t('PageDisplay', {
+            currentPage: table.getState().pagination.pageIndex + 1, 
+            totalPage: table.getPageCount(), 
+          })}
         </div>
       </div>
     </div>

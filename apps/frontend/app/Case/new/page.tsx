@@ -30,8 +30,8 @@ import Link from 'next/link';
 import {ModeToggle} from '@/components/mode-toggle';
 import {Separator} from '@/components/ui/separator';
 import {useEffect, useMemo} from 'react';
-import {useTranslations} from 'next-intl';
-import LangSwitcher from '../../../components/LangSwitcher'
+import {useTranslations, useLocale} from 'next-intl';
+
 
 const phoneRegex = /^[0-9+\-\s]{8,20}$/;
 const selectTriggerClass = 'w-full rounded-2xl ';
@@ -146,13 +146,23 @@ type FormValues = z.infer<ReturnType<typeof buildSchema>>;
 
 export default function NewCasePage() {
   const router = useRouter();
-  const t = useTranslations('CreateCase');
-  const tc = useTranslations('Common');
-
+ 
   const [createCase, {loading}] = useMutation(CREATE_CASE);
   const {data, loading: allLoading} = useQuery(GET_ALL_CAESE);
   const totalCount = data?.cases?.length ?? 0;
 
+  const locale = useLocale();  
+  const t = useTranslations('CreateCase');
+  const tc = useTranslations('Common');
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const key = `case-new:refreshed:${locale}`;
+    const already = sessionStorage.getItem(key);
+    if (!already) {
+      sessionStorage.setItem(key, '1');
+      router.refresh();
+    }
+  }, [locale, router]);
   const schema = buildSchema(t);
 
   const form = useForm<FormValues>({
@@ -217,7 +227,6 @@ export default function NewCasePage() {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{tc('theme')}</span>
-            <LangSwitcher/>
             <ModeToggle />
             <Button asChild variant="outline">
               <Link href="/case">{t('toolbar.back')}</Link>

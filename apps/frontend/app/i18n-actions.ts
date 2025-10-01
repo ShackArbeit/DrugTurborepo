@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 
-export async function  setLocaleCookie(locale:'zh-TW'|'en'){
+export async function  setLocaleCookie(locale:'zh-TW'|'en'|'de'){
       const Cook=await cookies()
       Cook.set('NEXT_LOCALE', locale, {
             path: '/',

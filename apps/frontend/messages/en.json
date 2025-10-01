@@ -1,4 +1,22 @@
 {
+  "Home": {
+    "Title": "Taiwan High Prosecutors Office · Digital Forensics Home",
+    "subcontent": "Provides case data, forensics results, and a role-based sign-in portal",
+    "changemode": "Switch mode",
+    "caseRelate": "Case-related",
+    "caseContent": "Create, update, delete, and search case data",
+    "goCase": "Go to Cases page",
+    "evidRelate": "Evidence-related",
+    "evidContent": "Create, update, delete, and search evidence data",
+    "goEvid": "Go to Evidences page",
+    "authRelate": "User Registration / Sign-in",
+    "authContent": "Sign in with account & password (JWT supported)",
+    "authButton": "Register / Sign in",
+    "adminRelte": "User account & password management",
+    "adminCotent": "Managed by Admin",
+    "goAdmin": "Go to Admin page",
+    "footerContent": "© Taiwan High Prosecutors Office · Digital Forensics System"
+  },
   "Common": {
     "home": "Home",
     "search": "Search",
@@ -6,7 +24,28 @@
     "login": "Login",
     "logout": "Logout",
     "CreateCase": "CreateCase",
-    "WelcomeBack": "WelcomeBack"
+    "WelcomeBack": "WelcomeBack",
+    "ActivateCamera": "Activate Camera",
+    "CameraNotYet": "Camera has not been activated",
+    "StopCamera": "Stop Camera",
+    "CapturePhoto": "Capture Photo",
+    "StartingCamera": "Starting Camera...",
+    "PreviousPage": "Previous Page",
+    "NextPage": "Next Page",
+    "PageDisplay": "Page {currentPage} of {totalPage}",
+    "username": "username",
+    "email": "email",
+    "role": "role",
+    "PermissionManagement": "Permission Management",
+    "CurrentRole": "Current Role",
+    "pleaseLogin": "Please sign in.",
+    "noUsersFound": "No users found to display.",
+    "normalUserTip": "You are a regular user and can only view your own permissions.",
+    "searchEmailPlaceholder": "Search email…",
+    "MEQueryFailed": "ME_QUERY failed: {message}",
+    "USERSQueryFailed": "USERS_QUERY failed: {message}",
+    "roleAdmin": "Admin",
+    "roleUser": "User"
   },
   "Cases": {
     "title": "Cases",
@@ -58,7 +97,8 @@
       "sat3": "Staff service attitude",
       "sat4": "Meets your requirements",
       "evidenceNumber": "Evidence No.",
-      "evidenceType": "Evidence Type"
+      "evidenceType": "Evidence Type",
+      "ForensicOfficer": "Forensic Officer"
     },
     "evidence": {
       "headerRight": "{caseNumber} ({count} items)",
@@ -182,17 +222,17 @@
       "creatorNameExample": "Full name…"
     },
     "options": {
-      "caseType": {
+       "caseType": {
         "fraud": "Fraud",
         "drugs": "Drugs",
-        "murder": "Murder",
+        "murder": "Homicide",
         "theft": "Theft",
         "robbery": "Robbery",
         "assault": "Assault",
-        "sexual": "Sexual offense",
-        "publicOrder": "Public order",
-        "firearms": "Firearms control",
-        "moneyLaundering": "Money laundering",
+        "sexual": "Sexual Offenses",
+        "publicOrder": "Public Order Offenses",
+        "firearms": "Firearms / Weapons",
+        "moneyLaundering": "Money Laundering",
         "other": "Other"
       },
       "submitUnit": {
@@ -200,7 +240,7 @@
         "HCOURT_TAIWAN": "Taiwan High Court",
         "SPC_PROS": "Supreme Prosecutors Office",
         "SPC_COURT": "Supreme Court",
-        "HPROS_IP_BRANCH": "THPO, Intellectual Property Branch",
+        "HPROS_IP_BRANCH": "Taiwan High Prosecutors IP Branch",
         "IP_COURT": "Intellectual Property Court",
         "PROS_KEELUNG": "Keelung District Prosecutors Office",
         "COURT_KEELUNG": "Keelung District Court",
@@ -219,9 +259,9 @@
         "PROS_MIAOLI": "Miaoli District Prosecutors Office",
         "COURT_MIAOLI": "Miaoli District Court",
         "PROS_TAICHUNG": "Taichung District Prosecutors Office",
-        "HPROS_TAICHUNG_BRANCH": "THPO, Taichung Branch",
+        "HPROS_TAICHUNG_BRANCH": "Taiwan High Prosecutors Taichung Branch",
         "COURT_TAICHUNG": "Taichung District Court",
-        "HCOURT_TAICHUNG_BRANCH": "Taiwan High Court, Taichung Branch",
+        "HCOURT_TAICHUNG_BRANCH": "Taiwan High Court Taichung Branch",
         "PROS_CHANGHUA": "Changhua District Prosecutors Office",
         "COURT_CHANGHUA": "Changhua District Court",
         "PROS_NANTOU": "Nantou District Prosecutors Office",
@@ -231,14 +271,14 @@
         "PROS_CHIAYI": "Chiayi District Prosecutors Office",
         "COURT_CHIAYI": "Chiayi District Court",
         "PROS_TAINAN": "Tainan District Prosecutors Office",
-        "HPROS_TAINAN_BRANCH": "THPO, Tainan Branch",
+        "HPROS_TAINAN_BRANCH": "Taiwan High Prosecutors Tainan Branch",
         "COURT_TAINAN": "Tainan District Court",
-        "HCOURT_TAINAN_BRANCH": "Taiwan High Court, Tainan Branch",
+        "HCOURT_TAINAN_BRANCH": "Taiwan High Court Tainan Branch",
         "PROS_KAOHSIUNG": "Kaohsiung District Prosecutors Office",
-        "HPROS_KAOHSIUNG_BRANCH": "THPO, Kaohsiung Branch",
+        "HPROS_KAOHSIUNG_BRANCH": "Taiwan High Prosecutors Kaohsiung Branch",
         "COURT_KAOHSIUNG": "Kaohsiung District Court",
-        "HCOURT_KAOHSIUNG_BRANCH": "Taiwan High Court, Kaohsiung Branch",
-        "KAOHSIUNG_JUV_FAMILY_COURT": "Kaohsiung Juvenile & Family Court",
+        "HCOURT_KAOHSIUNG_BRANCH": "Taiwan High Court Kaohsiung Branch",
+        "KAOHSIUNG_JUV_FAMILY_COURT": "Kaohsiung Juvenile and Family Court",
         "PROS_QIAOTOU": "Qiaotou District Prosecutors Office",
         "COURT_QIAOTOU": "Qiaotou District Court",
         "PROS_PINGTUNG": "Pingtung District Prosecutors Office",
@@ -246,17 +286,17 @@
         "PROS_PENGHU": "Penghu District Prosecutors Office",
         "COURT_PENGHU": "Penghu District Court",
         "PROS_HUALIEN": "Hualien District Prosecutors Office",
-        "HPROS_HUALIEN_BRANCH": "THPO, Hualien Branch",
+        "HPROS_HUALIEN_BRANCH": "Taiwan High Prosecutors Hualien Branch",
         "COURT_HUALIEN": "Hualien District Court",
-        "HCOURT_HUALIEN_BRANCH": "Taiwan High Court, Hualien Branch",
+        "HCOURT_HUALIEN_BRANCH": "Taiwan High Court Hualien Branch",
         "PROS_TAITUNG": "Taitung District Prosecutors Office",
         "COURT_TAITUNG": "Taitung District Court",
         "PROS_LIENCHIANG": "Lienchiang District Prosecutors Office",
         "COURT_LIENCHIANG": "Lienchiang District Court",
         "PROS_KINMEN": "Kinmen District Prosecutors Office",
-        "HPROS_KINMEN_BRANCH": "Fujian High Prosecutors Office, Kinmen Branch",
+        "HPROS_KINMEN_BRANCH": "Taiwan High Prosecutors Kinmen Branch",
         "COURT_KINMEN": "Kinmen District Court",
-        "HCOURT_KINMEN_BRANCH": "Fujian High Court, Kinmen Branch"
+        "HCOURT_KINMEN_BRANCH": "Taiwan High Court Kinmen Branch"
       }
     },
     "buttons": { "submit": "Submit", "reset": "Reset" },
@@ -277,5 +317,284 @@
       "yearMin": "Year cannot be smaller than 1900",
       "yearMax": "Year cannot be greater than 2100"
     }
+  },
+  "Evidences": {
+    "title": "Evidences",
+    "columns": {
+      "evidenceNumber": "Evidence No.",
+      "evidenceType": "Evidence Type",
+      "evidenceBrand": "Brand",
+      "evidenceSerialNo": "Serial No.",
+      "evidenceOriginalNo": "Original Evidence No.",
+      "isPickedUp": "Picked up after forensics",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "cells": {
+      "picked": "Picked up",
+      "unpicked": "Not picked up"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "toolbar": {
+      "searchPlaceholder": "Search by number / type / deliverer / receiver",
+      "toggleLabel": "Toggle theme",
+      "create": "New Evidence",
+      "backHome": "Back to Home"
+    },
+    "new": "New"
+  },
+  "EvidenceDetail": {
+    "error": { "generic": "Error" },
+    "header": { "title": "Evidence No.: {number}" },
+    "toolbar": { "toggleLabel": "Toggle theme" },
+    "actions": {
+      "edit": "Edit",
+      "backToCase": "Back to Case",
+      "backToList": "Back to Evidences",
+      "print": "Print"
+    },
+    "sections": {
+      "caseInfo": "Case Info",
+      "basic": "Basic Info (Delivery to Forensics Staff)",
+      "photos": "Photos (On Receive & On Return)",
+      "status": "Forensics & Return Status (Back to Original Unit)",
+      "chain": "Chain of Custody Record",
+      "created": "Created Info"
+    },
+    "badges": {
+      "ordinal": "This is the {ordinal} item in this case"
+    },
+    "fields": {
+      "caseNumber": "Case No.",
+      "caseName": "Case Summary",
+      "evidenceNumber": "Evidence No.",
+      "evidenceType": "Evidence Type",
+      "evidenceBrand": "Brand",
+      "evidenceSerialNo": "Serial No.",
+      "evidenceOriginalNo": "Original Evidence No.",
+      "deliveryName": "Deliverer",
+      "receiverName": "Forensics Receiver",
+      "is_beyond_scope": "Beyond Forensics Capability",
+      "is_lab_related": "Lab-related Item",
+      "is_info_complete": "Case Info Complete",
+      "is_rejected": "Should Be Rejected",
+      "deliveryName2": "Returned By (Admin Staff)",
+      "receiverName2": "Picked Up By (Submitting Unit)",
+      "is_Pickup": "Picked up after Forensics",
+      "createdAt": "Created At"
+    },
+    "cells": {
+      "picked": "Picked up",
+      "unpicked": "Not picked up"
+    },
+    "photos": {
+      "empty": "No photos",
+      "frontReceive": "Front (On Receive)",
+      "backReceive": "Back (On Receive)",
+      "frontReturn": "Front 2 (On Return)",
+      "backReturn": "Back 2 (On Return)",
+      "frontAlt": "Front",
+      "backAlt": "Back",
+      "front2Alt": "Front 2",
+      "back2Alt": "Back 2"
+    }
+  },
+  "EvidenceEdit": {
+    "title": "Edit Evidence",
+    "breadcrumb": { "list": "Evidences", "detail": "Evidence Detail", "edit": "Edit" },
+    "actions": {
+      "backToDetail": "Back to Detail",
+      "save": "Save",
+      "saving": "Saving…"
+    },
+    "alerts": {
+      "loadFailedTitle": "Load failed",
+      "updateFailed": "Update failed, please try again later"
+    },
+    "descriptions": {
+      "photoOverwrite": "If you don't retake, the original photos will be kept. Retaken photos will overwrite after saving."
+    },
+    "sections": {
+      "caseInfo": "Case Info",
+      "basic": "Basic Info",
+      "forensics": "Forensics Result",
+      "delivery": "Delivery & Receive",
+      "photosCapture": "Photos (Camera Capture)",
+      "timeStatus": "Time & Status"
+    },
+    "fields": {
+      "linkedCaseNumber": "Linked Case No.",
+      "caseName": "Case Name",
+      "evidenceNumber": "Evidence No. *",
+      "evidenceType": "Evidence Type *",
+      "evidenceBrand": "Brand *",
+      "evidenceSerialNoOpt": "Serial No. (optional)",
+      "evidenceOriginalNoOpt": "Original Tag No. (optional)",
+      "deliveryNameReq": "Deliverer (Admin) *",
+      "receiverNameReq": "Receiver (Submitting Unit) *",
+      "deliveryName2": "Returned By (Admin)",
+      "receiverName2": "Picked Up By (Submitting Unit)",
+      "is_pickup": "Is it picked up",
+      "is_rejected": "Should be rejected",
+      "is_beyond_scope": "Beyond forensics capability",
+      "is_lab_related": "Lab-related item",
+      "is_info_complete": "Case info complete",
+      "createdAtReq": "Created At (ISO) *"
+    },
+    "placeholders": {
+      "evidenceNumber": "A-001-E03",
+      "evidenceType": "Phone / Laptop",
+      "evidenceBrand": "Apple / ASUS",
+      "evidenceSerialNo": "SN-A001-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "John Doe",
+      "receiverName": "Inspector Zhao",
+      "deliveryName2": "Alex Chen",
+      "receiverName2": "Lin",
+      "createdAt": "e.g. 2025-08-14T10:00:00.000Z"
+    },
+    "photos": {
+      "currentFront": "Current: Front",
+      "currentBack": "Current: Back",
+      "currentFront2": "Current: Front 2",
+      "currentBack2": "Current: Back 2",
+      "hintRetake": "Retake: Click 'Enable camera → Capture photo'. If not retaken, the current photos above will be kept.",
+      "front": "Front",
+      "back": "Back",
+      "front2Opt": "Front 2 (optional)",
+      "back2Opt": "Back 2 (optional)",
+      "frontAlt": "Front",
+      "backAlt": "Back",
+      "front2Alt": "Front 2",
+      "back2Alt": "Back 2"
+    },
+    "validation": {
+      "caseNumberRequired": "Linked case number is required",
+      "caseNameRequired": "Case name is required",
+      "evidenceNumberRequired": "Evidence number is required",
+      "evidenceTypeRequired": "Evidence type is required",
+      "evidenceBrandRequired": "Brand is required",
+      "deliveryNameRequired": "Deliverer is required",
+      "receiverNameRequired": "Receiver is required",
+      "createdAtInvalid": "Created time must be a parsable date string (e.g. ISO)"
+    }
+  },
+  "EvidenceNew": {
+    "title": "New Evidence",
+    "breadcrumb": { "list": "Evidences", "new": "New Evidence" },
+    "actions": {
+      "backToList": "Back to List",
+      "submit": "Submit",
+      "submitting": "Submitting…"
+    },
+    "alerts": {
+      "casesLoadFailedTitle": "Failed to load cases",
+      "createFailed": "Create failed, please try again later",
+      "fourPhotosRequired": "All four photos are required"
+    },
+    "descriptions": {
+      "intro": "After selecting a case, the evidence number is auto-generated. Camera capture will preview in real-time and upload returns a URL."
+    },
+    "sections": {
+      "linkCase": "Linked Case",
+      "basic": "Basic Info",
+      "delivery": "Delivery & Receive",
+      "photosCapture": "Photos (Camera Capture)",
+      "timeStatus": "Time & Status"
+    },
+    "fields": {
+      "linkCaseReq": "Linked Case *",
+      "evidenceNumberReq": "Evidence No. *",
+      "evidenceTypeReq": "Evidence Type *",
+      "evidenceBrandReq": "Brand *",
+      "evidenceSerialNoOpt": "Serial No. (optional)",
+      "evidenceOriginalNoOpt": "Original Tag No. (optional)",
+      "deliveryNameReq": "Deliverer *",
+      "receiverNameReq": "Receiver *",
+      "deliveryName2Req": "Returned By *",
+      "receiverName2Req": "Picked Up By *",
+      "createdAtReq": "Created At (ISO) *"
+    },
+    "placeholders": {
+      "selectCase": "Select (only cases within 300 days)",
+      "evidenceNumber": "EVID-2025xxxx-1",
+      "selectEvidenceType": "Select evidence type…",
+      "evidenceBrand": "Apple / ASUS / SanDisk…",
+      "evidenceSerialNo": "SN-XXXX-01",
+      "evidenceOriginalNo": "TAG-A001-01",
+      "deliveryName": "John Doe",
+      "receiverName": "Inspector Zhao",
+      "deliveryName2": "Alex Chen",
+      "receiverName2": "Lin",
+      "createdAt": "e.g. 2025-08-20T10:00:00.000Z"
+    },
+    "hints": {
+      "autoNumber": {
+        "loading": "Calculating number…",
+        "value": "Will default to: {value}",
+        "waitSelect": "Select a linked case first; the number will be auto-generated."
+      }
+    },
+    "photos": {
+      "frontReq": "Front *",
+      "backReq": "Back *",
+      "front2Req": "Front 2 (on return) *",
+      "back2Req": "Back 2 (on return) *"
+    },
+    "validation": {
+      "caseNumberRequired": "Please select a linked case",
+      "evidenceNumberRequired": "Evidence number is required",
+      "evidenceTypeRequired": "Evidence type is required",
+      "evidenceBrandRequired": "Brand is required",
+      "deliveryNameRequired": "Deliverer is required",
+      "receiverNameRequired": "Receiver is required",
+      "deliveryName2Required": "Returned by is required",
+      "receiverName2Required": "Picked up by is required",
+      "createdAtInvalid": "Created time must be ISO or a parsable date string"
+    },
+    "options": {
+      "evidenceType": {
+        "desktop": "Desktop PC",
+        "laptop": "Laptop",
+        "hdd": "Hard Drive",
+        "usb": "USB Drive",
+        "iphone": "iPhone",
+        "android": "Android Phone",
+        "sdcard": "Memory Card",
+        "optical": "Optical Disc",
+        "tablet": "Tablet",
+        "other": "Other"
+      }
+    }
+  },
+  "EvidencePrint": {
+    "loading": "Loading…",
+    "error": "Error: {message}",
+    "toolbar": {
+      "backToEvidence": "Back to Evidence Page",
+      "printAgain": "Print Again"
+    },
+    "title": "Chain of Custody Record",
+    "info": {
+      "evidenceNumber": "Evidence No.",
+      "caseNumber": "Case No.",
+      "caseName": "Case Name"
+    },
+    "table": {
+      "headers": {
+        "datetime": "Date & Time",
+        "deliverer": "Deliverer",
+        "receiver": "Receiver",
+        "reasonNote": "Reason / Notes (Out / In / Verification)"
+      }
+    },
+    "rows": {
+      "receiveReason": "On Receive"
+    },
+    "footnote": "Form No.: {code}"
   }
 }

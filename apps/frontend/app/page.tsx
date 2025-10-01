@@ -16,14 +16,17 @@ import { Separator } from '@/components/ui/separator';
 import { Scale, FolderSearch, LogIn, PcCase, UserLock } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 import LogoutButton from '@/components/auth/LogOutButton';
+import LangSwitcher from '../components/LangSwitcher'
+import {useTranslations} from 'next-intl';
 
 export default function Home() {
   const router = useRouter();
 
-  // 只在瀏覽器讀取 localStorage：避免 SSR/Build 時的 ReferenceError
+ 
   const [token, setToken] = useState<string | null>(null);
-  const [hasToken, setHasToken] = useState<boolean | null>(null); // null = 尚未讀取（避免水合不一致）
+  const [hasToken, setHasToken] = useState<boolean | null>(null); 
   const [ready, setReady] = useState(false);
+  const t = useTranslations('Home')
 
   useEffect(() => {
     const read = () => {
@@ -133,15 +136,20 @@ export default function Home() {
           <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary/30 bg-primary/5">
             <Scale className="h-10 w-10 text-primary" aria-hidden />
           </div>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-            臺灣高等檢察署數位鑑識首頁
+          <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl mb-5">
+                  {t('Title')}
           </h1>
-          <p className="mt-3 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
-            提供案件資料、鑑識結果及權限式登入入口。
+         
+          <p className="mt-3 mb-4 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
+              {t('subcontent')}
           </p>
-          <p className="mt-2 text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
-            模式變更 <ModeToggle />
+          <p className="mt-2 mb-5 text-pretty text-sm leading-6 text-muted-foreground sm:text-base">
+            {t('changemode')} <ModeToggle />
           </p>
+          <div>
+            < LangSwitcher />
+          </div>
+         
           <Separator className="mt-8 w-24 opacity-60" />
         </header>
 
@@ -153,13 +161,13 @@ export default function Home() {
               <div className="relative bottom-1 m-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                 <FolderSearch className="h-5 w-5 text-primary" aria-hidden />
               </div>
-              <CardTitle className="text-lg">案件相關</CardTitle>
-              <CardDescription>新增、更新、刪除、查詢案件資料</CardDescription>
+              <CardTitle className="text-lg"> {t('caseRelate')}</CardTitle>
+              <CardDescription>{t('caseContent')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
                 <Link href="/case" aria-label="前往案件相關頁">
-                  前往案件頁面
+                  {t('goCase')}
                 </Link>
               </Button>
             </CardContent>
@@ -171,13 +179,13 @@ export default function Home() {
               <div className="relative bottom-1 m-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                 <PcCase className="h-5 w-5 text-primary" aria-hidden />
               </div>
-              <CardTitle className="text-lg">證物相關</CardTitle>
-              <CardDescription>新增、更新、刪除、查詢證物資料</CardDescription>
+              <CardTitle className="text-lg">{t('evidRelate')}</CardTitle>
+              <CardDescription>{t('evidContent')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full" variant="secondary">
                 <Link href="/evidence" aria-label="前往證物相關頁">
-                  前往證物頁面
+                    {t('goEvid')}
                 </Link>
               </Button>
             </CardContent>
@@ -189,15 +197,15 @@ export default function Home() {
               <div className="relative bottom-1 m-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                 <LogIn className="h-5 w-5 text-primary" aria-hidden />
               </div>
-              <CardTitle className="text-lg">使用者註冊 / 登入</CardTitle>
-              <CardDescription>以帳號密碼登入（支援 JWT）</CardDescription>
+              <CardTitle className="text-lg">{t('authRelate')}</CardTitle>
+              <CardDescription>{t('authContent')}</CardDescription>
             </CardHeader>
             <CardContent>
               {token ? (
                 <LogoutButton className="w-full bg-red-500" />
               ) : (
                 <Button className="w-full" variant="destructive" onClick={handleRegister}>
-                  註冊/登入
+                   {t('authButton')}
                 </Button>
               )}
             </CardContent>
@@ -209,20 +217,20 @@ export default function Home() {
               <div className="relative bottom-1 m-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                 <UserLock className="h-5 w-5 text-primary" aria-hidden />
               </div>
-              <CardTitle className="text-lg">使用者帳密管理</CardTitle>
-              <CardDescription>由 Admin 管理者管理</CardDescription>
+              <CardTitle className="text-lg">{t('adminRelte')}</CardTitle>
+              <CardDescription>{t('adminCotent')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* 不用 <Link>，改程式導頁，才能在未登入時攔截 */}
               <Button className="w-full" >
-                <Link href='/accountAdmin/permission'> 進入管理頁面</Link>
+                <Link href='/accountAdmin/permission'> {t('goAdmin')}</Link>
               </Button>
             </CardContent>
           </Card>
         </section>
 
         <footer className="mt-16 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} 臺灣高等檢察署 · 數位鑑識系統
+          © {new Date().getFullYear()} {t('footerContent')}
         </footer>
       </div>
     </main>
