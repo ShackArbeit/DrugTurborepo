@@ -321,8 +321,9 @@ export default function EvidenceDetailPage({
       </section>
 
       {/* 監管鏈與列印 */}
-      <section className="rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
-        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+      <section className=" flex justify-around rounded-2xl border bg-white/70 dark:bg-zinc-900/60 backdrop-blur p-6 space-y-4 shadow-sm">
+       <div className=' text-center p-3'>
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
           {t('sections.chain')}
         </h3>
         <Button asChild>
@@ -334,6 +335,35 @@ export default function EvidenceDetailPage({
             {t('actions.print')}
           </Link>
         </Button>
+        </div>
+        <div className=' text-center p-3'>
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
+          {t('sections.formForTest')}
+        </h3>
+        <Button asChild variant='destructive'>
+          <Link
+            href={`/evidence/${id}/printTester`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('actions.print')}
+          </Link>
+        </Button>
+        </div>
+        <div className=' text-center p-3'>
+        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
+          {t('sections.formForOrig')}
+        </h3>
+        <Button asChild variant='secondary'>
+          <Link
+            href={`/evidence/${id}/printBack`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('actions.print')}
+          </Link>
+        </Button>
+        </div>
       </section>
 
       {/* 區塊四：建立時間 */}

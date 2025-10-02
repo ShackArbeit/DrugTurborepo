@@ -44,13 +44,13 @@ export default function EvidencePrintPage({
   const rows = [
     {
       datetime: formatDateTime(e.createdAt, locale),
-      deliverer: e.deliveryName ?? '',
-      receiver: e.receiverName ?? '',
+      deliverer: e.receiverName2 ?? '',
+      receiver: e.deliveryName2 ?? '',
       reason: t('rows.receiveReason'),
     },
-    { datetime: '', deliverer: '', receiver: '', reason: '' },
-    { datetime: '', deliverer: '', receiver: '', reason: '' },
-    { datetime: '', deliverer: '', receiver: '', reason: '' },
+    { datetime: '', deliverer: e.deliveryName2 ?? '', receiver: e.receiverName ?? '', reason: t('rows.transferReason') },
+    { datetime: '', deliverer: e.receiverName ?? '', receiver: e.deliveryName2 ?? '', reason: t('rows.finishReason') },
+    { datetime: '', deliverer: e.deliveryName2 ?? '', receiver: e.receiverName2 ?? '', reason: t('rows.backReason') },
     { datetime: '', deliverer: '', receiver: '', reason: '' },
     { datetime: '', deliverer: '', receiver: '', reason: '' },
     { datetime: '', deliverer: '', receiver: '', reason: '' },

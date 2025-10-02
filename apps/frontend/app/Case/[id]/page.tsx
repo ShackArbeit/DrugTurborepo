@@ -1,14 +1,14 @@
 'use client';
 
-import {use} from 'react';
-import {useQuery} from '@apollo/client';
-import {GET_CASE_BY_ID} from '@/lib/graphql/CaseGql';
+import { use } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_CASE_BY_ID } from '@/lib/graphql/CaseGql';
 import Link from 'next/link';
-import {Button} from '@/components/ui/button';
-import {ModeToggle} from '@/components/mode-toggle';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {Separator} from '@/components/ui/separator';
-import {Badge} from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/mode-toggle';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import {
   ChevronRight,
   ArrowLeft,
@@ -19,9 +19,9 @@ import {
   Gauge,
   PackageSearch
 } from 'lucide-react';
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 
-/** 小資訊卡塊 */
+/** 小資訊卡塊（值框改為垂直於標題下方） */
 function Info({
   label,
   value,
@@ -45,25 +45,22 @@ function Info({
         aria-hidden
         className="pointer-events-none absolute inset-y-0 left-0 w-1 rounded-l-2xl bg-gradient-to-b from-teal-400/70 to-sky-400/70 opacity-70 group-hover:opacity-100 transition-opacity"
       />
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3">
-        <div className="md:col-span-4 lg:col-span-5 xl:col-span-4">
-          <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {label}
-          </div>
+      {/* 垂直排列：標題在上、灰色值框在下 */}
+      <div className="flex flex-col gap-2">
+        <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {label}
         </div>
-        <div className="md:col-span-8 lg:col-span-7 xl:col-span-8">
-          <div
-            className={[
-              'mt-0.5 md:mt-0 text-sm md:text-base font-medium',
-              'text-foreground',
-              'break-words [overflow-wrap:anywhere] hyphens-auto',
-              'rounded-lg px-2 py-1',
-              'bg-muted/40',
-              'ring-1 ring-inset ring-border/60'
-            ].join(' ')}
-          >
-            {value ?? '-'}
-          </div>
+        <div
+          className={[
+            'text-sm md:text-base font-medium',
+            'text-foreground',
+            'break-words [overflow-wrap:anywhere] hyphens-auto',
+            'rounded-lg px-2 py-1',
+            'bg-muted/40',
+            'ring-1 ring-inset ring-border/60'
+          ].join(' ')}
+        >
+          {value ?? '-'}
         </div>
       </div>
     </div>
@@ -73,13 +70,13 @@ function Info({
 export default function CaseDetailPage({
   params
 }: {
-  params: Promise<{id: string}>;
+  params: Promise<{ id: string }>;
 }) {
   const t = useTranslations('CaseDetail');
 
-  const {id} = use(params);
+  const { id } = use(params);
   const numericId = Number(id);
-  const {data, loading, error} = useQuery(GET_CASE_BY_ID, {variables: {id: numericId}});
+  const { data, loading, error } = useQuery(GET_CASE_BY_ID, { variables: { id: numericId } });
 
   if (loading) {
     return (
@@ -88,7 +85,7 @@ export default function CaseDetailPage({
           <div className="h-8 w-48 rounded-md bg-muted" />
           <div className="h-10 w-3/4 rounded-md bg-muted" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {Array.from({length: 9}).map((_, i) => (
+            {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} className="h-24 rounded-2xl border border-border/60 bg-muted/60" />
             ))}
           </div>
@@ -225,7 +222,11 @@ export default function CaseDetailPage({
               <Info label={t('fields.sat2')} value={c.satisfaction_levelTwo} />
               <Info label={t('fields.sat3')} value={c.satisfaction_levelThree} />
               <Info label={t('fields.sat4')} value={c.satisfaction_levelFour} />
-              <Info label={t('fields.createdAt')} value={c.createdAt} className="sm:col-span-2 xl:col-span-1" />
+              <Info
+                label={t('fields.createdAt')}
+                value={c.createdAt}
+                className="sm:col-span-2 xl:col-span-1"
+              />
             </div>
           </section>
 
@@ -272,7 +273,7 @@ export default function CaseDetailPage({
                           <div className="text-xs text-muted-foreground">{t('fields.evidenceType')}</div>
                           <div className="text-base font-semibold tracking-tight">{e.evidenceType}</div>
                         </div>
-                         <div className="space-y-1">
+                        <div className="space-y-1">
                           <div className="text-xs text-muted-foreground">{t('fields.ForensicOfficer')}</div>
                           <div className="text-base font-semibold tracking-tight">{e.receiverName}</div>
                         </div>

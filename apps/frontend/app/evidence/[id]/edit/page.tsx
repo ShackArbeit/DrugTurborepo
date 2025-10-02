@@ -305,7 +305,6 @@ export default function EditEvidencePage({ params }: { params: Promise<{ id: str
           </nav>
           <div className="flex items-center gap-2">
             <ModeToggle />
-    
             <Button asChild variant="outline">
               <Link href={`/evidence/${id}`}>{t('actions.backToDetail')}</Link>
             </Button>

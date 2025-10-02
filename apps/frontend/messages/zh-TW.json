@@ -363,6 +363,8 @@
       "photos": "照片（接收與領回）",
       "status": "鑑識與退件狀態（返回證物給原單位）",
       "chain": "證物監管鏈紀錄表",
+      "formForTest":"證物基本資料表",
+      "formForOrig":"返還證物資料表",
       "created": "建立資訊"
     },
     "badges": {
@@ -376,7 +378,7 @@
       "evidenceBrand": "證物廠牌",
       "evidenceSerialNo": "證物廠牌序號",
       "evidenceOriginalNo": "原始證物編號",
-      "deliveryName": "證物交付者",
+      "deliveryName": "證物交付者 (行政人員)",
       "receiverName": "接收證物鑑識人員",
       "is_beyond_scope": "是否超出鑑識能力範圍",
       "is_lab_related": "是否屬於實驗室鑑識項目",
@@ -422,7 +424,7 @@
       "caseInfo": "案件資訊",
       "basic": "基本資訊",
       "forensics": "鑑識結果",
-      "delivery": "交付與接收",
+      "delivery": "證物交付與接收",
       "photosCapture": "照片（相機擷取）",
       "timeStatus": "時間與狀態"
     },
@@ -435,9 +437,9 @@
       "evidenceSerialNoOpt": "廠牌序號（可選）",
       "evidenceOriginalNoOpt": "原始標籤編號（可選）",
       "deliveryNameReq": "交付人姓名（行政人員）*",
-      "receiverNameReq": "接收人姓名（送件單位）*",
+      "receiverNameReq": "接收人姓名（鑑識人員）*",
       "deliveryName2": "返回證物者（行政人員）",
-      "receiverName2": "原單位領回者（送件單位）",
+      "receiverName2": "原送件單位領回者",
       "is_pickup": "是否已領回",
       "is_rejected": "是否應退件",
       "is_beyond_scope": "是否超出鑑識能力範圍",
@@ -502,7 +504,7 @@
     "sections": {
       "linkCase": "對應案件",
       "basic": "基本資訊",
-      "delivery": "交付與接收",
+      "delivery": "證物交付與接收",
       "photosCapture": "照片（相機擷取）",
       "timeStatus": "時間與狀態"
     },
@@ -513,10 +515,10 @@
       "evidenceBrandReq": "證物廠牌 *",
       "evidenceSerialNoOpt": "廠牌序號（可選）",
       "evidenceOriginalNoOpt": "原始標籤編號（可選）",
-      "deliveryNameReq": "交付人 *",
-      "receiverNameReq": "接收人 *",
-      "deliveryName2Req": "返回證物者 *",
-      "receiverName2Req": "原單位領回者 *",
+      "deliveryNameReq": "證物交付人(行政人員)*",
+      "receiverNameReq": "證物接收人(鑑識人員)*",
+      "deliveryName2Req": "返回證物者 (鑑識人員) *",
+      "receiverName2Req": "原送件單位領回者 *",
       "createdAtReq": "建立時間（ISO）*"
     },
     "placeholders": {
@@ -593,7 +595,10 @@
       }
     },
     "rows": {
-      "receiveReason": "收件"
+      "receiveReason": "行政人員收件證物",
+      "transferReason":"行政人員轉交證物給鑑識人員",
+      "finishReason":"證物鑑識完畢返回給行政人員",
+      "backReason":"證物返回給原送件單位"
     },
     "footnote": "表單編號：{code}"
   }

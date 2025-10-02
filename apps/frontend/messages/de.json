@@ -363,6 +363,8 @@
       "photos": "Fotos (bei Erhalt & bei Rückgabe)",
       "status": "Forensik- & Rückgabestatus (zurück an Originaleinheit)",
       "chain": "Chain of Custody",
+      "formForTest":"Grunddatenformular für Beweismittel",
+      "formForOrig":"Formular zur Rückgabe von Beweismitteln",
       "created": "Erstellt-Info"
     },
     "badges": {
@@ -376,7 +378,7 @@
       "evidenceBrand": "Marke",
       "evidenceSerialNo": "Seriennr.",
       "evidenceOriginalNo": "Original-Beweisnr.",
-      "deliveryName": "Abgeber",
+      "deliveryName": "Abgeber (Verwaltungspersonal)",
       "receiverName": "Forensik-Empfänger",
       "is_beyond_scope": "Außerhalb der forensischen Möglichkeiten",
       "is_lab_related": "Laborbezogen",
@@ -422,7 +424,7 @@
       "caseInfo": "Fallinfo",
       "basic": "Grundinfo",
       "forensics": "Forensikergebnis",
-      "delivery": "Übergabe & Empfang",
+      "delivery": "Übergabe und Übernahme von Beweismitteln",
       "photosCapture": "Fotos (Kameraaufnahme)",
       "timeStatus": "Zeit & Status"
     },
@@ -435,9 +437,9 @@
       "evidenceSerialNoOpt": "Seriennr. (optional)",
       "evidenceOriginalNoOpt": "Original-Tag-Nr. (optional)",
       "deliveryNameReq": "Abgeber (Verwaltung) *",
-      "receiverNameReq": "Empfänger (einsendende Einheit) *",
+      "receiverNameReq": "Empfänger (Forensisches Personal) *",
       "deliveryName2": "Zurückgegeben von (Verwaltung)",
-      "receiverName2": "Abgeholt von (einsendende Einheit)",
+      "receiverName2": "Empfänger der ursprünglichen einreichenden Stelle",
       "is_pickup": "Abgeholt?",
       "is_rejected": "Sollte abgelehnt werden",
       "is_beyond_scope": "Außerhalb der Möglichkeiten",
@@ -502,7 +504,7 @@
     "sections": {
       "linkCase": "Verknüpfter Fall",
       "basic": "Grundinfo",
-      "delivery": "Übergabe & Empfang",
+      "delivery": "Übergabe und Übernahme von Beweismitteln",
       "photosCapture": "Fotos (Kameraaufnahme)",
       "timeStatus": "Zeit & Status"
     },
@@ -513,10 +515,10 @@
       "evidenceBrandReq": "Marke *",
       "evidenceSerialNoOpt": "Seriennr. (optional)",
       "evidenceOriginalNoOpt": "Original-Tag-Nr. (optional)",
-      "deliveryNameReq": "Abgeber *",
-      "receiverNameReq": "Empfänger *",
-      "deliveryName2Req": "Zurückgegeben von *",
-      "receiverName2Req": "Abgeholt von *",
+      "deliveryNameReq": "Beweisstück Abgeber(Verwaltungspersonal) *",
+      "receiverNameReq": "Beweisstück Empfänger(Forensisches Personal) *",
+      "deliveryName2Req": "Forensisches Personal – Rückgabe des Asservats*",
+      "receiverName2Req": "Empfänger der ursprünglichen einreichenden Stelle*",
       "createdAtReq": "Erstellt am (ISO) *"
     },
     "placeholders": {
@@ -593,7 +595,10 @@
       }
     },
     "rows": {
-      "receiveReason": "Bei Erhalt"
+       "receiveReason": "Verwaltungspersonal erhält das Beweisstück",
+       "transferReason": "Verwaltungspersonal übergibt das Beweisstück an das forensische Personal",
+       "finishReason": "Das Beweisstück wird nach Abschluss der forensischen Untersuchung an das Verwaltungspersonal zurückgegeben",
+       "backReason": "Das Beweisstück wird an die ursprüngliche einreichende Stelle zurückgegeben"
     },
     "footnote": "Formular-Nr.: {code}"
   }

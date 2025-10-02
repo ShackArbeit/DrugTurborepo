@@ -45,7 +45,6 @@ import LiveCameraCapture from '@/lib/LiveCameraCapture';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-
 /** 只保留最近 300 天案件，並依建立時間新→舊排序 */
 function filterRecentCases(cases: any[] = []) {
   const cutoff = new Date();
@@ -160,6 +159,7 @@ export default function EvidenceNewPage() {
   });
 
   const selectedCaseNumber = form.watch('caseNumber');
+  console.log('案件編號:',selectedCaseNumber)
   useEffect(() => {
     if (!selectedCaseNumber) return;
     fetchCaseByCaseNumber({ variables: { caseNumber: selectedCaseNumber } });
@@ -168,6 +168,8 @@ export default function EvidenceNewPage() {
   useEffect(() => {
     const cn = selectedCaseNumber;
     const ec = caseOneData?.caseByCaseNumber?.evidenceCount;
+   
+    console.log('案件相關證物數量:',ec)
     if (!cn || typeof ec !== 'number') return;
 
     const auto = `EVID-${cn}-${ec + 1}`;
@@ -291,7 +293,7 @@ export default function EvidenceNewPage() {
                             value={field.value}
                             disabled={casesLoading || selectableCases.length === 0}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder={t('placeholders.selectCase')} />
                             </SelectTrigger>
                             <SelectContent>
@@ -318,12 +320,12 @@ export default function EvidenceNewPage() {
                   <h3 className="text-lg font-semibold">{t('sections.basic')}</h3>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {/* 1. 證物編號（自動帶入） */}
+                    {/* 1. 證物編號（自動帶入） -> 讓此欄位「獨佔一整列」，避免下方說明文字把右側欄位往下擠而不對齊 */}
                     <FormField
                       control={form.control}
                       name="evidenceNumber"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="md:col-span-2">
                           <FormLabel>{t('fields.evidenceNumberReq')}</FormLabel>
                           <FormControl>
                             <Input placeholder={t('placeholders.evidenceNumber')} {...field} />
@@ -351,7 +353,7 @@ export default function EvidenceNewPage() {
                           <FormLabel>{t('fields.evidenceTypeReq')}</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value ?? ''}>
-                              <SelectTrigger>
+                              <SelectTrigger className="w-full">
                                 <SelectValue placeholder={t('placeholders.selectEvidenceType')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
@@ -430,10 +432,11 @@ export default function EvidenceNewPage() {
                       control={form.control}
                       name="deliveryName"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('fields.deliveryNameReq')}</FormLabel>
+                        <FormItem className="mb-3">
+                          <FormLabel className="mb-3">{t('fields.deliveryNameReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('placeholders.deliveryName')} {...field} />
+                            {/* <Input placeholder={t('placeholders.deliveryName')} {...field} /> */}
+                            <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -443,10 +446,11 @@ export default function EvidenceNewPage() {
                       control={form.control}
                       name="receiverName"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('fields.receiverNameReq')}</FormLabel>
+                        <FormItem className="mb-3">
+                          <FormLabel className="mb-3">{t('fields.receiverNameReq')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('placeholders.receiverName')} {...field} />
+                            {/* <Input placeholder={t('placeholders.receiverName')} {...field} /> */}
+                            <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -456,10 +460,11 @@ export default function EvidenceNewPage() {
                       control={form.control}
                       name="deliveryName2"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('fields.deliveryName2Req')}</FormLabel>
+                        <FormItem className="mb-3">
+                          <FormLabel className="mb-3">{t('fields.deliveryName2Req')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('placeholders.deliveryName2')} {...field} />
+                            {/* <Input placeholder={t('placeholders.deliveryName2')} {...field} /> */}
+                            <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -469,10 +474,11 @@ export default function EvidenceNewPage() {
                       control={form.control}
                       name="receiverName2"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('fields.receiverName2Req')}</FormLabel>
+                        <FormItem className="mb-3">
+                          <FormLabel className="mb-3">{t('fields.receiverName2Req')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('placeholders.receiverName2')} {...field} />
+                            {/* <Input placeholder={t('placeholders.receiverName2')} {...field} /> */}
+                             <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

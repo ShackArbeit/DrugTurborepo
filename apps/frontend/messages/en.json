@@ -363,6 +363,8 @@
       "photos": "Photos (On Receive & On Return)",
       "status": "Forensics & Return Status (Back to Original Unit)",
       "chain": "Chain of Custody Record",
+      "formForTest": "Evidence Basic Information Form ",
+       "formForOrig": "Evidence Return Form / Formular",
       "created": "Created Info"
     },
     "badges": {
@@ -376,7 +378,7 @@
       "evidenceBrand": "Brand",
       "evidenceSerialNo": "Serial No.",
       "evidenceOriginalNo": "Original Evidence No.",
-      "deliveryName": "Deliverer",
+      "deliveryName": "Deliverer (Administrative Staff) ",
       "receiverName": "Forensics Receiver",
       "is_beyond_scope": "Beyond Forensics Capability",
       "is_lab_related": "Lab-related Item",
@@ -422,7 +424,7 @@
       "caseInfo": "Case Info",
       "basic": "Basic Info",
       "forensics": "Forensics Result",
-      "delivery": "Delivery & Receive",
+      "delivery": "Submission and Acceptance of Evidence",
       "photosCapture": "Photos (Camera Capture)",
       "timeStatus": "Time & Status"
     },
@@ -435,9 +437,9 @@
       "evidenceSerialNoOpt": "Serial No. (optional)",
       "evidenceOriginalNoOpt": "Original Tag No. (optional)",
       "deliveryNameReq": "Deliverer (Admin) *",
-      "receiverNameReq": "Receiver (Submitting Unit) *",
+      "receiverNameReq": "Receiver (Forensic Personnel) *",
       "deliveryName2": "Returned By (Admin)",
-      "receiverName2": "Picked Up By (Submitting Unit)",
+      "receiverName2": "Person Retrieving the Evidence on Behalf of the Original Submitting Unit",
       "is_pickup": "Is it picked up",
       "is_rejected": "Should be rejected",
       "is_beyond_scope": "Beyond forensics capability",
@@ -502,7 +504,7 @@
     "sections": {
       "linkCase": "Linked Case",
       "basic": "Basic Info",
-      "delivery": "Delivery & Receive",
+      "delivery": "Submission and Acceptance of Evidence",
       "photosCapture": "Photos (Camera Capture)",
       "timeStatus": "Time & Status"
     },
@@ -513,10 +515,10 @@
       "evidenceBrandReq": "Brand *",
       "evidenceSerialNoOpt": "Serial No. (optional)",
       "evidenceOriginalNoOpt": "Original Tag No. (optional)",
-      "deliveryNameReq": "Deliverer *",
-      "receiverNameReq": "Receiver *",
-      "deliveryName2Req": "Returned By *",
-      "receiverName2Req": "Picked Up By *",
+      "deliveryNameReq": "Evidence Deliverer(Administrative Personnel) *",
+      "receiverNameReq": "Evidence Receiver (Forensic Personnel) *",
+      "deliveryName2Req": "Evidence Returner (Forensic Personnel) *",
+      "receiverName2Req": "Recipient from the Original Submitting Unit *",
       "createdAtReq": "Created At (ISO) *"
     },
     "placeholders": {
@@ -593,7 +595,10 @@
       }
     },
     "rows": {
-      "receiveReason": "On Receive"
+       "receiveReason": "Administrative staff receives the evidence",
+       "transferReason": "Administrative staff transfers the evidence to forensic personnel",
+       "finishReason": "The evidence is returned to the administrative staff after forensic examination is completed",
+       "backReason": "The evidence is returned to the original submitting unit"
     },
     "footnote": "Form No.: {code}"
   }

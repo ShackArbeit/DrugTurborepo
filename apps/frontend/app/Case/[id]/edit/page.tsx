@@ -525,11 +525,11 @@ export default function EditCasePage({params}: {params: Promise<{id: string}>}) 
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
                                 <SelectGroup>
-                                  <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
-                                  <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
-                                  <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
-                                  <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
-                                  <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
+                                  <SelectItem value={t('selectOptions.verySatisfied')}>{t('selectOptions.verySatisfied')}</SelectItem>
+                                  <SelectItem value={t('selectOptions.satisfied')}>{t('selectOptions.satisfied')}</SelectItem>
+                                  <SelectItem value={t('selectOptions.neutral')}>{t('selectOptions.neutral')}</SelectItem>
+                                  <SelectItem value={t('selectOptions.slightlyDissatisfied')}>{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                  <SelectItem value={t('selectOptions.veryDissatisfied')}>{t('selectOptions.veryDissatisfied')}</SelectItem>
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -550,11 +550,11 @@ export default function EditCasePage({params}: {params: Promise<{id: string}>}) 
                                 <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
-                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
-                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
-                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
-                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.verySatisfied')}>{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.satisfied')}>{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.neutral')}>{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value={t('selectOptions.slightlyDissatisfied')}>{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.veryDissatisfied')}>{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -574,11 +574,11 @@ export default function EditCasePage({params}: {params: Promise<{id: string}>}) 
                                 <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
-                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
-                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
-                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
-                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.verySatisfied')}>{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.satisfied')}>{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.neutral')}>{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value={t('selectOptions.slightlyDissatisfied')}>{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.veryDissatisfied')}>{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -598,11 +598,11 @@ export default function EditCasePage({params}: {params: Promise<{id: string}>}) 
                                 <SelectValue placeholder={t('placeholders.selectPlaceholder')} />
                               </SelectTrigger>
                               <SelectContent className="rounded-xl">
-                                <SelectItem value="很滿意">{t('selectOptions.verySatisfied')}</SelectItem>
-                                <SelectItem value="滿意">{t('selectOptions.satisfied')}</SelectItem>
-                                <SelectItem value="普通">{t('selectOptions.neutral')}</SelectItem>
-                                <SelectItem value="有點不滿意">{t('selectOptions.slightlyDissatisfied')}</SelectItem>
-                                <SelectItem value="非常不滿意">{t('selectOptions.veryDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.verySatisfied')}>{t('selectOptions.verySatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.satisfied')}>{t('selectOptions.satisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.neutral')}>{t('selectOptions.neutral')}</SelectItem>
+                                <SelectItem value={t('selectOptions.slightlyDissatisfied')}>{t('selectOptions.slightlyDissatisfied')}</SelectItem>
+                                <SelectItem value={t('selectOptions.veryDissatisfied')}>{t('selectOptions.veryDissatisfied')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
