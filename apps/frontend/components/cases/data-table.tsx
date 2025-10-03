@@ -117,7 +117,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center text-gray-500 dark:text-gray-400"
                 >
-                  沒有資料
+                   {t('NoData')}
                 </TableCell>
               </TableRow>
             )}

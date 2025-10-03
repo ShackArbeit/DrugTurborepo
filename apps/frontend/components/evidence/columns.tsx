@@ -1,9 +1,9 @@
 'use client';
 
-import {ColumnDef} from '@tanstack/react-table';
-import {Button} from '../ui/button';
+import { ColumnDef } from '@tanstack/react-table';
+import { Button } from '../ui/button';
 import Link from 'next/link';
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 export type EvidenceRow = {
   id: number;
@@ -19,33 +19,31 @@ export type EvidenceRow = {
   is_Pickup: boolean;
 };
 
-export const EvidenceColumns = (
+
+export function EvidenceColumns<T extends EvidenceRow>(
   isAdmin: boolean,
   onDelete: (id: number) => void
-): ColumnDef<EvidenceRow>[] => {
+): ColumnDef<T>[] {
   const t = useTranslations('Evidences');
 
   return [
-    // {accessorKey: 'deliveryName', header: t('columns.deliveryName')},
-    // {accessorKey: 'receiverName', header: t('columns.receiverName')},
-    {accessorKey: 'evidenceNumber', header: t('columns.evidenceNumber')},
-    {accessorKey: 'evidenceType', header: t('columns.evidenceType')},
-    {accessorKey: 'evidenceBrand', header: t('columns.evidenceBrand')},
-    // {accessorKey: 'evidenceSerialNo', header: t('columns.evidenceSerialNo')},
-    {accessorKey: 'evidenceOriginalNo', header: t('columns.evidenceOriginalNo')},
+    { accessorKey: 'evidenceNumber', header: t('columns.evidenceNumber') },
+    { accessorKey: 'evidenceType', header: t('columns.evidenceType') },
+    { accessorKey: 'evidenceBrand', header: t('columns.evidenceBrand') },
+    { accessorKey: 'evidenceOriginalNo', header: t('columns.evidenceOriginalNo') },
     {
       accessorKey: 'is_Pickup',
       header: t('columns.isPickedUp'),
-      cell: ({row}) => {
+      cell: ({ row }) => {
         const isPickedUp = row.original.is_Pickup;
         return <span>{isPickedUp ? t('cells.picked') : t('cells.unpicked')}</span>;
       }
     },
-    {accessorKey: 'createdAt', header: t('columns.createdAt')},
+    { accessorKey: 'createdAt', header: t('columns.createdAt') },
     {
       id: 'actions',
       header: () => <div className="text-center">{t('columns.actions')}</div>,
-      cell: ({row}) => {
+      cell: ({ row }) => {
         const id = Number(row.original.id);
         return (
           <div className="flex gap-2">
@@ -68,4 +66,4 @@ export const EvidenceColumns = (
       }
     }
   ];
-};
+}

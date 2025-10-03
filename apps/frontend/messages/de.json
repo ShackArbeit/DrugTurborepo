@@ -45,7 +45,8 @@
     "MEQueryFailed": "ME_QUERY fehlgeschlagen: {message}",
     "USERSQueryFailed": "USERS_QUERY fehlgeschlagen: {message}",
     "roleAdmin": "Admin",
-    "roleUser": "Benutzer"
+    "roleUser": "Benutzer",
+    "NoData":"Keine Daten"
   },
   "Cases": {
     "title": "Fälle",

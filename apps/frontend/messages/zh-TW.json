@@ -45,7 +45,8 @@
     "MEQueryFailed": "ME_QUERY 失敗：{message}",
     "USERSQueryFailed": "USERS_QUERY 失敗：{message}",
     "roleAdmin": "管理者",
-    "roleUser": "一般使用者"
+    "roleUser": "一般使用者",
+    "NoData":"沒有資料"
   },
   "Cases": {
     "title": "案件列表",
