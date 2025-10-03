@@ -20,7 +20,12 @@ export const GET_ALL_CAESE=gql`
                 satisfaction_levelThree
                 satisfaction_levelFour
                 year
-                createdAt  
+                createdAt
+                evidences{
+                    deliveryName
+                    receiverName2
+                    createdAt 
+                }
        }
     }
 `

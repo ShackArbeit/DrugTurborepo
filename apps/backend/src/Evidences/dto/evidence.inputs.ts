@@ -34,11 +34,11 @@ export class CreateEvidenceInput{
      evidenceOriginalNo:string
 
      //證物正面照片
-     @Field(()=>String,{description:'正面照片',nullable:false})
+     @Field(()=>String,{description:'正面照片',nullable:true})
      photoFront:string
 
      //證物反面照片
-     @Field(()=>String,{description:'反面照片',nullable:false})
+     @Field(()=>String,{description:'反面照片',nullable:true})
      photoBack:string  
 
     
@@ -54,11 +54,11 @@ export class CreateEvidenceInput{
     // 以上是證物從行政人員交付給鑑識人員的部分
 
     // 以下是證物見識完成後，由行政人員交付給原單位的部分
-    @Field(()=>String,{description:'正面照片2',nullable:false})
-    photoFront2:string
+    @Field(()=>String,{description:'正面照片2',nullable:true})
+    photoFront2?: string ;
 
-    @Field(()=>String,{description:'反面照片2',nullable:false})
-    photoBack2:string
+    @Field(()=>String,{description:'反面照片2',nullable:true})
+    photoBack2?: string ;
 
     @Field(()=>Boolean,{description:'退件',nullable:false})
     is_rejected:boolean

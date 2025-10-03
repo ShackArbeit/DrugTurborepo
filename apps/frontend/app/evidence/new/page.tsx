@@ -84,7 +84,6 @@ export default function EvidenceNewPage() {
   const t = useTranslations('EvidenceNew');
   const router = useRouter();
 
-  /** 用 t 產生 zod schema（驗證訊息可雙語） */
   const schema = useMemo(() => {
     return z.object({
       caseNumber: z.string().min(1, t('validation.caseNumberRequired')),
@@ -110,15 +109,14 @@ export default function EvidenceNewPage() {
       photoFront2: z.any(),
       photoBack2: z.any(),
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t('validation.createdAtInvalid')]);
 
-  /** 1) 案件清單（下拉選） */
   const {
     data: casesData,
     loading: casesLoading,
     error: casesError,
   } = useQuery(GET_ALL_CAESE);
+
   const selectableCases = filterRecentCases(casesData?.cases ?? []);
 
   /** 2) 建立證物 */
@@ -159,17 +157,22 @@ export default function EvidenceNewPage() {
   });
 
   const selectedCaseNumber = form.watch('caseNumber');
-  console.log('案件編號:',selectedCaseNumber)
+
+  /** 依使用者選擇的案件，取得那個案件物件 */
+  const userTrueSelect = selectableCases.find(
+    (caseItem: any) => caseItem.caseNumber === selectedCaseNumber
+  );
+
+  /** 選擇案件後：查詢 evidenceCount（自動編號用） */
   useEffect(() => {
     if (!selectedCaseNumber) return;
     fetchCaseByCaseNumber({ variables: { caseNumber: selectedCaseNumber } });
   }, [selectedCaseNumber, fetchCaseByCaseNumber]);
 
+  /** 依 evidenceCount 自動產生證物編號 */
   useEffect(() => {
     const cn = selectedCaseNumber;
     const ec = caseOneData?.caseByCaseNumber?.evidenceCount;
-   
-    console.log('案件相關證物數量:',ec)
     if (!cn || typeof ec !== 'number') return;
 
     const auto = `EVID-${cn}-${ec + 1}`;
@@ -179,6 +182,24 @@ export default function EvidenceNewPage() {
     }
   }, [caseOneData, selectedCaseNumber, form]);
 
+  /** ✅ 選擇案件後：自動帶入 Creator_Name → deliveryName、submitterName → receiverName2 */
+  useEffect(() => {
+    if (!userTrueSelect) return;
+
+    const creator = String(userTrueSelect?.Creator_Name ?? '').trim();
+    const submitter = String(userTrueSelect?.submitterName ?? '').trim();
+
+    const dnState = form.getFieldState('deliveryName');
+    if (!dnState.isDirty && creator) {
+      form.setValue('deliveryName', creator, { shouldDirty: false, shouldValidate: true });
+    }
+
+    const rn2State = form.getFieldState('receiverName2');
+    if (!rn2State.isDirty && submitter) {
+      form.setValue('receiverName2', submitter, { shouldDirty: false, shouldValidate: true });
+    }
+  }, [userTrueSelect, form]);
+
   const ensureUrl = async (v: any) => {
     if (!v) return '';
     if (typeof v === 'string') return v.trim();
@@ -187,52 +208,62 @@ export default function EvidenceNewPage() {
   };
 
   const onSubmit = async (v: FormValues) => {
-    try {
-      const [pf, pb, pf2, pb2] = await Promise.all([
-        ensureUrl(v.photoFront),
-        ensureUrl(v.photoBack),
-        ensureUrl(v.photoFront2),
-        ensureUrl(v.photoBack2),
-      ]);
-
-      if (!pf || !pb || !pf2 || !pb2) {
-        alert(t('alerts.fourPhotosRequired'));
-        return;
-      }
-
-      const { data } = await createEvidence({
-        variables: {
-          input: {
-            caseNumber: v.caseNumber,
-            createdAt: v.createdAt,
-            deliveryName: v.deliveryName,
-            receiverName: v.receiverName,
-            deliveryName2: v.deliveryName2,
-            receiverName2: v.receiverName2,
-            evidenceBrand: v.evidenceBrand,
-            evidenceNumber: v.evidenceNumber,
-            evidenceOriginalNo: v.evidenceOriginalNo,
-            evidenceSerialNo: v.evidenceSerialNo,
-            evidenceType: v.evidenceType,
-            is_Pickup: v.is_Pickup,
-            is_rejected: v.is_rejected,
-            is_beyond_scope: v.is_beyond_scope,
-            is_lab_related: v.is_lab_related,
-            is_info_complete: v.is_info_complete,
-            photoFront: pf,
-            photoBack: pb,
-            photoFront2: pf2,
-            photoBack2: pb2,
-          },
-        },
-      });
-
-      const id = data?.createEvidence?.id;
-      router.push(id ? `/evidence/${id}` : '/evidence');
-    } catch (err: any) {
-      alert(err?.message ?? t('alerts.createFailed'));
+  try {
+    // 1) 先確保有選到案件，且能取到 caseName
+    const selected = userTrueSelect; // 就是你上面算好的那個
+    const caseName = selected?.caseName?.trim();
+    if (!v.caseNumber || !caseName) {
+      alert('請先選擇有效的案件（缺少 caseNumber 或 caseName）');
+      return;
     }
-  };
+
+    // 2) 上傳必要與可選照片
+    const [pf, pb, pf2, pb2] = await Promise.all([
+      ensureUrl(v.photoFront),
+      ensureUrl(v.photoBack),
+      ensureUrl(v.photoFront2),
+      ensureUrl(v.photoBack2),
+    ]);
+
+    if (!pf || !pb) {
+      alert(t('alerts.fourPhotosRequired')); // 你可以把文案改成「至少需正反面各一張」
+      return;
+    }
+
+    // 3) 組裝 payload：必填的帶上，可選的有值才帶
+    const input: any = {
+      caseName,                 // 🔴 新增：後端要求必填
+      caseNumber: v.caseNumber,
+      createdAt: v.createdAt,
+      deliveryName: v.deliveryName,
+      receiverName: v.receiverName,
+      deliveryName2: v.deliveryName2,
+      receiverName2: v.receiverName2,
+      evidenceBrand: v.evidenceBrand,
+      evidenceNumber: v.evidenceNumber,
+      evidenceOriginalNo: v.evidenceOriginalNo,
+      evidenceSerialNo: v.evidenceSerialNo,
+      evidenceType: v.evidenceType,
+      is_Pickup: v.is_Pickup,
+      is_rejected: v.is_rejected,
+      is_beyond_scope: v.is_beyond_scope,
+      is_lab_related: v.is_lab_related,
+      is_info_complete: v.is_info_complete,
+      photoFront: pf,
+      photoBack: pb,
+    };
+
+    // 可選欄位：有值才送（後端已改成 nullable）
+    if (pf2) input.photoFront2 = pf2;
+    if (pb2) input.photoBack2 = pb2;
+
+    const { data } = await createEvidence({ variables: { input } });
+    const id = data?.createEvidence?.id;
+    router.push(id ? `/evidence/${id}` : '/evidence');
+  } catch (err: any) {
+    alert(err?.message ?? t('alerts.createFailed'));
+  }
+};
 
   return (
     <>
@@ -435,8 +466,7 @@ export default function EvidenceNewPage() {
                         <FormItem className="mb-3">
                           <FormLabel className="mb-3">{t('fields.deliveryNameReq')}</FormLabel>
                           <FormControl>
-                            {/* <Input placeholder={t('placeholders.deliveryName')} {...field} /> */}
-                            <Input  {...field} />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -449,7 +479,6 @@ export default function EvidenceNewPage() {
                         <FormItem className="mb-3">
                           <FormLabel className="mb-3">{t('fields.receiverNameReq')}</FormLabel>
                           <FormControl>
-                            {/* <Input placeholder={t('placeholders.receiverName')} {...field} /> */}
                             <Input  {...field} />
                           </FormControl>
                           <FormMessage />
@@ -463,7 +492,6 @@ export default function EvidenceNewPage() {
                         <FormItem className="mb-3">
                           <FormLabel className="mb-3">{t('fields.deliveryName2Req')}</FormLabel>
                           <FormControl>
-                            {/* <Input placeholder={t('placeholders.deliveryName2')} {...field} /> */}
                             <Input  {...field} />
                           </FormControl>
                           <FormMessage />
@@ -477,8 +505,7 @@ export default function EvidenceNewPage() {
                         <FormItem className="mb-3">
                           <FormLabel className="mb-3">{t('fields.receiverName2Req')}</FormLabel>
                           <FormControl>
-                            {/* <Input placeholder={t('placeholders.receiverName2')} {...field} /> */}
-                             <Input  {...field} />
+                            <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

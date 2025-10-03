@@ -132,16 +132,16 @@ input CreateEvidenceInput {
   is_rejected: Boolean!
 
   """反面照片"""
-  photoBack: String!
+  photoBack: String
 
   """反面照片2"""
-  photoBack2: String!
+  photoBack2: String
 
   """正面照片"""
-  photoFront: String!
+  photoFront: String
 
   """正面照片2"""
-  photoFront2: String!
+  photoFront2: String
 
   """收件人姓名"""
   receiverName: String!

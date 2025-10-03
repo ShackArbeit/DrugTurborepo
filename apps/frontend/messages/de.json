@@ -496,7 +496,7 @@
     "alerts": {
       "casesLoadFailedTitle": "Fälle konnten nicht geladen werden",
       "createFailed": "Erstellung fehlgeschlagen, bitte später erneut versuchen",
-      "fourPhotosRequired": "Alle vier Fotos sind erforderlich"
+      "fourPhotosRequired": "Mindestens zwei Fotos sind erforderlich"
     },
     "descriptions": {
       "intro": "Nach Auswahl eines Falls wird die Beweisnummer automatisch generiert. Kameraaufnahmen zeigen eine Vorschau in Echtzeit; der Upload liefert eine URL."

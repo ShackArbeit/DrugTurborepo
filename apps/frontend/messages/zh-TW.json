@@ -496,7 +496,7 @@
     "alerts": {
       "casesLoadFailedTitle": "無法取得案件清單",
       "createFailed": "建立失敗，請稍後再試",
-      "fourPhotosRequired": "四張照片皆為必填"
+      "fourPhotosRequired": "至少要兩張照片"
     },
     "descriptions": {
       "intro": "選擇案件後自動產生證物編號；相機擷取即時預覽，上傳成功回傳 URL。"

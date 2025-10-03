@@ -496,7 +496,7 @@
     "alerts": {
       "casesLoadFailedTitle": "Failed to load cases",
       "createFailed": "Create failed, please try again later",
-      "fourPhotosRequired": "All four photos are required"
+      "fourPhotosRequired": "At least two photos"
     },
     "descriptions": {
       "intro": "After selecting a case, the evidence number is auto-generated. Camera capture will preview in real-time and upload returns a URL."
