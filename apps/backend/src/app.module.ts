@@ -26,7 +26,7 @@ import { ConfigModule } from '@nestjs/config';
     // TypeORM 模組設定 (SQLite 資料庫)
     TypeOrmModule.forRoot({
         type:'sqlite',
-        database:join(process.cwd(),'./db.sqlite'),
+        database:join(process.cwd(),'data/db.sqlite'),
         extra: {
          busyTimeout: 8000,  
        },

@@ -1,0 +1,8 @@
+node_modules
+.pnpm-store
+.turbo
+.git
+.github
+**/dist
+**/.next/cache
+apps/backend/db.sqlite
