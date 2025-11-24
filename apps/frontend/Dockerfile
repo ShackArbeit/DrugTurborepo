@@ -34,7 +34,6 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 WORKDIR /app
 
-# 這裡不用再 COPY，因為 deps 已經有完整專案 + node_modules
 RUN pnpm turbo run build --filter frontend...
 
 
@@ -52,10 +51,10 @@ ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Next.js 官方建議：用 .next/standalone + .next/static 部署
-# .next/standalone 裡面已經包含 Node server + node_modules
 COPY --from=build /app/apps/frontend/.next/standalone ./
 COPY --from=build /app/apps/frontend/.next/static ./apps/frontend/.next/static
-COPY --from=build /app/apps/frontend/public ./apps/frontend/public
+# 如果未來有 public 再打開這行，現在先註解掉避免錯誤
+# COPY --from=build /app/apps/frontend/public ./apps/frontend/public
 
 EXPOSE 3000
 
