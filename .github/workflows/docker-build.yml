@@ -35,8 +35,8 @@ jobs:
           file: ./apps/frontend/Dockerfile  # Frontend Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner | toLower }}/drug-frontend:latest
-            ghcr.io/${{ github.repository_owner | toLower }}/drug-frontend:${{ github.sha }}
+            ghcr.io/${{ lower(github.repository_owner) }}/drug-frontend:latest
+            ghcr.io/${{ lower(github.repository_owner) }}/drug-frontend:${{ github.sha }}
 
       # ---------- Backend image ----------
       - name: Build and push backend image
@@ -46,8 +46,8 @@ jobs:
           file: ./apps/backend/Dockerfile   # Backend Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner | toLower }}/drug-backend:latest
-            ghcr.io/${{ github.repository_owner | toLower }}/drug-backend:${{ github.sha }}
+            ghcr.io/${{ lower(github.repository_owner) }}/drug-backend:latest
+            ghcr.io/${{ lower(github.repository_owner) }}/drug-backend:${{ github.sha }}
 
   deploy-to-kamatera:
     needs: build-and-push
