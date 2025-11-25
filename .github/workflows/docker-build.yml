@@ -3,7 +3,7 @@ name: Build and deploy to Kamatera
 on:
   push:
     branches:
-      - main   # 你的主分支是 main 就這樣寫
+      - main   # 觸發分支
 
 permissions:
   contents: read
@@ -32,22 +32,22 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .                        # monorepo 根目錄
-          file: ./apps/frontend/Dockerfile  # 使用你剛剛那支 Dockerfile
+          file: ./apps/frontend/Dockerfile  # Frontend Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/drug-frontend:latest
-            ghcr.io/${{ github.repository_owner }}/drug-frontend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner | toLower }}/drug-frontend:latest
+            ghcr.io/${{ github.repository_owner | toLower }}/drug-frontend:${{ github.sha }}
 
       # ---------- Backend image ----------
       - name: Build and push backend image
         uses: docker/build-push-action@v6
         with:
-          context: .                        # 同樣用根目錄
-          file: ./apps/backend/Dockerfile
+          context: .                        # monorepo 根目錄
+          file: ./apps/backend/Dockerfile   # Backend Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/drug-backend:latest
-            ghcr.io/${{ github.repository_owner }}/drug-backend:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner | toLower }}/drug-backend:latest
+            ghcr.io/${{ github.repository_owner | toLower }}/drug-backend:${{ github.sha }}
 
   deploy-to-kamatera:
     needs: build-and-push
@@ -57,12 +57,12 @@ jobs:
       - name: Deploy on Kamatera VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.VPS_HOST }}        
-          username: ${{ secrets.VPS_USER }}    
-          key: ${{ secrets.VPS_SSH_KEY }}      
-          port: ${{ secrets.VPS_SSH_PORT }}    
+          host: ${{ secrets.VPS_HOST }}        # Kamatera VPS IP
+          username: ${{ secrets.VPS_USER }}    # 通常是 root
+          key: ${{ secrets.VPS_SSH_KEY }}      # SSH 私鑰全文
+          port: ${{ secrets.VPS_SSH_PORT }}    # 一般是 22
           script: |
-            cd /root/drugforensics           
+            cd /root/DrugTurborepo             # VPS 上專案實際路徑
             git pull
             docker compose pull
             docker compose up -d
