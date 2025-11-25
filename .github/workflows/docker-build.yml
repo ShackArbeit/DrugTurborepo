@@ -1,74 +1,35 @@
-name: Build and deploy to Kamatera
+# version 行其實會被 Docker Compose 忽略，也可以刪掉
+version: "3.8"
 
-on:
-  push:
-    branches:
-      - main   # 觸發分支
+services:
+  backend:
+    image: ghcr.io/shackarbeit/drug-backend:latest
+    container_name: drug-backend
+    restart: unless-stopped
 
-permissions:
-  contents: read
-  packages: write
+    # 原本如果有這段，現在「完全移除」：
+    # env_file:
+    #   - .env.backend
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+    # 如果有必要的環境變數，可以改用 environment 寫在這裡
+    # （沒有特別需求也可以整段拿掉）
+    environment:
+      - NODE_ENV=production
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    ports:
+      - "4000:4000"  # 你實際 NestJS 對外 port，依你專案調整
 
-      - name: Set OWNER_LC env var
-        run: |
-          echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
-        env:
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+    # SQLite 資料庫 volume（依你目前的結構來看，大多會像這樣）
+    volumes:
+      - ./data:/app/data
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  frontend:
+    image: ghcr.io/shackarbeit/drug-frontend:latest
+    container_name: drug-frontend
+    restart: unless-stopped
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    ports:
+      - "3000:3000"  # Next.js 對外 port，依你實際設定調整
 
-      # ---------- Frontend image ----------
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v6
-        with:
-          context: .                        # monorepo 根目錄
-          file: ./apps/frontend/Dockerfile  # Frontend Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ env.OWNER_LC }}/drug-frontend:latest
-            ghcr.io/${{ env.OWNER_LC }}/drug-frontend:${{ github.sha }}
-
-      # ---------- Backend image ----------
-      - name: Build and push backend image
-        uses: docker/build-push-action@v6
-        with:
-          context: .                        # monorepo 根目錄
-          file: ./apps/backend/Dockerfile   # Backend Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ env.OWNER_LC }}/drug-backend:latest
-            ghcr.io/${{ env.OWNER_LC }}/drug-backend:${{ github.sha }}
-
-  deploy-to-kamatera:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy on Kamatera VPS via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}        # Kamatera VPS IP
-          username: ${{ secrets.VPS_USER }}    # 通常是 root
-          key: ${{ secrets.VPS_SSH_KEY }}      # SSH 私鑰
-          port: ${{ secrets.VPS_SSH_PORT }}    # 一般是 22
-          script: |
-            cd /root/DrugTurborepo             # VPS 上專案實際路徑
-            git pull
-            docker compose pull
-            docker compose up -d
+    depends_on:
+      - backend
