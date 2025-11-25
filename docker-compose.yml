@@ -1,28 +1,18 @@
-version: "3.9"
-
 services:
   backend:
     image: ghcr.io/shackarbeit/drug-backend:latest
     container_name: drug-backend
     restart: unless-stopped
     ports:
-      # 左：VPS 對外 port；右：容器內 NestJS port
-      - "3001:3001"
-    env_file:
-      # 可選：放 JWT_SECRET、MAIL_CONFIG 等
-      - .env.backend
+      - "4000:4000"   # 依你 NestJS 實際 port 調整
     volumes:
-      - ./data:/app/data
+      - ./data:/app/data  # 依你後端 Dockerfile 的 SQLite 路徑調整
 
   frontend:
     image: ghcr.io/shackarbeit/drug-frontend:latest
     container_name: drug-frontend
     restart: unless-stopped
+    ports:
+      - "3000:3000"   # 依你 Next.js 實際 port 調整
     depends_on:
       - backend
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env.frontend
-    # 例如 .env.frontend 可以放：
-    # NEXT_PUBLIC_API_URL=http://localhost:3001
