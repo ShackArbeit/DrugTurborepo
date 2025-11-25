@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   backend:
-    image: ghcr.io/ShackArbeit/drug-backend:latest
+    image: ghcr.io/shackarbeit/drug-backend:latest
     container_name: drug-backend
     restart: unless-stopped
     ports:
@@ -15,7 +15,7 @@ services:
       - ./data:/app/data
 
   frontend:
-    image: ghcr.io/ShackArbeit/drug-frontend:latest
+    image: ghcr.io/shackarbeit/drug-frontend:latest
     container_name: drug-frontend
     restart: unless-stopped
     depends_on:
