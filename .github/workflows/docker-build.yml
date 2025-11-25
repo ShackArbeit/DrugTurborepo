@@ -1,6 +1,18 @@
+name: Build and deploy to Kamatera
+
+on:
+  push:
+    branches:
+      - main   # 觸發分支
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,22 +33,42 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ---------- Frontend image ----------
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./apps/frontend/Dockerfile
+          context: .                        # monorepo 根目錄
+          file: ./apps/frontend/Dockerfile  # Frontend Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/drug-frontend:latest
             ghcr.io/${{ env.OWNER_LC }}/drug-frontend:${{ github.sha }}
 
+      # ---------- Backend image ----------
       - name: Build and push backend image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./apps/backend/Dockerfile
+          context: .                        # monorepo 根目錄
+          file: ./apps/backend/Dockerfile   # Backend Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/drug-backend:latest
             ghcr.io/${{ env.OWNER_LC }}/drug-backend:${{ github.sha }}
+
+  deploy-to-kamatera:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy on Kamatera VPS via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}        # Kamatera VPS IP
+          username: ${{ secrets.VPS_USER }}    # 通常是 root
+          key: ${{ secrets.VPS_SSH_KEY }}      # SSH 私鑰
+          port: ${{ secrets.VPS_SSH_PORT }}    # 一般是 22
+          script: |
+            cd /root/DrugTurborepo             # VPS 上專案實際路徑
+            git pull
+            docker compose pull
+            docker compose up -d
