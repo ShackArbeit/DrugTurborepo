@@ -11,22 +11,27 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 
-// 根據目前執行環境決定要打哪一個 GraphQL Endpoint
 function getGraphqlEndpoint(): string {
-  if (typeof window !== 'undefined') {
-    const { hostname } = window.location;
+  if (typeof window === 'undefined') {
+    // SSR / 預設情況，本機開發時後端通常跑 3001
+    return 'http://localhost:3001/graphql';
+  }
 
-    // 本機開發時（例如 http://localhost:3000）
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:4000/graphql';
-    }
+  const { hostname } = window.location;
 
-    // 其他情況（例如 http://114.29.236.11:3000）
+  // 🖥 本機開發環境 → Next 跑在 http://localhost:3000
+  // 後端 NestJS 通常跑在 http://localhost:3001
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:3001/graphql';
+  }
+
+  // 🌐 VPS / 正式環境 → 走你 Kamatera 的 IP + 4000
+  if (hostname === '114.29.236.11') {
     return 'http://114.29.236.11:4000/graphql';
   }
 
-  // 安全預設值（通常用不到，但放著避免型別或 SSR 抱怨）
-  return 'http://114.29.236.11:4000/graphql';
+  // 其他情況（例如之後你掛網域）可以先暫時也指到 VPS 的 backend
+  return `http://${hostname}:4000/graphql`;
 }
 
 const httpLink = new HttpLink({
@@ -35,7 +40,6 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // 每次請求當下才讀 token（避免拿到舊值）
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   return {
