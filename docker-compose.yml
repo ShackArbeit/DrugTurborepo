@@ -4,7 +4,7 @@ services:
     container_name: drug-backend
     restart: unless-stopped
     ports:
-      - "4000:4000"   # 依你 NestJS 實際 port 調整
+      - "4000:3001"   # 依你 NestJS 實際 port 調整
     volumes:
       - ./data:/app/data  # 依你後端 Dockerfile 的 SQLite 路徑調整
 
