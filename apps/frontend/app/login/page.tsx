@@ -20,10 +20,8 @@ function LoginForm() {
 
   // ✅ 這裡改成優先讀 middleware 加上的 redirect，其次才是舊的 returnTo
   const searchParams = useSearchParams();
-  const redirect =
-    searchParams.get('redirect') ||
-    '/';
-
+  const redirect =searchParams.get('redirect') || ''
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
