@@ -163,7 +163,10 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
-                <Link href="/case" aria-label="前往案件相關頁">
+                <Link 
+                href="/case" 
+                prefetch={false}
+                aria-label="前往案件相關頁">
                   {t('goCase')}
                 </Link>
               </Button>
@@ -181,7 +184,10 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full" variant="secondary">
-                <Link href="/evidence" aria-label="前往證物相關頁">
+                <Link 
+                href="/evidence" 
+                prefetch={false}
+                aria-label="前往證物相關頁">
                   {t('goEvid')}
                 </Link>
               </Button>
