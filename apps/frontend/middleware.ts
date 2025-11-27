@@ -4,12 +4,11 @@ export function middleware(req: NextRequest) {
   const { nextUrl, cookies } = req;
   const pathname = nextUrl.pathname;
 
-  // 只保護後台管理相關頁面
   const needAuth =
-    pathname.startsWith('/accountAdmin/permission') ||
-    pathname.startsWith('/accountAdmin');
+    pathname.startsWith('/case') ||
+    pathname.startsWith('/evidence') ||
+    pathname.startsWith('/accountAdmin/permission');
 
-  // 不需要登入的路徑，直接放行
   if (!needAuth) {
     return NextResponse.next();
   }
@@ -18,6 +17,7 @@ export function middleware(req: NextRequest) {
 
   if (!hasToken) {
     const url = new URL('/login', req.url);
+    // ✅ 這裡用的就是 redirect
     url.searchParams.set('redirect', pathname);
     url.searchParams.set('reason', 'need-login');
     return NextResponse.redirect(url);
@@ -28,6 +28,10 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/case',
+    '/case/:path*',
+    '/evidence',
+    '/evidence/:path*',
     '/accountAdmin/permission',
     '/accountAdmin/permission/:path*',
     '/accountAdmin/:path*',
