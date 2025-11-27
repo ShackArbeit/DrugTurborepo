@@ -22,7 +22,6 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect =
     searchParams.get('redirect') ||
-    searchParams.get('returnTo') ||
     '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
