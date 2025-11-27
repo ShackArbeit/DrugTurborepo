@@ -15,6 +15,8 @@ export function middleware(req: NextRequest) {
 
   const hasToken = Boolean(cookies.get('token')?.value);
 
+  console.log('是否有Token:',hasToken)
+
   if (!hasToken) {
     const url = new URL('/login', req.url);
     url.searchParams.set('redirect', pathname);

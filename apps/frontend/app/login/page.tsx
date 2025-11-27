@@ -20,7 +20,7 @@ function LoginForm() {
 
   // ✅ 這裡改成優先讀 middleware 加上的 redirect，其次才是舊的 returnTo
   const searchParams = useSearchParams();
-  const redirect =searchParams.get('redirect') || '/'
+  const redirect =searchParams.get('redirect') || searchParams.get('returnTo') || '/'
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,16 +28,11 @@ function LoginForm() {
       const { data } = await login({
         variables: { authInput: { username, password } },
       });
-
       const token = data?.login?.access_token;
-
+      console.log('Token 值是:',token)
       if (token) {
-        // 1) 存 localStorage（給前端用）
         localStorage.setItem('token', token);
 
-        // 2) 存 cookie（給 middleware 用）
-        //   - 不要加 Secure，因為現在是 http://114.29.236.11:3000
-        //   - Path=/ 讓所有路徑都帶上 token
         document.cookie = `token=${token}; Path=/; Max-Age=604800; SameSite=Lax`;
 
         // 3) 清掉舊的 cache，避免殘留登入狀態
