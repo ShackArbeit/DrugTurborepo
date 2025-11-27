@@ -14,31 +14,41 @@ export const dynamic = 'force-dynamic';
 function LoginForm() {
   const router = useRouter();
   const client = useApolloClient();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
-  // ✅ 這裡改成優先讀 middleware 加上的 redirect，其次才是舊的 returnTo
+  // ✅ 優先讀 middleware 加上的 redirect，其次才是舊的 returnTo，最後預設 '/'
   const searchParams = useSearchParams();
-  const redirect =searchParams.get('redirect') || searchParams.get('returnTo') || '/'
-  
+  const redirect =
+    searchParams.get('redirect') || searchParams.get('returnTo') || '/';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { data } = await login({
         variables: { authInput: { username, password } },
       });
-      const token = data?.login?.access_token;
-      console.log('Token 值是:',token)
-      if (token) {
-        localStorage.setItem('token', token);
 
+      const token = data?.login?.access_token;
+      console.log('Login Token 值是:', token);
+
+      if (token) {
+        // 1) 寫入 localStorage & Cookie（給 middleware 用）
+        localStorage.setItem('token', token);
         document.cookie = `token=${token}; Path=/; Max-Age=604800; SameSite=Lax`;
 
-        // 3) 清掉舊的 cache，避免殘留登入狀態
+        // 2) 告訴同一分頁的元件（首頁）登入狀態已改變
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('auth-changed'));
+        }
+
+        // 3) 清掉舊的 Apollo cache
         await client.resetStore();
 
-        // 4) 登入成功導回原本想去的頁面（例如 /case 或 /evidence）
+        // 4) 導回原本想去的頁面（例如 /case 或 /evidence）
         router.push(redirect);
       }
     } catch (err) {
