@@ -34,6 +34,7 @@ export default function Home() {
       setToken(t);
       setHasToken(Boolean(t));
       setReady(true);
+      console.log('Token值是:',token)
     };
     read();
 
@@ -48,7 +49,7 @@ export default function Home() {
   const promptLogin = useCallback(async () => {
     const res = await Swal.fire({
       title: '需要登入',
-      text: '若未登入將無法使用各項功能',
+      text: '若未登入將無法進入各頁面',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: '前往登入',
@@ -82,19 +83,19 @@ export default function Home() {
 
   // 進入權限管理：以程式導頁，未登入先提示
   const gotoAdmin = useCallback(async () => {
-    if (!token) {
-      await Swal.fire({
-        title: '需要登入',
-        text: '若未登入將無法進入此頁面',
-        icon: 'warning',
-        confirmButtonText: '前往登入',
-        showCancelButton: true,
-        confirmButtonColor: '#16a34a',
-      }).then((r) => {
-        if (r.isConfirmed) router.push('/login');
-      });
-      return;
-    }
+  //   if (!token) {
+  //     await Swal.fire({
+  //       title: '需要登入',
+  //       text: '若未登入將無法進入此頁面',
+  //       icon: 'warning',
+  //       confirmButtonText: '前往登入',
+  //       showCancelButton: true,
+  //       confirmButtonColor: '#16a34a',
+  //     }).then((r) => {
+  //       if (r.isConfirmed) router.push('/login');
+  //     });
+  //     return;
+  //   }
     router.push('/accountAdmin/permission');
   }, [router, token]);
 
