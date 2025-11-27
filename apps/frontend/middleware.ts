@@ -17,7 +17,6 @@ export function middleware(req: NextRequest) {
 
   if (!hasToken) {
     const url = new URL('/login', req.url);
-    // ✅ 這裡用的就是 redirect
     url.searchParams.set('redirect', pathname);
     url.searchParams.set('reason', 'need-login');
     return NextResponse.redirect(url);
