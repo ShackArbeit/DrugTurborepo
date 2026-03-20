@@ -12,6 +12,6 @@ const nextConfig: NextConfig = {
     cpus: 2, // 根據伺服器可用的 CPU 調整數值
   },
 };
-
+// Test Build 
 const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);
