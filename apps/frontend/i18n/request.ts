@@ -8,7 +8,6 @@ type AppLocale = (typeof SUPPORTED_LOCALES)[number];
 function pickSupportedLocale(input?: string): AppLocale {
   if (!input) return 'en';
   const lower = input.toLowerCase();
-  // 常見猜測：先 zh -> zh-TW；再 de；其餘 en
   if (lower.startsWith('zh')) return 'zh-TW';
   if (lower.startsWith('de')) return 'de';
   return 'en';
